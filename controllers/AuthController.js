@@ -146,7 +146,6 @@ module.exports.getUserInformation = (req, res, next) => {
   const roleId = req.userInformation.roleId;
   User.checkAuthorization(roleId, 1)
     .then(result => {
-      console.log(result);
       if (result[0].length === 0) {
         return res.json({
           success: true,
