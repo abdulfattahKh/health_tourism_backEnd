@@ -11,4 +11,10 @@ Router.post(
   check_author(1),
   PrivilegesController.addPrivilege
 );
+Router.post(
+  "/deletePrivilege",
+  check_auth,
+  check_author(1),
+  PrivilegesController.deletePrivilege
+);
 module.exports = Router;

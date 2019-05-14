@@ -1,17 +1,16 @@
 const db = require("../utilites/db");
 const joiValidator = require("joi");
 module.exports = class privileges {
-  constructor(privilegeId, privilegeName) {
-    this.privilegeId = privilegeId;
+  constructor(privilegeName) {
     this.privilegeName = privilegeName;
   }
 
   save() {
-    return db.execute(
-      `insert into permissions(permission_id,name) values(?,?)`,
-      [this.privilegeId, this.privilegeName]
-    );
+    return db.execute(`insert into permissions(name) values(?)`, [
+      this.privilegeName
+    ]);
   }
+
   static getMyprivileges(roleId) {
     return db.execute(
       `
@@ -24,27 +23,24 @@ module.exports = class privileges {
     );
   }
 
-  save() {
-    return db.execute(
-      `insert into permissions(permission_id , name) values(?,?)`,
-      [this.permissionId, this.permissionName]
-    );
-  }
+  // static deletePervilege(privilegeId) {
+  //   return db.execute("delete from roles where role_id = ?", [privilegeId]);
+  // }
 
-  static deleteRole(roleId) {
-    return db.execute("delete from roles where role_id = ?", [roleId]);
-  }
+  static validate(data, type) {
+    let schema;
+    if (type == "add") {
+      schema = joiValidator.object().keys({
+        privilegeName: joiValidator.string().required()
+      });
+    }
 
-  static validatePermission(data) {
-    const schema = joiValidator.object().keys({
-      permissionName: joiValidator
-        .string()
-        .alphanum()
-        .min(1)
-        .max(100)
-        .required(),
-      permissionId: joiValidator.number().required()
-    });
+    if (type == "delete") {
+      schema = joiValidator.object().keys({
+        privilegeId: joiValidator.number().required()
+      });
+    }
+
     return joiValidator.validate(data, schema);
   }
 };

@@ -24,7 +24,7 @@ module.exports.addRole = (req, res, next) => {
   rolesModel
     .validateRole(data)
     .then(res => {
-      let role = new rolesModel(data.roleId, data.roleName);
+      let role = new rolesModel(data.roleName);
       return role.save();
     })
     .then(save_res => {

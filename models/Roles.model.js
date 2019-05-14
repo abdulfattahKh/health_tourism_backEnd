@@ -3,7 +3,6 @@ const crud = require("../utilites/crud/crud");
 const joiValidator = require("joi");
 module.exports = class privileges {
   constructor(roleId, roleName) {
-    this.roleId = roleId;
     this.roleName = roleName;
   }
 
@@ -12,10 +11,7 @@ module.exports = class privileges {
   }
 
   save() {
-    return db.execute(`insert into roles(role_id , name) values(?,?)`, [
-      this.roleId,
-      this.roleName
-    ]);
+    return db.execute(`insert into roles(name) values(?)`, [this.roleName]);
   }
 
   static deleteRole(roleId) {
@@ -29,8 +25,7 @@ module.exports = class privileges {
         .alphanum()
         .min(1)
         .max(100)
-        .required(),
-      roleId: joiValidator.number().required()
+        .required()
     });
     return joiValidator.validate(data, schema);
   }

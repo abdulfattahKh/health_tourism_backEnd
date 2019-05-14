@@ -1,10 +1,9 @@
 const PrivilegesModel = require("../models/Privileges.model");
-
 module.exports.addPrivilege = (req, res, next) => {
   const data = req.body;
-  PrivilegesModel.validatePermission(data)
-    .then(res => {
-      let privilege = new rolesModel(data.permissionId, data.permissionName);
+  PrivilegesModel.validate(data, "add")
+    .then(validate_res => {
+      let privilege = new PrivilegesModel(req.body.privilegeName);
       return privilege.save();
     })
     .then(save_res => {
@@ -23,6 +22,33 @@ module.exports.addPrivilege = (req, res, next) => {
       res.json({
         success: false,
         message: "try again",
+        err: err
+      });
+    });
+};
+
+module.exports.deletePrivilege = (req, res, next) => {
+  PrivilegesModel.validate(req.body, "delete")
+    .then(validator_res => {
+      PrivilegesModel.deletePervilege(req.body.privilegeId)
+        .then(delting_res => {
+          return res.json({
+            success: true,
+            message: "it was deleted successfuly"
+          });
+        })
+        .catch(err => {
+          return res.json({
+            success: false,
+            message: "there was an error",
+            err: err
+          });
+        });
+    })
+    .catch(err => {
+      return res.json({
+        success: false,
+        message: "error with permission",
         err: err
       });
     });
