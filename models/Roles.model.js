@@ -1,21 +1,44 @@
 const db = require("../utilites/db");
+const crud = require("../utilites/crud/crud");
+const joiValidator = require("joi");
 module.exports = class privileges {
-  constructor() {}
+  constructor(roleId, roleName) {
+    this.roleId = roleId;
+    this.roleName = roleName;
+  }
 
   static getRoles() {
     return db.execute(`select role_id , name from roles`);
   }
 
-  static getMyprivileges(roleId) {
-    return db.execute(
-      `
-    select roles.role_id, roles.name,permissions.permission_id,permissions.name 
-    from roles 
-      inner join permissions_roles on roles.role_id = permissions_roles.role_id
-      inner join permissions on permissions.permission_id = permissions_roles.permission_id
-      where roles.role_id = ?
-      ;`,
-      [roleId]
-    );
+  save() {
+    return db.execute(`insert into roles(role_id , name) values(?,?)`, [
+      this.roleId,
+      this.roleName
+    ]);
+  }
+
+  static deleteRole(roleId) {
+    return db.execute("delete from roles where role_id = ?", [roleId]);
+  }
+
+  static validateRole(data) {
+    const schema = joiValidator.object().keys({
+      roleName: joiValidator
+        .string()
+        .alphanum()
+        .min(1)
+        .max(100)
+        .required(),
+      roleId: joiValidator.number().required()
+    });
+    return joiValidator.validate(data, schema);
+  }
+
+  static deleteRoleValidator(data) {
+    const schema = joiValidator.object().keys({
+      roleId: joiValidator.number().required()
+    });
+    return joiValidator.validate(data, schema);
   }
 };

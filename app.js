@@ -1,10 +1,10 @@
 //dependencies
 const http = require("http");
-const express = require("express");
 const path = require("path");
-const bodyParser = require("body-parser");
 const cors = require("cors");
+const express = require("express");
 const db = require("./utilites/db");
+const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const app = express();
 
@@ -12,6 +12,7 @@ const app = express();
 
 const AuthRouter = require("./routers/AuthRouter");
 const RolesRouter = require("./routers/RolesRouter");
+const privilegesRouter = require("./routers/PrivilegesRouter");
 const server = http.createServer(app);
 //middleware
 app.use(cors());
@@ -22,4 +23,5 @@ app.use(bodyParser.json());
 
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
+app.use("/privileges", privilegesRouter);
 server.listen(process.env.PORT || 3000);
