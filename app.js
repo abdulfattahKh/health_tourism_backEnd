@@ -13,6 +13,8 @@ const app = express();
 const AuthRouter = require("./routers/AuthRouter");
 const RolesRouter = require("./routers/RolesRouter");
 const privilegesRouter = require("./routers/PrivilegesRouter");
+const locationRouter = require('./routers/locationRouter');
+const clinicsRouter = require('./routers/clinicsRouter');
 const server = http.createServer(app);
 //middleware
 app.use(cors());
@@ -24,4 +26,7 @@ app.use(bodyParser.json());
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
 app.use("/privileges", privilegesRouter);
+app.use('/location', locationRouter);
+//app.use('clinics', clinicsRouter);
+
 server.listen(process.env.PORT || 3000);

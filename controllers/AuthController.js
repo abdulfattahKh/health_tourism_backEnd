@@ -62,7 +62,7 @@ module.exports.signin = (req, res, next) => {
   if (req.body.password.length < 8) {
     return res.json({
       success: false,
-      message: "password must be more that 7 characters"
+      message: "password must be more than 7 characters"
     });
   }
 
