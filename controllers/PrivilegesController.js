@@ -68,7 +68,7 @@ module.exports.getMyprivileges = (req, res, next) => {
         return res.json({
           success: true,
           message: "you have no privileges",
-          privileges: []
+          data: []
         });
       }
     })
