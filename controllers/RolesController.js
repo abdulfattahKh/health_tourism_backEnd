@@ -1,6 +1,7 @@
 const rolesModel = require("../models/Roles.model");
 const crud = require("../utilites/crud/crud");
 const joiValidator = require("joi");
+
 module.exports.getRoles = (req, res, next) => {
   return rolesModel
     .getRoles()
