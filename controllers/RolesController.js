@@ -51,9 +51,8 @@ module.exports.addRole = (req, res, next) => {
 
 module.exports.deleteRole = (req, res, next) => {
   rolesModel
-    .deleteRoleValidator(req.body)
+    .deleteRoleValidator(req.params)
     .then(validateRes => {
-      console.log(validateRes);
       crud
         .delete("roles", {
           fieldName: "role_id",

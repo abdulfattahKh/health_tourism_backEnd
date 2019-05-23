@@ -123,8 +123,8 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
         });
       } else {
         connection.query(
-          "INSERT INTO roles (name) values(?)",
-          [roleName],
+          "INSERT INTO roles (name,description) values(?,?)",
+          [roleName,description],
           function(err, results) {
             if (err) {
               //Query Error (Rollback and release connection)
@@ -133,7 +133,7 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
                 return res.status(404).json({
                   success: false,
                   errorCode: 404,
-                  message: "adding role faild"
+                  message: err
                 });
               });
             } else {
@@ -144,7 +144,7 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
                     return res.status(404).json({
                       success: false,
                       errorCode: 404,
-                      message: "adding role faild"
+                      message: err
                     });
                   }
                 });
@@ -160,7 +160,7 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
                           return res.status(404).json({
                             success: false,
                             errorCode: 404,
-                            message: "adding privileges faild"
+                            message: err
                           });
                         });
                       }
@@ -174,7 +174,7 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
                       return res.status(404).json({
                         success: false,
                         errorCode: 404,
-                        message: "rolled back commit faild"
+                        message: err
                       });
                     });
                   } else {

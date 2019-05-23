@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/roles", roleController.getRoles);
 router.post("/addRole", check_auth, check_author(1), roleController.addRole);
-router.post(
-  "/deleteRole",
+router.delete(
+  "/deleteRole/:roleId",
   check_auth,
   check_author(1),
   roleController.deleteRole

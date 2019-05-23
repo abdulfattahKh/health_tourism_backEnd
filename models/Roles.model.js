@@ -7,7 +7,7 @@ module.exports = class privileges {
   }
 
   static getRoles() {
-    return db.execute(`select role_id , name from roles`);
+    return db.execute(`select role_id as 'id' , name from roles`);
   }
 
   save() {
