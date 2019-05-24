@@ -86,6 +86,13 @@ module.exports = class privileges {
     );
   }
 
+  static getPrivilegesByRoleId(roleId) {
+    return db.execute(
+      `select * from permissions inner join permissions_roles on permissions.permission_id = permissions_roles.permission_id where role_id = ?`,
+      [roleId]
+    );
+  }
+
   static getAllPrivileges() {
     return db.execute(`select * from permissions`);
   }
@@ -105,6 +112,11 @@ module.exports = class privileges {
     if (type == "delete") {
       schema = joiValidator.object().keys({
         privilegeId: joiValidator.number().required()
+      });
+    }
+    if (type == "getPrivilegesByRoleId") {
+      schema = joiValidator.object().keys({
+        roleId: joiValidator.number().required()
       });
     }
 

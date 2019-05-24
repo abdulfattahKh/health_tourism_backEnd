@@ -109,10 +109,8 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
   const description = req.body.description;
   const privileges = req.body.privileges;
   PrivilegesModel.addRoleWithPrivileges().getConnection((err, connection) => {
-    //.then(connection => {
     connection.beginTransaction(function(err) {
       if (err) {
-        //Transaction Error (Rollback and release connection)
         connection.rollback(function() {
           connection.release();
           return res.status(404).json({
@@ -124,10 +122,9 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
       } else {
         connection.query(
           "INSERT INTO roles (name,description) values(?,?)",
-          [roleName,description],
+          [roleName, description],
           function(err, results) {
             if (err) {
-              //Query Error (Rollback and release connection)
               connection.rollback(function() {
                 connection.release();
                 return res.status(404).json({
@@ -192,4 +189,33 @@ module.exports.addRoleWithPrivileges = (req, res, next) => {
       }
     });
   });
+};
+
+module.exports.getPrivilegesByRoleId = async (req, res, next) => {
+  try {
+    let validate = await PrivilegesModel.validate(
+      req.params,
+      "getPrivilegeByRoleId"
+    );
+    let result = await PrivilegesModel.getPrivilegesByRoleId(validate.roleId);
+    if (result[0].length == 0) {
+      return res.status(304).json({
+        errorCode: 304,
+        success: false,
+        message: "privileges were not fetched correctly"
+      });
+    }
+    return res.status(200).json({
+      errorCode: 200,
+      success: true,
+      message: "privileges ere fetched correctly",
+      data: result[0]
+    });
+  } catch (err) {
+    return res.status(404).json({
+      errorCode: 404,
+      success: false,
+      message: err
+    });
+  }
 };

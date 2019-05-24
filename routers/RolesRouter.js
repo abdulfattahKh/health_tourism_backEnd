@@ -5,6 +5,12 @@ const roleController = require("../controllers/RolesController");
 const router = express.Router();
 
 router.get("/roles", roleController.getRoles);
+router.get(
+  "/role/:roleId",
+  check_auth,
+  check_author(1),
+  roleController.getRoleById
+);
 router.post("/addRole", check_auth, check_author(1), roleController.addRole);
 router.delete(
   "/deleteRole/:roleId",

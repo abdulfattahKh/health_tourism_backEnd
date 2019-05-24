@@ -30,4 +30,11 @@ Router.get(
   check_author(1),
   PrivilegesController.getAllPrivileges
 );
+
+Router.get(
+  "/privilegeByRoleId/:roleId",
+  check_auth,
+  check_author(1),
+  PrivilegesController.getPrivilegesByRoleId
+);
 module.exports = Router;

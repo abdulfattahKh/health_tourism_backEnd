@@ -10,6 +10,10 @@ module.exports = class privileges {
     return db.execute(`select role_id as 'id' , name from roles`);
   }
 
+  static getRoleById(roleId) {
+    return db.execute(`select * from roles where role_id = ?`, [roleId]);
+  }
+
   save() {
     return db.execute(`insert into roles(name) values(?)`, [this.roleName]);
   }
@@ -18,22 +22,25 @@ module.exports = class privileges {
     return db.execute("delete from roles where role_id = ?", [roleId]);
   }
 
-  static validateRole(data) {
-    const schema = joiValidator.object().keys({
-      roleName: joiValidator
-        .string()
-        .alphanum()
-        .min(1)
-        .max(100)
-        .required()
-    });
-    return joiValidator.validate(data, schema);
-  }
+  static validate(data, type) {
+    let schema;
+    if (type == "add") {
+      schema = joiValidator.object().keys({
+        roleName: joiValidator
+          .string()
+          .alphanum()
+          .min(1)
+          .max(100)
+          .required()
+      });
+    }
 
-  static deleteRoleValidator(data) {
-    const schema = joiValidator.object().keys({
-      roleId: joiValidator.number().required()
-    });
+    if (type == "delete" || type == "get") {
+      schema = joiValidator.object().keys({
+        roleId: joiValidator.number().required()
+      });
+    }
+
     return joiValidator.validate(data, schema);
   }
 };

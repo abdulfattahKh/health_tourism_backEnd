@@ -20,10 +20,11 @@ module.exports.getRoles = (req, res, next) => {
     });
 };
 
+//out of service
 module.exports.addRole = (req, res, next) => {
   const data = req.body;
   rolesModel
-    .validateRole(data)
+    .validate(data, "add")
     .then(res => {
       let role = new rolesModel(data.roleName);
       return role.save();
@@ -51,7 +52,7 @@ module.exports.addRole = (req, res, next) => {
 
 module.exports.deleteRole = (req, res, next) => {
   rolesModel
-    .deleteRoleValidator(req.params)
+    .validate(req.params, "delete")
     .then(validateRes => {
       crud
         .delete("roles", {
@@ -85,4 +86,30 @@ module.exports.deleteRole = (req, res, next) => {
         err: err
       });
     });
+};
+
+module.exports.getRoleById = async (req, res, next) => {
+  try {
+    let validationRes = await rolesModel.validate(req.params, "get");
+    let result = await rolesModel.getRoleById(validationRes.roleId);
+    if (result[0].length == 0) {
+      return res.status(304).json({
+        errorCode: 304,
+        success: false,
+        message: "privileges were not fetched correctly"
+      });
+    }
+    return res.status(200).json({
+      errorCode: 200,
+      success: true,
+      message: "privileges ere fetched correctly",
+      data: result[0]
+    });
+  } catch (err) {
+    return res.status(404).json({
+      errorCode: 404,
+      success: false,
+      message: err
+    });
+  }
 };
