@@ -5,6 +5,7 @@ const PrivilegesController = require("../controllers/PrivilegesController");
 const Router = express.Router();
 
 Router.get("/myPrivileges", check_auth, PrivilegesController.getMyprivileges);
+
 Router.post(
   "/addPrivilege",
   check_auth,
