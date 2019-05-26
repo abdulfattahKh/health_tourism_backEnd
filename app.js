@@ -15,6 +15,7 @@ const RolesRouter = require("./routers/RolesRouter");
 const privilegesRouter = require("./routers/PrivilegesRouter");
 const locationRouter = require('./routers/locationRouter');
 const clinicsRouter = require('./routers/clinicsRouter');
+const travelAgent = require('./routers/travelAgencyRouter');
 const server = http.createServer(app);
 //middleware
 app.use(cors());
@@ -29,8 +30,6 @@ app.use("/privileges", privilegesRouter);
 app.use('/location', locationRouter);
 app.use('/clinics', clinicsRouter);
 
-
-
-
+app.use('/travelAgency',travelAgent );
 
 server.listen(process.env.PORT || 3000);
