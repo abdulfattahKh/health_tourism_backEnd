@@ -27,6 +27,10 @@ app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
 app.use("/privileges", privilegesRouter);
 app.use('/location', locationRouter);
-//app.use('clinics', clinicsRouter);
+app.use('/clinics', clinicsRouter);
+
+
+
+
 
 server.listen(process.env.PORT || 3000);

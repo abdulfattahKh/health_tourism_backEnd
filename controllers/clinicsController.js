@@ -11,7 +11,8 @@ exports.getClinicTypes = (req, res, next) => {
             }
             res.status(200).json({
                 success: true,
-                message: result[0]
+                message: 'the request was processed successfully.',
+                data: result[0]
             });
         })
         .catch(err => {
@@ -23,13 +24,28 @@ exports.getClinicTypes = (req, res, next) => {
 };
 
 
-exports.postAddClinic = (req, res, next) => {
-    const clinic = new clinicModel();
-    clinic.save()
-        .then(result => {
+exports.getClinicsStatus = (req, res, next) => {
 
+    clinicModel.getClinicsStatus()
+        .then(result => {
+            if (!result) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Data Not found'
+                });
+            }
+            res.status(200).json({
+                success: true,
+                message: 'the request was processed successfully.',
+                data: result[0]
+            });
         })
         .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Internal error server'
+            });
+        })
 
-        });
 };
+

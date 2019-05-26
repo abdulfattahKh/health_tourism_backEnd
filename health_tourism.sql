@@ -64,7 +64,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `health_tourism`.`clinics` (
   `id` INT(11) NOT NULL,
   `name` VARCHAR(255) NULL DEFAULT NULL,
-  `location` VARCHAR(255) NULL DEFAULT NULL,
+  `status` VARCHAR(255) NULL DEFAULT 'pending',
   `informations` VARCHAR(255) NULL DEFAULT NULL,
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -187,6 +187,16 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
+-- Table `health_tourism`.`specializations`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `health_tourism`.`specializations` (
+  `spec_id` INT NOT NULL,
+  `name` VARCHAR(225) NULL,
+  PRIMARY KEY (`spec_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `health_tourism`.`procedures`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `health_tourism`.`procedures` (
@@ -196,7 +206,14 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`procedures` (
   `end_price` VARCHAR(255) NULL DEFAULT NULL,
   `type` VARCHAR(255) NULL DEFAULT NULL,
   `expected_time` DATETIME NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
+  `specializations_spec_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_procedures_specializations1_idx` (`specializations_spec_id` ASC) VISIBLE,
+  CONSTRAINT `fk_procedures_specializations1`
+    FOREIGN KEY (`specializations_spec_id`)
+    REFERENCES `health_tourism`.`specializations` (`spec_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -232,13 +249,7 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`experinces` (
   `organization_name` VARCHAR(255) NOT NULL,
   `createdAt` DATETIME NOT NULL,
   `updatedAt` DATETIME NOT NULL,
-  `experincescol` VARCHAR(45) NOT NULL,
-  `doctor_id` INT(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_experinces_doctors1_idx` (`doctor_id` ASC) VISIBLE,
-  CONSTRAINT `fk_experinces_doctors1`
-    FOREIGN KEY (`doctor_id`)
-    REFERENCES `health_tourism`.`doctors` (`id`))
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -483,6 +494,52 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`locations` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `health_tourism`.`specializations_clinics`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `health_tourism`.`specializations_clinics` (
+  `specialization_id` INT NOT NULL,
+  `clinic_id` INT(11) NOT NULL,
+  PRIMARY KEY (`specialization_id`, `clinic_id`),
+  INDEX `fk_specializations_has_clinics_clinics1_idx` (`clinic_id` ASC) VISIBLE,
+  INDEX `fk_specializations_has_clinics_specializations1_idx` (`specialization_id` ASC) VISIBLE,
+  CONSTRAINT `fk_specializations_has_clinics_specializations1`
+    FOREIGN KEY (`specialization_id`)
+    REFERENCES `health_tourism`.`specializations` (`spec_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_specializations_has_clinics_clinics1`
+    FOREIGN KEY (`clinic_id`)
+    REFERENCES `health_tourism`.`clinics` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `health_tourism`.`experinces_doctors`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `health_tourism`.`experinces_doctors` (
+  `experince_id` INT(11) NOT NULL,
+  `doctor_id` INT(11) NOT NULL,
+  PRIMARY KEY (`experince_id`, `doctor_id`),
+  INDEX `fk_experinces_has_doctors_doctors1_idx` (`doctor_id` ASC) VISIBLE,
+  INDEX `fk_experinces_has_doctors_experinces1_idx` (`experince_id` ASC) VISIBLE,
+  CONSTRAINT `fk_experinces_has_doctors_experinces1`
+    FOREIGN KEY (`experince_id`)
+    REFERENCES `health_tourism`.`experinces` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_experinces_has_doctors_doctors1`
+    FOREIGN KEY (`doctor_id`)
+    REFERENCES `health_tourism`.`doctors` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
@@ -577,7 +634,7 @@ INSERT INTO `countries` (`country_id`, `country_name`, `country_code`) VALUES
 (75, 'غامبيا', 220),
 (76, 'جورجيا', 995),
 (77, 'ألمانيا', 49),
-(78 'غانا', 233),
+(78, 'غانا', 233),
 (79, 'جبل طارق', 350),
 (80, 'اليونان', 30),
 (81, 'غرينلاند', 299),
@@ -597,7 +654,7 @@ INSERT INTO `countries` (`country_id`, `country_name`, `country_code`) VALUES
 (95, 'الهند', 91),
 (96, 'إندونيسيا', 62),
 (97, 'إيران', 98),
-(98, 'Iالعراقraq', 964),
+(98, 'العراق', 964),
 (99, 'إيرلندا', 353),
 (100, 'إيطاليا', 39),
 (101, 'جامايكا', 1876),
@@ -732,24 +789,129 @@ INSERT INTO `countries` (`country_id`, `country_name`, `country_code`) VALUES
 (230, 'زيمبابوي', 263);
 
 
-
 /* adding all cities in syria */
+INSERT INTO `cities` (`city_id`, `city_name`, `city_code` ,`country_id`) VALUES
+(1, 'دمشق', '011', 201),
+(2, 'القنيطرة', '014', 201),
+(3, 'درعا', '015', 201),
+(4, 'السويداء', '016', 201),
+(5, 'حلب', '021', 201),
+(6, 'الرقة', '022', 201),
+(7, 'ادلب', '023', 201),
+(8, 'حمص', '031', 201),
+(9, 'حماه', '033', 201),
+(10, 'اللاذقية', '041', 201),
+(11, 'طرطوس', '043', 201),
+(12, 'دير الزور', '051', 201),
+(13, 'الحسكة', '052', 201),
+(14, 'القامشلي', '052', 201);
 
-INSERT INTO `states` (`city_id`, `city_name`, `city_code` ,`country_id`) VALUES
-(1, 'دمشق', '', 1),
-(1, 'ريف دمشق', '', 1),
-(1, 'حلب', '', 1),
-(1, 'حمص', '', 1),
-(1, 'اللاذقية', '', 1),
-(1, 'طرطوس', '', 1),
-(1, 'درعا', '', 1),
-(1, 'السويداء', '', 1),
-(1, 'القنيطرة', '', 1),
-(1, 'حماة', '', 1),
-(1, 'إدلب', '', 1),
-(1, 'الرقة', '', 1),
-(1, 'دير الزور', '', 1),
-(1, 'الحسكة', '', 1);
+
+/* adding all states in damascus */
+INSERT INTO `states` (`state_id`, `state_name`, `state_code`, `cities_city_id`) VALUES
+(1, 'العمارة', '', 1),
+(2, 'باب توما', '', 1),
+(3, 'القيمرية', '', 1),
+(4, 'الحميدية', '', 1),
+(5, 'الحريقة', '', 1),
+(6, 'شارع الأمين', '', 1),
+(7, 'مأذنة الشحم', '', 1),
+(8, 'الشاغور', '', 1),
+(9, 'ساروجة', '', 1),
+(10, 'العقيبة', '', 1),
+(11, 'شارع الثورة', '', 1),
+(12, 'شارع بغداد', '', 1),
+(13, 'القصاع', '', 1),
+(14, 'العدوي', '', 1),
+(15, 'القصور', '', 1),
+(16, 'شارع فارس خوري', '', 1),
+(17, 'القنوات', '', 1),
+(18, 'الحجاز', '', 1),
+(19, 'البرامكة', '', 1),
+(20, 'باب الجابية', '', 1),
+(21, 'السويقة', '', 1),
+(22, 'قبر عاتكة', '', 1),
+(23, 'الشويكة', '', 1),
+(24, 'المجتهد', '', 1),
+(25, 'باب السريجة', '', 1),
+(26, 'الفحامة', '', 1),
+(27, 'جوبر', '', 1),
+(28, 'الميدان', '', 1),
+(29, 'الزاهرة القديمة', '', 1),
+(30, 'الزاهرة الجديدة', '', 1),
+(31, 'الحقلة', '', 1),
+(32, 'الدقاق', '', 1),
+(33, 'القاعة', '', 1),
+(34, 'باب مصلى', '', 1),
+(35, 'باب شرقي', '', 1),
+(36, 'ابن عساكر', '', 1),
+(37, 'حي الزهور', '', 1),
+(38, 'التضامن', '', 1),
+(39, 'دف الشوك', '', 1),
+(40, 'القدم', '', 1),
+(41, 'السيدة عائشة', '', 1),
+(42, 'العسالي', '', 1),
+(43, 'كفرسوسة', '', 1),
+(44, 'الربوة', '', 1),
+(45, 'الشيخ سعد', '', 1),
+(46, 'فيلات غربية', '', 1),
+(47, 'فيلات شرقية', '', 1),
+(48, 'مزة 86', '', 1),
+(49, 'مزة جبل', '', 1),
+(50, 'دمر', '', 1),
+(51, 'برزة البلد', '', 1),
+(52, 'مساكن برزة', '', 1),
+(53, 'عش الورور', '', 1),
+(54, 'القابون', '', 1),
+(55, 'ركن الدين', '', 1),
+(56, 'الصالحية', '', 1),
+(57, 'الشيخ محي الدين', '', 1),
+(58, 'المزرعة', '', 1),
+(59, 'المهاجرين', '', 1),
+(60, 'أبو رمانة', '', 1),
+(61, 'المالكي', '', 1),
+(62, 'الروضة', '', 1),
+(63, 'اليرموك', '', 1);
+
+
+/* adding all specializations */
+INSERT INTO `specializations` (`spec_id`, `name`) VALUES
+(1, 'علاج الإدمان'),
+(2, 'عمليات التجميل الغير جراحية'),
+(3, 'جراحات البدانة'),
+(4, 'زراعة نخاع العظام'),
+(5, 'علاج السرطان'),
+(6, 'أمراض القلب'),
+(7, 'جراحات القلب'),
+(8, 'جراحات التجميل'),
+(9, 'العناية بالأسنان'),
+(10, 'الأمراض الجلدية'),
+(11, 'الغسيل الكلوي'),
+(12, 'الأذن و الأنف و الحنجرة'),
+(13, 'طب الطوارئ'),
+(14, 'طب الغدد الصم'),
+(15, 'أمراض العين و جراحتها'),
+(16, 'طب الأسرة'),
+(17, 'علاج العقم'),
+(18, 'أمراض الجهاز الهضمي'),
+(19, 'زراعة الشعر'),
+(20, 'أمراض الدم'),
+(21, 'أمراض الكلى'),
+(22, 'الفحوصات الطبية'),
+(23, 'الأمراض العصبية'),
+(24, 'جراحة المخ و الأعصاب'),
+(25, 'أمراض النساء و التوليد'),
+(26, 'جراحة العظام'),
+(27, 'طب الأطفال'),
+(28, 'الطب النفسي'),
+(29, 'أمراض الجهاز التنفسي'),
+(30, 'أمراض الروماتيزم'),
+(31, 'الطب الرياضي'),
+(32, 'العلاج بالخلايا الجذعية'),
+(33, 'جراحة المسالك البولية'),
+(34, 'جراحة الأوعية الدموية'),
+(35, 'المعالجة الفيزيائية');
+
 
 
 select * from roles;
@@ -757,5 +919,3 @@ select * from permissions;
 select * from permissions_roles;
 select * from users;
 select * from permissions_roles where role_id = 2 and permission_id = 1;
-
-
