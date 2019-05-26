@@ -19,12 +19,6 @@ Router.post(
   PrivilegesController.deletePrivilege
 );
 
-Router.post(
-  "/addRoleWithPrivileges",
-  check_auth,
-  check_author(1),
-  PrivilegesController.addRoleWithPrivileges
-);
 Router.get(
   "/getAllPrivileges",
   check_auth,
