@@ -11,6 +11,14 @@ module.exports = class privileges {
       this.privilegeName
     ]);
   }
+
+  static addPrivilegeRelatedToRole(roleId, permissionId) {
+    return db.execute(
+      `insert into permissions_roles(role_id,permission_id) values(?,?)`,
+      [roleId, permissionId]
+    );
+  }
+
   static addRoleWithPrivileges() {
     return pool;
   }
@@ -97,24 +105,32 @@ module.exports = class privileges {
     return db.execute(`select * from permissions`);
   }
 
+  static deletePrivilegesByRoleId(roleId) {
+    console.log(roleId);
+    return db.execute(`delete from permissions_roles where role_id = ?`, [
+      roleId
+    ]);
+  }
+
   // static deletePervilege(privilegeId) {
   //   return db.execute("delete from roles where role_id = ?", [privilegeId]);
   // }
 
   static validate(data, type) {
     let schema;
-    if (type == "add") {
+    if (type == "name") {
       schema = joiValidator.object().keys({
         privilegeName: joiValidator.string().required()
       });
     }
 
-    if (type == "delete") {
+    if (type == "id") {
       schema = joiValidator.object().keys({
         privilegeId: joiValidator.number().required()
       });
     }
-    if (type == "getPrivilegesByRoleId") {
+
+    if (type == "roleId") {
       schema = joiValidator.object().keys({
         roleId: joiValidator.number().required()
       });
