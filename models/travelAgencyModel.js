@@ -8,7 +8,8 @@ module.exports = class TravelAgency {
             this.city = Travel.city,
             this.state = Travel.state,
             this.map = Travel.map,
-            this.userId = Travel.userId
+            this.userId = Travel.userId,
+            this.status = Travel.status
     }
 
     setId(id) {
@@ -66,11 +67,11 @@ module.exports = class TravelAgency {
     }
 
     static changeStatus(id) {
-        return db.execute(`UPDATE travel_agency SET status = ? WHERE id = ?`, 
-        [   
-            'accepted',
-            id
-        ]);
+        return db.execute(`UPDATE travel_agency SET status = ? WHERE id = ?`,
+            [
+                'accepted',
+                id
+            ]);
 
     }
 
@@ -79,7 +80,7 @@ module.exports = class TravelAgency {
     }
 
     static getAllTravleByStatus(stat) {
-        return db.execute(`select * from travel_agency where status = ?`,[stat]);
+        return db.execute(`select * from travel_agency where status = ?`, [stat]);
     }
 }
 

@@ -9,7 +9,7 @@ const check_auth = require("./middleWares/check_authentication");
 const app = express();
 
 //router
-
+    
 const AuthRouter = require("./routers/AuthRouter");
 const RolesRouter = require("./routers/RolesRouter");
 const privilegesRouter = require("./routers/PrivilegesRouter");
@@ -17,6 +17,7 @@ const locationRouter = require('./routers/locationRouter');
 const clinicsRouter = require('./routers/clinicsRouter');
 const travelAgent = require('./routers/travelAgencyRouter');
 const server = http.createServer(app);
+
 //middleware
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));

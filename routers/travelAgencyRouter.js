@@ -7,19 +7,17 @@ const router = express.Router();
 
 
 
-router.post('/:userId',check_auth,check_author(3), travelAgencyController.addTravel)
+router.post('/:userId',travelAgencyController.addTravel)
 
-router.put('/:id',check_auth,check_author(3),travelAgencyController.updateTravel)
+router.put('/:id',travelAgencyController.updateTravel)
 
-router.delete('/:id',check_auth,check_author(3),travelAgencyController.deleteTravel)
+router.delete('/:id',travelAgencyController.deleteTravel)
 
 router.put('/changeStatus/:id',check_auth,check_author(3),travelAgencyController.changeStatus)
 
 router.get('/',check_auth,check_author(3),travelAgencyController.getAllTravel)
 
 router.get('/status/:stat',check_auth,check_author(3),travelAgencyController.getAllTravelByStatus)
-
-
 
 
 
