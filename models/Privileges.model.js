@@ -114,6 +114,10 @@ module.exports = class privileges {
     ]);
   }
 
+  static editPrivilege(privilegeId) {
+    // return db.execute('update permissions ')
+  }
+
   // static deletePervilege(privilegeId) {
   //   return db.execute("delete from roles where role_id = ?", [privilegeId]);
   // }

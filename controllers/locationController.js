@@ -6,20 +6,21 @@ exports.getAllCountries = (req, res, next) => {
         .then(result => {
             console.log(result);
             if (!result) {
-                return res.json({
-                    status: 404,
-                    data: 'Data Not found'
+                return res.status(404).json({
+                    success: false,
+                    message: 'Data Not found'
                 });
             }
-            res.json({
-                status: 200,
+            res.status(200).json({
+                success: true,
+                message: 'the request was processed successfully.',
                 data: result[0]
             });
         })
         .catch(err => {
-            res.json({
-                status: 500,
-                data: 'Internal error server'
+            res.status(500).json({
+                success: false,
+                message: 'Internal error server'
             })
         })
 };
@@ -27,52 +28,54 @@ exports.getAllCountries = (req, res, next) => {
 
 // tested
 exports.getAllCitiesByCountryId = (req, res, next) => {
-    const countryId = req.query.countryId;
+    const countryId = req.params.countryId;
     console.log('omar' + countryId);
     locationModel.getAllCitiesByCountryId(countryId)
         .then(result => {
             if (!result) {
-                return res.json({
-                    status: 404,
-                    data: 'Data Not found'
+                return res.status(404).json({
+                    success: false,
+                    message: 'Data Not found'
                 });
             }
-            res.json({
-                status: 200,
+            res.status(200).json({
+                success: true,
+                message: 'the request was processed successfully.',
                 data: result[0]
             });
         })
         .catch(err => {
-            res.json({
-                status: 500,
-                data: 'Internal error server'
+            res.status(500).json({
+                success: false,
+                message: 'Internal error server'
             });
         });
 };
 
 // tested
 exports.getAllStatesByCityId = (req, res, next) => {
-    const countryId = req.query.countryId;
-    const cityId = req.query.cityId;
+    const countryId = req.params.countryId;
+    const cityId = req.params.cityId;
     console.log(countryId, cityId);
     locationModel.getAllStatesByCityId(countryId, cityId)
         .then(result => {
             if (!result) {
-                return res.json({
-                    status: 404,
-                    data: 'Data Not found'
+                return res.status(404).json({
+                    success: false,
+                    message: 'Data Not found'
                 });
             }
-            res.json({
-                status: 200,
+            res.status(200).json({
+                success: true,
+                message: 'the request was processed successfully.',
                 data: result[0]
             });
         })
         .catch(err => {
             console.log(err);
-            res.json({
-                status: 500,
-                data: 'Internal error server'
+            res.status(500).json({
+                success: false,
+                message: 'Internal error server'
             });
         });
 };

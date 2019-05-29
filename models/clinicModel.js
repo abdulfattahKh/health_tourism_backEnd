@@ -12,13 +12,18 @@ module.exports = class Clinic{
         this.clinicMap = clinicMap;
     }
 
-    // addClinic
-    save() {
-        return execute(``, []);
-    }
 
     static getClinicTypes() {
-        return db.execute(``);
+        return db.execute(`select * from specializations;`);
+    }
+
+    
+    static getClinicsStatus() {
+        return db.execute(`select * from clinics 
+        inner join clinics_doctors on clinics.id=clinics_doctors.clinic_id
+        inner join doctors on clinics_doctors.doctor_id=doctors.id
+        inner join clinics_procedures on clinics_procedures.clinic_id=clinics.id
+        inner join procedures on clinics_procedures.procedure_id=procedures.id;`);
     }
 }
 
