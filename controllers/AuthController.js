@@ -116,6 +116,8 @@ module.exports.signin = (req, res, next) => {
     });
 };
 
+module.exports.update = (req, res, next) => {};
+
 module.exports.checkEmail = (req, res, next) => {
   if (!req.body.email || req.body.email === "") {
     return res.json({
@@ -140,6 +142,49 @@ module.exports.checkEmail = (req, res, next) => {
     .catch(err => {
       console.log(err);
     });
+};
+
+module.exports.getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.getAllUsers();
+    if (users[0].length == 0) {
+      return res.status(302).json({
+        success: true,
+        message: "there are no data",
+        errorCode: 302
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "users info was fetched correctly",
+      errorCode: 200,
+      data: users[0]
+    });
+  } catch (err) {
+    return res.status(501).json({
+      success: false,
+      errorCode: 501,
+      message: err
+    });
+  }
+};
+
+module.exports.getUserById = async (req, res, next) => {
+  try {
+    const user = await User.getUserById(req.params.id);
+    return res.status(200).json({
+      success: true,
+      message: "user info was fethced correctly",
+      errorCode: 200,
+      data: user[0]
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err,
+      errorCode: 500
+    });
+  }
 };
 
 module.exports.getUserInformation = (req, res, next) => {
@@ -178,3 +223,71 @@ module.exports.getUserInformation = (req, res, next) => {
     });
 };
 
+module.exports.deleteUser = async (req, res, next) => {
+  // try {
+  //   const deleteRes = await User.deleteUser(req.params.id);
+  //   console.log(deleteRes);
+  //   if (deleteRes[0].affectedRows == 0) {
+  //     return res.status(204).json({
+  //       success: false,
+  //       message: "nothing was deleted",
+  //       errorCode: 204
+  //     });
+  //   }
+  //   return res.status(200).json({
+  //     success: true,
+  //     message: "user was deleted successfuly",
+  //     errorCode: 200
+  //   });
+  // } catch (err) {
+  //   return res.status(500).json({
+  //     success: false,
+  //     errorCode: 500,
+  //     message: err
+  //   });
+  // }
+  try {
+    let validate = await User.validator(["id"], req.params);
+
+    let deleteRes = deleteUser(req.params.id)
+      .then(result => {
+        if (result) {
+          res.status(200).json({
+            success: true,
+            message: "user was deleted successfuly",
+            statusCode: 200
+          });
+        }
+      })
+      .catch(err => {
+        return res.status(401).json({
+          success: false,
+          message: err,
+          statusCode: 401
+        });
+      });
+  } catch (err) {
+    console.log(err);
+    return res.status(505).json({
+      success: false,
+      message: err,
+      statusCode: 500
+    });
+  }
+};
+
+let deleteUser = userId => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let deleteRes = await User.deleteUser(userId);
+      if (deleteRes[0].affectedRows > 0) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    } catch (err) {
+      console.log(err);
+      reject("504");
+    }
+  });
+};

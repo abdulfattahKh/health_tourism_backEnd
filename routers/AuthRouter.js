@@ -12,12 +12,25 @@ const userController = require("../controllers/AuthController");
 router.post("/signup", userController.signup);
 router.post("/signin", userController.signin);
 router.get(
-  "/userInformation",
+  "/userById/:id",
   check_auth,
-  hasRole(1),
-  userController.getUserInformation
+  check_author(1),
+  userController.getUserById
 );
 
+router.delete(
+  "/delete/:id",
+  check_auth,
+  check_author(1),
+  userController.deleteUser
+);
+router.get("/allUsers", check_auth, userController.getAllUsers);
+// router.get(
+//   "/userInformation",
+//   check_auth,
+//   hasRole(1),
+//   userController.getUserInformation
+// );
 router.post("/checkEmail", userController.checkEmail);
 
 module.exports = router;

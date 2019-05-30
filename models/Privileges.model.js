@@ -1,6 +1,7 @@
 const db = require("../utilites/db");
 const pool = require("../utilites/dbPool.js");
 const joiValidator = require("joi");
+
 module.exports = class privileges {
   constructor(privilegeName) {
     this.privilegeName = privilegeName;
@@ -97,7 +98,8 @@ module.exports = class privileges {
 
   static getPrivilegesByRoleId(roleId) {
     return db.execute(
-      `select * from permissions inner join permissions_roles on permissions.permission_id = permissions_roles.permission_id where role_id = ?`,
+      `select * from permissions inner join permissions_roles on permissions.permission_id = 
+      permissions_roles.permission_id where role_id = ?`,
       [roleId]
     );
   }
@@ -113,12 +115,17 @@ module.exports = class privileges {
     ]);
   }
 
+  static editPrivilege(privilegeId) {
+    // return db.execute('update permissions ')
+  }
+
   // static deletePervilege(privilegeId) {
   //   return db.execute("delete from roles where role_id = ?", [privilegeId]);
   // }
 
   static validate(data, type) {
     let schema;
+    
     if (type == "name") {
       schema = joiValidator.object().keys({
         privilegeName: joiValidator.string().required()
