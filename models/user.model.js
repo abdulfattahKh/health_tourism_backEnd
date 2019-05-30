@@ -27,6 +27,7 @@ module.exports = class User {
             ]
         );
     }
+
     static validation(values) {
         //first name
         if (!values.firstName || values.firstName === "") {

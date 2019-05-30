@@ -15,3 +15,5 @@ module.exports = function HasRole(role) {
     }
   };
 };
+
+

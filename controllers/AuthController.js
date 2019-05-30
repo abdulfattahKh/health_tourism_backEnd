@@ -177,3 +177,4 @@ module.exports.getUserInformation = (req, res, next) => {
       });
     });
 };
+

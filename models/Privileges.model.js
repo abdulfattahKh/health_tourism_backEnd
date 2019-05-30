@@ -22,6 +22,7 @@ module.exports = class privileges {
   static addRoleWithPrivileges() {
     return pool;
   }
+
   // static addRoleWithPrivileges(roleName, description, privileges) {
   //   pool.getConnection(function(err, connection) {
   //     connection.beginTransaction(function(err) {
