@@ -10,14 +10,20 @@ router.post("/signin", userController.signin);
 router.get(
   "/userById/:id",
   check_auth,
-  check_author(1),
+  check_author([1]),
   userController.getUserById
 );
 router.delete(
   "/delete/:id",
   check_auth,
-  check_author(1),
+  check_author([1]),
   userController.deleteUser
+);
+router.put(
+  "/updateValues",
+  check_auth,
+  check_author([1, 72]),
+  userController.updateValues
 );
 router.get("/allUsers", check_auth, userController.getAllUsers);
 // router.get(

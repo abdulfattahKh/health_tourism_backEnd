@@ -1,5 +1,16 @@
 const db = require("../utilites/db");
 const validator = require("joi");
+
+userInfo = [
+  "firstName",
+  "lastName",
+  "email",
+  "password",
+  "mobileNumber",
+  "gender",
+  "birthday",
+  "roleId"
+];
 module.exports = class User {
   constructor(values) {
     this.firstName = values.firstName;
@@ -103,8 +114,7 @@ module.exports = class User {
   static getUserById(userId) {
     return db.execute(
       `
-    select first_name as 'firstName' , last_name as 'lastName',email,gender,birthday,mobile_number as 'mobileNumber' ,roles.name as 'roleName' ,users.id from users
-    inner join roles on users.role_id = roles.role_id 
+    select first_name  , last_name ,email,gender,birthday,mobile_number ,users.role_id ,users.id from users
     where users.id = ? `,
       [userId]
     );
@@ -114,12 +124,38 @@ module.exports = class User {
     return db.execute("delete from users where id = ?", [userId]);
   }
 
-  static validator(types = [], data) {
+  static validator(data, types = []) {
+    if (types.length == 0) {
+      Object.keys(data).forEach((key, index) => {
+        types[index] = key;
+      });
+    }
     let schema = validator.object().keys({});
     types.forEach(item => {
       if (item == "id") {
         schema = schema.keys({
           id: validator.number().required()
+        });
+      }
+      if (item == "fieldName") {
+        schema = schema.keys({
+          fieldName: validator
+            .string()
+            .min(3)
+            .required()
+        });
+      }
+      if (item == "tableName") {
+        schema = schema.keys({
+          tableName: validator
+            .string()
+            .min(1)
+            .required()
+        });
+      }
+      if (item == "value") {
+        schema = schema.keys({
+          value: validator.any().required()
         });
       }
       if (item == "firstName") {
@@ -150,7 +186,7 @@ module.exports = class User {
       }
       if (item == "password") {
         schema = schema.keys({
-          confirmPassword: validator
+          password: validator
             .string()
             .alphanum()
             .required()
@@ -174,15 +210,16 @@ module.exports = class User {
       }
       if (item == "birthday") {
         schema = schema.keys({
-          firstName: validator.date().required()
+          birthday: validator.date().required()
         });
       }
       if (item == "roleId") {
         schema = schema.keys({
-          firstName: validator.number().required()
+          roleId: validator.number().required()
         });
       }
     });
+
     return validator.validate(data, schema);
   }
 };

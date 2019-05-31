@@ -5,22 +5,46 @@ const roleController = require("../controllers/RolesController");
 const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
+router.post(
+  "/:userId",
+  check_auth,
+  check_author([3]),
+  travelAgencyController.addTravel
+);
 
+router.put(
+  "/:id",
+  check_auth,
+  check_author([3]),
+  travelAgencyController.updateTravel
+);
 
-router.post('/:userId',check_auth,check_author(3), travelAgencyController.addTravel)
+router.delete(
+  "/:id",
+  check_auth,
+  check_author([3]),
+  travelAgencyController.deleteTravel
+);
 
-router.put('/:id',check_auth,check_author(3),travelAgencyController.updateTravel)
+router.put(
+  "/changeStatus/:id",
+  check_auth,
+  check_author([3]),
+  travelAgencyController.changeStatus
+);
 
-router.delete('/:id',check_auth,check_author(3),travelAgencyController.deleteTravel)
+router.get(
+  "/",
+  check_auth,
+  check_author([3]),
+  travelAgencyController.getAllTravel
+);
 
-router.put('/changeStatus/:id',check_auth,check_author(3),travelAgencyController.changeStatus)
-
-router.get('/',check_auth,check_author(3),travelAgencyController.getAllTravel)
-
-router.get('/status/:stat',check_auth,check_author(3),travelAgencyController.getAllTravelByStatus)
-
-
-
-
+router.get(
+  "/status/:stat",
+  check_auth,
+  check_author([3]),
+  travelAgencyController.getAllTravelByStatus
+);
 
 module.exports = router;

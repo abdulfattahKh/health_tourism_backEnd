@@ -12,7 +12,10 @@ module.exports = class privileges {
   }
 
   static getRoleById(roleId) {
-    return db.execute(`select * from roles where role_id = ?`, [roleId]);
+    return db.execute(
+      `select role_id as "id" , name ,description from roles where role_id = ?`,
+      [roleId]
+    );
   }
 
   save() {
