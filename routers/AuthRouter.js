@@ -1,10 +1,14 @@
 const express = require("express");
 const db = require("../utilites/db");
 const check_auth = require("../middleWares/check_authentication");
-const check_author = require("../middleWares/check_authorization");
+const check_author = require('../middlewares/check_authorization');
+
+const hasRole = require("../middleWares/check_authorization");
 const router = express.Router();
 
 const userController = require("../controllers/AuthController");
+
+
 router.post("/signup", userController.signup);
 router.post("/signin", userController.signin);
 router.get(
@@ -13,6 +17,7 @@ router.get(
   check_author([1]),
   userController.getUserById
 );
+
 router.delete(
   "/delete/:id",
   check_auth,
@@ -33,4 +38,5 @@ router.get("/allUsers", check_auth, userController.getAllUsers);
 //   userController.getUserInformation
 // );
 router.post("/checkEmail", userController.checkEmail);
+
 module.exports = router;

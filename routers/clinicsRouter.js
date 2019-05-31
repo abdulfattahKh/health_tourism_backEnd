@@ -19,4 +19,11 @@ router.get(
   clinicsController.getClinicsStatus
 );
 
+router.post(
+  "/addClinic",
+  check_auth,
+  check_author([2]),
+  clinicsController.queryAddClinic
+);
+
 module.exports = router;

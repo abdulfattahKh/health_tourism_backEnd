@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     return res.status(401).json({
       success: false,
-      message: "you have no auth to requrest this http"
+      message: "you have no auth to request this http"
     });
   }
 };

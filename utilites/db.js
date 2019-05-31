@@ -6,4 +6,5 @@ const pool = mysql.createConnection({
   database: "health_toursim",
   password: "abdulfattah0952432706"
 });
+
 module.exports = pool.promise();
