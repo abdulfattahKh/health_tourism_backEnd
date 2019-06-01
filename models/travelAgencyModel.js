@@ -47,7 +47,8 @@ module.exports = class TravelAgency {
         address = ? ,
         map =? ,
         users_Id =? ,
-        status = ? 
+        status = ? ,
+        location_id = ?
         WHERE id = ?`
             , [
                 this.name,
@@ -55,8 +56,8 @@ module.exports = class TravelAgency {
                 this.map,
                 this.userId,
                 this.status,
+                this.locationId,
                 this.id
-                
             ]);
     }
 
@@ -149,18 +150,18 @@ module.exports = class TravelAgency {
                     }
                     else {
                         // location not fuond and i should insert this location
-                            connection.query(`INSERT INTO locations (country_id,city_id,state_id)
+                        connection.query(`INSERT INTO locations (country_id,city_id,state_id)
                             VALUES(?,?,?)`
-                                , [
-                                    travel.country,
-                                    travel.city,
-                                    travel.state
-                                ], function (error, results, fields) {
+                            , [
+                                travel.country,
+                                travel.city,
+                                travel.state
+                            ], function (error, results, fields) {
                                 if (error) return res.json({
                                     success: false,
                                     message: err.message
                                 });
-                                
+
 
                                 connection.query(`insert into travel_agency 
                                                 (name,address,map,users_id,location_id)
