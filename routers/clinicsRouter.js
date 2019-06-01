@@ -1,15 +1,29 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const check_auth = require('../middleWares/check_authentication');
-const check_author = require('../middlewares/check_authorization');
+const check_auth = require("../middleWares/check_authentication");
+const check_author = require("../middlewares/check_authorization");
 
-
-const clinicsController = require('../controllers/clinicsController');
-router.get('/clinicTypes', check_auth, check_author(2), clinicsController.getClinicTypes);
+const clinicsController = require("../controllers/clinicsController");
+router.get(
+  "/clinicTypes",
+  check_auth,
+  check_author([2]),
+  clinicsController.getClinicTypes
+);
 
 // check for admin authentication
-router.get('/clinicsStatus', check_auth, check_author(1), clinicsController.getClinicsStatus);
+router.get(
+  "/clinicsStatus",
+  check_auth,
+  check_author([1]),
+  clinicsController.getClinicsStatus
+);
 
-
+router.post(
+  "/addClinic",
+  check_auth,
+  check_author([2]),
+  clinicsController.queryAddClinic
+);
 
 module.exports = router;

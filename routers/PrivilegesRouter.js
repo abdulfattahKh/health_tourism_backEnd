@@ -9,27 +9,27 @@ Router.get("/myPrivileges", check_auth, PrivilegesController.getMyprivileges);
 Router.post(
   "/addPrivilege",
   check_auth,
-  check_author(1),
+  check_author([1]),
   PrivilegesController.addPrivilege
 );
 Router.post(
   "/deletePrivilege",
   check_auth,
-  check_author(1),
+  check_author([1]),
   PrivilegesController.deletePrivilege
 );
 
 Router.get(
   "/getAllPrivileges",
   check_auth,
-  check_author(1),
+  check_author([1]),
   PrivilegesController.getAllPrivileges
 );
 
 Router.get(
   "/privilegeByRoleId/:roleId",
   check_auth,
-  check_author(1),
+  check_author([1]),
   PrivilegesController.getPrivilegesByRoleId
 );
 module.exports = Router;

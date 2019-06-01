@@ -1,17 +1,17 @@
 const jwt = require("jsonwebtoken");
-module.exports = function HasRole(role) {
+module.exports = function HasRole(roles = []) {
   return (req, res, next) => {
-    try {
-      const token = req.headers.authorization;
-      const decodeToken = jwt.verify(token, "this is a health tourism website");
-      if (decodeToken.roleId == role) {
-        next();
-      }
-    } catch (err) {
+    let author = roles.some(role => role == req.userInformation.roleId);
+    if (author) {
+      next();
+    } else {
       return res.status(401).json({
         success: false,
-        message: "you have no auth to requrest this http"
+        statusCode: 401,
+        message: "you are not autharized"
       });
     }
   };
 };
+
+

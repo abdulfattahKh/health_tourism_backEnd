@@ -1,5 +1,7 @@
 const db = require("../utilites/db");
 const User = require("../models/user.model");
+const Role = require("../models/Roles.model");
+const Crud = require("../controllers/crudController");
 const bcrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const check_auth = require("../middleWares/check_authentication");
@@ -172,6 +174,8 @@ module.exports.getAllUsers = async (req, res, next) => {
 module.exports.getUserById = async (req, res, next) => {
   try {
     const user = await User.getUserById(req.params.id);
+    const role = await Role.getRoleById(1);
+    user[0][0]["role_id"] = role[0][0];
     return res.status(200).json({
       success: true,
       message: "user info was fethced correctly",
@@ -224,32 +228,9 @@ module.exports.getUserInformation = (req, res, next) => {
 };
 
 module.exports.deleteUser = async (req, res, next) => {
-  // try {
-  //   const deleteRes = await User.deleteUser(req.params.id);
-  //   console.log(deleteRes);
-  //   if (deleteRes[0].affectedRows == 0) {
-  //     return res.status(204).json({
-  //       success: false,
-  //       message: "nothing was deleted",
-  //       errorCode: 204
-  //     });
-  //   }
-  //   return res.status(200).json({
-  //     success: true,
-  //     message: "user was deleted successfuly",
-  //     errorCode: 200
-  //   });
-  // } catch (err) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     errorCode: 500,
-  //     message: err
-  //   });
-  // }
   try {
-    let validate = await User.validator(["id"], req.params);
-
-    let deleteRes = deleteUser(req.params.id)
+    let validate = await User.validator(req.params, ["id"]);
+    let deleteRes = this.deleteUser(req.params.id)
       .then(result => {
         if (result) {
           res.status(200).json({
@@ -276,7 +257,29 @@ module.exports.deleteUser = async (req, res, next) => {
   }
 };
 
-let deleteUser = userId => {
+module.exports.updateValues = async (req, res, next) => {
+  try {
+    let vaidate = await User.validator(req.body);
+    const updateRes = await Crud.updateValues(
+      req.body.tableName,
+      req.body.fieldName,
+      req.body.id,
+      req.body.value
+    );
+    return res.status(updateRes.statusCode).json({
+      ...updateRes,
+      message: "it was updated successfuly"
+    });
+  } catch (err) {
+    return res.status(500).json({
+      ...err,
+      message: "error on server"
+    });
+  }
+};
+
+//helper functions
+deleteUser = userId => {
   return new Promise(async (resolve, reject) => {
     try {
       let deleteRes = await User.deleteUser(userId);
