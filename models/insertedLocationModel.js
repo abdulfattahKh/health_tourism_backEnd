@@ -7,19 +7,17 @@ module.exports = class insertLocation {
         this.country = location.country;
         this.state = location.state;
         this.id = location.id;
-        this.type = location.type;
     }
 
     save() {
         return db.execute(`
         INSERT INTO locations
-        VALUES(?,?,?,?,?)`
+        VALUES(?,?,?,?)`
             , [
                 this.country,
                 this.city,
                 this.state,
-                this.id,
-                this.type
+                this.id
             ]);
     }
 
