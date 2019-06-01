@@ -84,7 +84,10 @@ module.exports = class TravelAgency {
     }
 
     static getAllTravleById(id) {
-        return db.execute(`select * from travel_agency where id = ?`, [id]);
+        return db.execute(`SELECT t.name, t.address,t.map ,t.users_id ,l.country_id ,l.state_id ,l.city_id 
+                           FROM travel_agency t inner join locations l
+                           on t.location_id = l.location_id
+                           where id = ?`, [id]);
     }
 
 

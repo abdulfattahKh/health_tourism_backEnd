@@ -4,11 +4,7 @@ const path = require("path");
 const cors = require("cors");
 const express = require("express");
 const db = require("./utilites/db");
-<<<<<<< HEAD
 const connection = require('./utilites/db2')
-=======
-const dbPool = require('./utilites/dbPool');
->>>>>>> 4abe738360e8ef1719c84952ac997a2b86595bed
 const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const app = express();
@@ -31,10 +27,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4abe738360e8ef1719c84952ac997a2b86595bed
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
 app.use("/privileges", privilegesRouter);
