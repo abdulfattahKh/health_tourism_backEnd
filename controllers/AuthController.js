@@ -259,7 +259,12 @@ module.exports.deleteUser = async (req, res, next) => {
 
 module.exports.updateValues = async (req, res, next) => {
   try {
-    let vaidate = await User.validator(req.body);
+    let vaidate = await User.validator(req.body, [
+      "tableName",
+      "value",
+      "fieldName",
+      "id"
+    ]);
     const updateRes = await Crud.updateValues(
       req.body.tableName,
       req.body.fieldName,

@@ -1,10 +1,8 @@
 const db = require("../utilites/db");
 const joi = require("joi");
-module.exports.updateValues = (tableName, fieldName, id, value) => {
-  console.log(id);
-  console.log(value);
+module.exports.updateValues = (tableName, fieldName, columnName, id, value) => {
   return db.execute(
-    `update ${tableName} set ${fieldName} = ? where id= ${id}`,
+    `update ${tableName} set ${fieldName} = ? where ${columnName}= ${id}`,
     [value]
   );
 };
