@@ -1,8 +1,8 @@
 const rolesModel = require("../models/Roles.model");
 const privilegeModal = require("../models/Privileges.model");
 const crud = require("../utilites/crud/crud");
-const pool = require("../utilites/dbPool");
-
+const connection = require("../utilites/db2");
+const Promise = require("bluebird");
 module.exports.getRoles = (req, res, next) => {
   return rolesModel
     .getRoles()
@@ -207,79 +207,49 @@ module.exports.editRole = async (req, res, next) => {
   try {
     //let validate = await rolesModel.validate(req.body, "id,name,value");
     if (req.body.name == "privileges") {
-      pool.getConnection((err, connection) => {
+      connection.beginTransaction(err => {
         if (err) {
           return res.status(500).json({
             success: false,
-            message: err,
-            errorCode: 500
+            message: err
           });
         }
-        connection.beginTransaction(err => {
-          if (err) {
-            connection.rollback(err => {
-              connection.release();
-              return res.status(500).json({
-                success: false,
-                message: err,
-                errorCode: 500
+        connection.query(
+          `DELETE FROM permissions_roles 
+          where role_id = ?`,
+          [req.body.roleId],
+          (err, result) => {
+            if (err) {
+              return connection.rollback(err => {
+                return res.status(500).json({
+                  success: false,
+                  message: err
+                });
               });
+            }
+            if (req.body.value.length == 0) {
+              console.log("aaa");
+              return res.json({
+                success: true,
+                message: "empty privileges"
+              });
+            }
+            Promise.all(addMultiplePrivileges(req.body.roleId, req.body.value))
+              .then(insertingRes => {
+                return res.status(200).json(insertingRes[0]);
+              })
+              .catch(err => {
+                return connection.rollback(err => {
+                  return res.status(500).json({ success: false, message: err });
+                });
+              });
+          }
+        );
+        connection.commit(err => {
+          if (err) {
+            return connection.rollback(err => {
+              return res.status(500).json({ success: false, message: err });
             });
-          } else {
-            connection.query(
-              `delete from permissions_roles where role_id = ?`,
-              [req.body.roleId],
-              (err, del_res) => {
-                if (err) {
-                  connection.rollback(err => {
-                    connection.release();
-                    return res.status(500).json({
-                      success: false,
-                      message: err,
-                      errorCode: 500
-                    });
-                  });
-                } else {
-                  req.body.value.forEach(privilege => {
-                    connection.query(
-                      `insert into permissions_roles(role_id,permission_id) values(?,?)`,
-                      [req.body.roleId, privilege["permission_id"]],
-                      (err, insertRes) => {
-                        if (err) {
-                          connection.rollback(err => {
-                            connection.release();
-                            return res.status(500).json({
-                              success: false,
-                              message: err,
-                              errorCode: 500
-                            });
-                          });
-                        }
-                      }
-                    );
-                  });
-                  connection.commit(err => {
-                    if (err) {
-                      connection.rollback(err => {
-                        connection.release();
-                        return res.status(500).json({
-                          success: false,
-                          message: err,
-                          errorCode: 500
-                        });
-                      });
-                    } else {
-                      connection.release();
-                      return res.status(200).json({
-                        success: true,
-                        message: "was updated successfuly",
-                        errorCode: 200
-                      });
-                    }
-                  });
-                }
-              }
-            );
           }
         });
       });
@@ -310,3 +280,22 @@ module.exports.editRole = async (req, res, next) => {
     });
   }
 };
+
+function addMultiplePrivileges(roleId, values = []) {
+  return (PromiseArray = values.map(value => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `INSERT INTO permissions_roles(permission_id,role_id) values(?,?)`,
+        [value["id"], roleId],
+        (err, RES) => {
+          if (err) {
+            console.log({ success: false, message: err });
+            reject(err);
+          } else {
+            resolve({ success: true, message: "inserting was done correctly" });
+          }
+        }
+      );
+    });
+  }));
+}
