@@ -5,6 +5,7 @@ const cors = require("cors");
 const express = require("express");
 const db = require("./utilites/db");
 const dbPool = require("./utilites/dbPool");
+const connection = require("./utilites/db2");
 const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const app = express();

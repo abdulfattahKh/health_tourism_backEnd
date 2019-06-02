@@ -6,20 +6,17 @@ module.exports = class insertLocation {
         this.city = location.city;
         this.country = location.country;
         this.state = location.state;
-        this.id = location.id;
-        this.type = location.type;
+        this.id = location.locationId;
     }
 
     save() {
         return db.execute(`
-        INSERT INTO locations
-        VALUES(?,?,?,?,?)`
+        INSERT INTO locations (country_id,city_id,state_id)
+        VALUES(?,?,?)`
             , [
                 this.country,
                 this.city,
-                this.state,
-                this.id,
-                this.type
+                this.state
             ]);
     }
 
@@ -48,5 +45,18 @@ module.exports = class insertLocation {
             ]);
     }
 
+
+    count(){
+        return db.execute(`select * from locations 
+                            where country_id = ? and
+                                   city_id   = ? and 
+                                   state_id  = ? `,
+        [
+            this.country,
+            this.city,
+            this.state
+        ]
+        );    
+    }
 }
 
