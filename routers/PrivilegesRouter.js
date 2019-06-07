@@ -12,8 +12,8 @@ Router.post(
   check_author([1]),
   PrivilegesController.addPrivilege
 );
-Router.post(
-  "/deletePrivilege",
+Router.delete(
+  "/deletePrivilege/:id",
   check_auth,
   check_author([1]),
   PrivilegesController.deletePrivilege
@@ -24,6 +24,20 @@ Router.get(
   check_auth,
   check_author([1]),
   PrivilegesController.getAllPrivileges
+);
+
+Router.get(
+  "/privilegeById/:id",
+  check_auth,
+  check_author([1]),
+  PrivilegesController.getPrivilegeById
+);
+
+Router.get(
+  "/addDescriptionColumn",
+  check_auth,
+  check_author([1]),
+  PrivilegesController.addDescriptionColumn
 );
 
 Router.get(

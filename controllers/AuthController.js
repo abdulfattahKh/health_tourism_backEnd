@@ -230,7 +230,7 @@ module.exports.getUserInformation = (req, res, next) => {
 module.exports.deleteUser = async (req, res, next) => {
   try {
     let validate = await User.validator(req.params, ["id"]);
-    let deleteRes = this.deleteUser(req.params.id)
+    let deleteRes = await deleteUser(req.params.id)
       .then(result => {
         if (result) {
           res.status(200).json({
@@ -241,15 +241,15 @@ module.exports.deleteUser = async (req, res, next) => {
         }
       })
       .catch(err => {
-        return res.status(401).json({
+        return res.status(500).json({
           success: false,
           message: err,
-          statusCode: 401
+          statusCode: 500
         });
       });
   } catch (err) {
     console.log(err);
-    return res.status(505).json({
+    return res.status(500).json({
       success: false,
       message: err,
       statusCode: 500
@@ -259,7 +259,12 @@ module.exports.deleteUser = async (req, res, next) => {
 
 module.exports.updateValues = async (req, res, next) => {
   try {
-    let vaidate = await User.validator(req.body);
+    let vaidate = await User.validator(req.body, [
+      "tableName",
+      "value",
+      "fieldName",
+      "id"
+    ]);
     const updateRes = await Crud.updateValues(
       req.body.tableName,
       req.body.fieldName,

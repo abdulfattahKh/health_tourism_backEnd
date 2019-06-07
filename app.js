@@ -4,8 +4,13 @@ const path = require("path");
 const cors = require("cors");
 const express = require("express");
 const db = require("./utilites/db");
+<<<<<<< HEAD
 const dbPool = require('./utilites/dbPool');
 const connection = require('./utilites/db2')
+=======
+const dbPool = require("./utilites/dbPool");
+const connection = require("./utilites/db2");
+>>>>>>> 53521ceaac2f6b1b53500ce6cb087e6e866128fc
 const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const multer = require('multer');
@@ -20,6 +25,7 @@ const privilegesRouter = require("./routers/PrivilegesRouter");
 const locationRouter = require("./routers/locationRouter");
 const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
+const generalRouter = require("./routers/crudRouter");
 const server = http.createServer(app);
 
 // app.use((req, res, next) => {
@@ -41,10 +47,10 @@ app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
 app.use("/privileges", privilegesRouter);
 // tested
+app.use("/general", generalRouter);
 app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
-
 
 server.listen(process.env.PORT || 3000);

@@ -6,20 +6,18 @@ const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
 /// work
-router.post('/:userId',travelAgencyController.addTravel)
+router.post("/:userId", travelAgencyController.addTravel);
 //work
-router.put('/:id',travelAgencyController.updateTravel)
+router.put("/:id", travelAgencyController.updateTravel);
 ///work
-router.delete('/:id',travelAgencyController.deleteTravel)
+router.delete("/:id", travelAgencyController.deleteTravel);
 ///work
-router.put('/changeStatus/:id',travelAgencyController.changeStatus)
+router.put("/changeStatus/:id", travelAgencyController.changeStatus);
 //work
-router.get('/',travelAgencyController.getAllTravel)
+router.get("/", travelAgencyController.getAllTravel);
 //work
-router.get('/:id',travelAgencyController.getAllTravelById)
+router.get("/:id", travelAgencyController.getAllTravelById);
 /// work
-router.get('/status/:stat',travelAgencyController.getAllTravelByStatus)
-   
-
+router.get("/status/:stat", travelAgencyController.getAllTravelByStatus);
 
 module.exports = router;

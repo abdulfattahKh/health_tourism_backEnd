@@ -3,13 +3,15 @@ const pool = require("../utilites/dbPool.js");
 const joiValidator = require("joi");
 
 module.exports = class privileges {
-  constructor(privilegeName) {
+  constructor(privilegeName, description) {
     this.privilegeName = privilegeName;
+    this.description = description;
   }
 
   save() {
-    return db.execute(`insert into permissions(name) values(?)`, [
-      this.privilegeName
+    return db.execute(`insert into permissions(name,description) values(?,?)`, [
+      this.privilegeName,
+      this.description
     ]);
   }
 
@@ -45,13 +47,27 @@ module.exports = class privileges {
   }
 
   static getAllPrivileges() {
-    return db.execute(`select * from permissions`);
+    return db.execute(
+      `select permission_id as 'id',name ,description from permissions`
+    );
+  }
+
+  static getPrivilegeById(privilegeId) {
+    return db.execute(
+      `select permission_id as 'id',name,description from permissions where permission_id = ?`,
+      [privilegeId]
+    );
   }
 
   static deletePrivilegesByRoleId(roleId) {
-    console.log(roleId);
     return db.execute(`delete from permissions_roles where role_id = ?`, [
       roleId
+    ]);
+  }
+
+  static deletePervilege(privilegeId) {
+    return db.execute("delete from permissions where permission_id = ?", [
+      privilegeId
     ]);
   }
 
@@ -59,6 +75,9 @@ module.exports = class privileges {
     // return db.execute('update permissions ')
   }
 
+  static addDescriptionColumn() {
+    return db.execute(`ALTER TABLE  permissions ADD description varchar(255)`);
+  }
   // static deletePervilege(privilegeId) {
   //   return db.execute("delete from roles where role_id = ?", [privilegeId]);
   // }
