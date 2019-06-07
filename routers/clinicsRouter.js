@@ -52,8 +52,8 @@ const upload = multer({storage: storage});
 
 router.put(
   '/changeClnincStatus/:clinicId',
-  // check_auth,
-  // check_author([1]),
+  check_auth,
+  check_author([1]),
   clinicsController.putChangeClinicStatus
 );
 
