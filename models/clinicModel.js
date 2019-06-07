@@ -1,52 +1,88 @@
 const db = require('../utilites/db');
 const dbPool = require('../utilites/dbPool');
-
+const addImage = require('./addImages');
 
 
 // values{clinicType: @example, .... }
 module.exports = class Clinic {
     constructor(values) {
-        this.userId = values.userId;
-        this.clinicType = values.clinicType;
-        this.clinicName = values.clinicName;
-        this.clinicCountry = values.clinicCountry;
-        this.clinicCity = values.clinicCity;
-        this.clinicState = values.clinicState;
-        // this.clinicMap = values.clinicMap;
+        // location
+        this.clinicCountry = values.body.clinicCountry;
+        this.clinicCity = values.body.clinicCity;
+        this.clinicState = values.body.clinicState;
+        this.longitude = values.body.longitude;
+        this.latitude = values.body.latitude;
+
+
+        this.userId = values.body.userId;
+        this.clinicName = values.body.clinicName;
+        this.clinicDescreption = values.body.clinicDescreption;
+
+        this.clinicType = values.body.clinicType;
+
+        this.files = values.files;
+
     }
 
 
     // just make the id autoincrement
     save() {
         let clinicId;
+        let locationId;
 
         return db.beginTransaction()
             .then(result => {
                 console.log('Begin Transaction: ');
                 return db.execute(
-                    `insert into clinics (id, name, user_id) values (?, ?, ?)`,
-                    [7, this.clinicName, this.userId]
+                    `select * from locations where country_id=${this.clinicCountry} and   city_id=${this.clinicCity} and
+                    state_id=${this.clinicState};`
                 );
             })
             .then(result => {
+                console.log('omar');
+                if (!result[0][0]) {
+                    return db.execute(
+                        `insert into locations (longitude, latitude, country_id, city_id, state_id)values (?, ?, ?, ?, ?);`,
+                        [this.longitude, this.latitude, this.clinicCountry, this.clinicCity, this.clinicState]
+                    );
+                }
+            })
+            .then(result => {
+                console.log('ahmad');
                 return db.execute(
-                    `select * from clinics order by id desc`
+                    `select * from locations where country_id=${this.clinicCountry} and city_id=${this.clinicCity} and state_id=${this.clinicState};`
                 );
             })
             .then(result => {
+                console.log('waledd');
+                locationId = result[0][0].location_id;
+                return db.execute(
+                    `insert into clinics (name, descreption, user_id, location_id) values (?, ?, ?, ?)`,
+                    [this.clinicName, this.clinicDescreption, this.userId, locationId]
+                );
+            })
+            .then(result => {
+                console.log('samer');
+                return db.execute(
+                    `select * from clinics order by id desc limit 1;`
+                );
+            })
+            .then(result => {
+                console.log('salim');
                 clinicId = result[0][0].id;
                 return db.execute(
-                    `insert into locations (country_id, city_id, state_id, clinics_id) values (?, ?, ?, ?)`,
-                    [this.clinicCountry, this.clinicCity, this.clinicState, clinicId]
-                );
-            })
-            .then(result => {
-                return db.execute(
-                    `insert into specfghializations_clinics (specialization_id, clinic_id) values (?, ?)`,
+                    `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
                     [this.clinicType, clinicId]
                 );
             })
+            // .then(result => {
+            //     console.log('mo');
+            //     if (this.files) {
+            //         return addImage.addImage({ clinicId: clinicId, array: this.files });
+            //     }
+            // })
             .then(result => {
+                console.log('mm');
                 return db.commit();
             })
             .then(result => {
@@ -54,10 +90,19 @@ module.exports = class Clinic {
                 return true;
             })
             .catch(err => {
+                console.log(err);
                 console.log('There is an erro!!');
                 db.rollback();
                 return false;
             });
+    }
+
+    static getAllClinics() {
+        return db.execute(`select * from clinics
+        left join locations on clinics.location_id=locations.location_id
+        left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
+        left join specializations on specializations.spec_id=specializations_clinics.specialization_id
+        left join users on clinics.user_id=users.id;`);
     }
 
     static getClinicTypes() {
@@ -67,11 +112,34 @@ module.exports = class Clinic {
 
     static getClinicsStatus() {
         return db.execute(`select * from clinics
-        inner join locations on clinics.id=locations.clinics_id
-        inner join clinics_doctors on clinics.id=clinics_doctors.clinic_id
-        inner join doctors on clinics_doctors.doctor_id=doctors.id
-        inner join clinics_procedures on clinics_procedures.clinic_id=clinics.id
-        inner join procedures on clinics_procedures.procedure_id=procedures.id;`);
+        left join locations on clinics.location_id=locations.location_id
+        left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
+        left join specializations on specializations.spec_id=specializations_clinics.specialization_id
+        left join users on clinics.user_id=users.id
+        where clinics.status='pending'`);
     }
+
+    static getAllClinicsOfAnUser(userId) {
+        return db.execute(
+            `select * from clinics
+        left join locations on clinics.location_id=locations.location_id
+        left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
+        left join specializations on specializations.spec_id=specializations_clinics.specialization_id
+        left join images on clinics.id=images.clinics_id
+        left join clinics_doctors on clinics.id=clinics_doctors.clinic_id
+        left join doctors on clinics_doctors.doctor_id=doctors.id
+        left join clinics_procedures on clinics_procedures.clinic_id=clinics.id
+        left join procedures on clinics_procedures.procedure_id=procedures.id
+        where clinics.user_id=?`,
+            [userId]
+        );
+    }
+
+    static updateClinicById(clinicId) {
+    }
+
+    static deleteClinciById(clinicId) {
+    }
+
 }
 

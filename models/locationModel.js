@@ -11,7 +11,7 @@ exports.getAllCitiesByCountryId = (countryId) => {
 
 
 exports.getAllStatesByCityId = (countryId, cityId) => {
-    return db.execute(`select state_id, state_name from countries inner join
-    cities on countries.country_id=cities.country_id inner join
-    states on cities.city_id=states.cities_city_id where cities.country_id=? and states.cities_city_id=?`, [countryId, cityId]);
+    return db.execute(`select state_id, state_name from countries 
+    inner join cities on countries.country_id=cities.country_id 
+    inner join states on cities.city_id=states.cities_city_id where cities.country_id=? and states.cities_city_id=?`, [countryId, cityId]);
 };
