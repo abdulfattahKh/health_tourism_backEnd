@@ -4,17 +4,11 @@ const path = require("path");
 const cors = require("cors");
 const express = require("express");
 const db = require("./utilites/db");
-<<<<<<< HEAD
-const dbPool = require('./utilites/dbPool');
-const connection = require('./utilites/db2')
-=======
 const dbPool = require("./utilites/dbPool");
 const connection = require("./utilites/db2");
->>>>>>> 53521ceaac2f6b1b53500ce6cb087e6e866128fc
 const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const multer = require('multer');
-const addImage = require('./models/addImages');
 const app = express();
 
 //router
@@ -28,13 +22,6 @@ const travelAgent = require("./routers/travelAgencyRouter");
 const generalRouter = require("./routers/crudRouter");
 const server = http.createServer(app);
 
-// app.use((req, res, next) => {
-//     db.execute(
-//         `insert into images (image_path, image_type, clinics_id, travel_agency_id) values (?, ?, ?, ?)`,
-//         ['asdfsdafa', 0, -1,  -1]
-//     );
-
-// })
 
 //middleware
 app.use(cors());

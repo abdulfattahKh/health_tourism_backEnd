@@ -97,48 +97,56 @@ module.exports = class Clinic {
             });
     }
 
-    static getAllClinics() {
-        return db.execute(`select * from clinics
-        left join locations on clinics.location_id=locations.location_id
-        left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
-        left join specializations on specializations.spec_id=specializations_clinics.specialization_id
-        left join users on clinics.user_id=users.id;`);
-    }
+    // static getAllClinics() {
+    //     return db.execute(`select * from clinics
+    //     left join locations on clinics.location_id=locations.location_id
+    //     left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
+    //     left join specializations on specializations.spec_id=specializations_clinics.specialization_id
+    //     left join users on clinics.user_id=users.id;`);
+    // }
 
     static getClinicTypes() {
         return db.execute(`select * from specializations;`);
     }
 
 
-    static getClinicsStatus() {
-        return db.execute(`select * from clinics
-        left join locations on clinics.location_id=locations.location_id
-        left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
-        left join specializations on specializations.spec_id=specializations_clinics.specialization_id
-        left join users on clinics.user_id=users.id
-        where clinics.status='pending'`);
-    }
+    // static getClinicsStatus() {
+    //     return db.execute(`select * from clinics
+    //     left join locations on clinics.location_id=locations.location_id
+    //     left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
+    //     left join specializations on specializations.spec_id=specializations_clinics.specialization_id
+    //     left join users on clinics.user_id=users.id
+    //     where clinics.status='pending'`);
+    // }
 
-    static getAllClinicsOfAnUser(userId) {
+    // static getAllClinicsOfAnUser(userId) {
+    //     return db.execute(
+    //         `select * from clinics
+    //     left join locations on clinics.location_id=locations.location_id
+    //     left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
+    //     left join specializations on specializations.spec_id=specializations_clinics.specialization_id
+    //     left join images on clinics.id=images.clinics_id
+    //     left join clinics_doctors on clinics.id=clinics_doctors.clinic_id
+    //     left join doctors on clinics_doctors.doctor_id=doctors.id
+    //     left join clinics_procedures on clinics_procedures.clinic_id=clinics.id
+    //     left join procedures on clinics_procedures.procedure_id=procedures.id
+    //     where clinics.user_id=?`,
+    //         [userId]
+    //     );
+    // }
+
+    static changeClinicStatus (clinicId, status) {
         return db.execute(
-            `select * from clinics
-        left join locations on clinics.location_id=locations.location_id
-        left join specializations_clinics on specializations_clinics.clinic_id=clinics.id
-        left join specializations on specializations.spec_id=specializations_clinics.specialization_id
-        left join images on clinics.id=images.clinics_id
-        left join clinics_doctors on clinics.id=clinics_doctors.clinic_id
-        left join doctors on clinics_doctors.doctor_id=doctors.id
-        left join clinics_procedures on clinics_procedures.clinic_id=clinics.id
-        left join procedures on clinics_procedures.procedure_id=procedures.id
-        where clinics.user_id=?`,
-            [userId]
+            `update clinics set status=? where id=?`,
+            [status, clinicId]
         );
     }
 
-    static updateClinicById(clinicId) {
-    }
-
     static deleteClinciById(clinicId) {
+        return db.execute(
+            `delete from clinics where id=?`,
+            [clinicId]
+        );
     }
 
 }

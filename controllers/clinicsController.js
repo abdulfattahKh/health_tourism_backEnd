@@ -99,7 +99,7 @@ exports.getAllClinicsOfAnUser = (req, res, next) => {
         });
 };
 
-exports.queryAddClinic = (req, res, next) => {
+exports.addClinic = (req, res, next) => {
     const clinicObj = new clinicModel(req);
     clinicObj.save()
         .then(result => {
@@ -109,7 +109,7 @@ exports.queryAddClinic = (req, res, next) => {
                     success: false,
                     message: 'Could not adding clinic, Please try again!!'
                 });
-    
+
             }
             res.status(200).json({
                 success: true,
@@ -125,3 +125,48 @@ exports.queryAddClinic = (req, res, next) => {
 };
 
 
+exports.putChangeClinicStatus = (req, res, next) => {
+    const clinicId = req.params.clinicId;
+    const status = req.query.status;
+    if (status === 'accepted') {
+        clinicModel.changeClinicStatus(clinicId, status)
+            .then(result => {
+                if (!result) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'Clinic Not found!'
+                    });
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: 'Changing status successfully.'
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Internal error server!'
+                });
+            })
+    } else if (status === 'rejected') {
+        clinicModel.deleteClinciById(clinicId)
+            .then(result => {
+                if (!result) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'Clinic Not found!'
+                    });
+                }
+                return res.status(200).json({
+                    success: true,
+                    message: 'Clinic was deleted.'
+                })
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Internal error server!'
+                })
+            })
+    }
+};

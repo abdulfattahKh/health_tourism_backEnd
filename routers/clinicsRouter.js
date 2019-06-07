@@ -18,20 +18,20 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 // done
-router.get(
-  '/allClinics',
-  check_auth,
-  check_author([1]),
-  clinicsController.getAllClinics
-  );
+// router.get(
+//   '/allClinics',
+//   check_auth,
+//   check_author([1]),
+//   clinicsController.getAllClinics
+//   );
 
 // done
-router.get(
-  '/allClinics/:userId',
-  check_auth,
-  check_author([1]),
-  clinicsController.getAllClinicsOfAnUser
-  );
+// router.get(
+//   '/allClinics/:userId',
+//   check_auth,
+//   check_author([1]),
+//   clinicsController.getAllClinicsOfAnUser
+//   );
 
 // done
   router.get(
@@ -43,19 +43,27 @@ router.get(
 
 // done
 // check for admin authentication
-router.get(
-  "/clinicStatus",
-  check_auth,
-  check_author([1]),
-  clinicsController.getClinicsStatus
+// router.get(
+//   "/clinicStatus",
+//   check_auth,
+//   check_author([1]),
+//   clinicsController.getClinicsStatus
+// );
+
+router.put(
+  '/changeClnincStatus/:clinicId',
+  // check_auth,
+  // check_author([1]),
+  clinicsController.putChangeClinicStatus
 );
 
 router.post(
-  "/queryAddClinic",
+  "/addClinic",
   check_auth,
   check_author([2]),
-  clinicsController.queryAddClinic
+  clinicsController.addClinic
 );
+
 
 module.exports = router;
 
