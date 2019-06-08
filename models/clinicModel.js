@@ -1,6 +1,6 @@
 const db = require("../utilites/db");
 const dbPool = require("../utilites/dbPool");
-
+const addImage = require("./addImages");
 // values{clinicType: @example, .... }
 module.exports = class Clinic {
   constructor(values) {
@@ -16,59 +16,88 @@ module.exports = class Clinic {
   // just make the id autoincrement
   save() {
     let clinicId;
+    let locationId;
 
-    return db
-      .beginTransaction()
-      .then(result => {
-        console.log("Begin Transaction: ");
-        return db.execute(
-          `insert into clinics (id, name, user_id) values (?, ?, ?)`,
-          [7, this.clinicName, this.userId]
-        );
-      })
-      .then(result => {
-        return db.execute(`select * from clinics order by id desc`);
-      })
-      .then(result => {
-        clinicId = result[0][0].id;
-        return db.execute(
-          `insert into locations (country_id, city_id, state_id, clinics_id) values (?, ?, ?, ?)`,
-          [this.clinicCountry, this.clinicCity, this.clinicState, clinicId]
-        );
-      })
-      .then(result => {
-        return db.execute(
-          `insert into specfghializations_clinics (specialization_id, clinic_id) values (?, ?)`,
-          [this.clinicType, clinicId]
-        );
-      })
-      .then(result => {
-        return db.commit();
-      })
-      .then(result => {
-        console.log("Transaction Completed!!");
-        return true;
-      })
-      .catch(err => {
-        console.log("There is an erro!!");
-        db.rollback();
-        return false;
-      });
+    return (
+      db
+        .beginTransaction()
+        .then(result => {
+          console.log("Begin Transaction: ");
+          return db.execute(
+            `select * from locations where country_id=${
+              this.clinicCountry
+            } and   city_id=${this.clinicCity} and
+                state_id=${this.clinicState};`
+          );
+        })
+        .then(result => {
+          console.log("omar");
+          if (!result[0][0]) {
+            return db.execute(
+              `insert into locations (longitude, latitude, country_id, city_id, state_id)values (?, ?, ?, ?, ?);`,
+              [
+                this.longitude,
+                this.latitude,
+                this.clinicCountry,
+                this.clinicCity,
+                this.clinicState
+              ]
+            );
+          }
+        })
+        .then(result => {
+          console.log("ahmad");
+          return db.execute(
+            `select * from locations where country_id=${
+              this.clinicCountry
+            } and city_id=${this.clinicCity} and state_id=${this.clinicState};`
+          );
+        })
+        .then(result => {
+          console.log("waledd");
+          locationId = result[0][0].location_id;
+          return db.execute(
+            `insert into clinics (name, descreption, user_id, location_id) values (?, ?, ?, ?)`,
+            [this.clinicName, this.clinicDescreption, this.userId, locationId]
+          );
+        })
+        .then(result => {
+          console.log("samer");
+          return db.execute(`select * from clinics order by id desc limit 1;`);
+        })
+        .then(result => {
+          console.log("salim");
+          clinicId = result[0][0].id;
+          return db.execute(
+            `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
+            [this.clinicType, clinicId]
+          );
+        })
+        // .then(result => {
+        //     console.log('mo');
+        //     if (this.files) {
+        //         return addImage.addImage({ clinicId: clinicId, array: this.files });
+        //     }
+        // })
+        .then(result => {
+          console.log("mm");
+          return db.commit();
+        })
+        .then(result => {
+          console.log("Transaction Completed!!");
+          return true;
+        })
+        .catch(err => {
+          console.log(err);
+          console.log("There is an erro!!");
+          db.rollback();
+          return false;
+        })
+    );
   }
 
   static getClinicTypes() {
     return db.execute(`select * from specializations;`);
-  }
-
-  //what the hell is this ??????
-  //where is the status
-  static getClinicsStatus() {
-    return db.execute(`select * from clinics
-        inner join locations on clinics.id=locations.clinics_id
-        inner join clinics_doctors on clinics.id=clinics_doctors.clinic_id
-        inner join doctors on clinics_doctors.doctor_id=doctors.id
-        inner join clinics_procedures on clinics_procedures.clinic_id=clinics.id
-        inner join procedures on clinics_procedures.procedure_id=procedures.id;`);
   }
 
   static getAllClinics() {
@@ -89,14 +118,26 @@ module.exports = class Clinic {
       [userId]
     );
   }
+  static getClinicTypes() {
+    return db.execute(`select * from specializations;`);
+  }
+  static changeClinicStatus(clinicId, status) {
+    return db.execute(`update clinics set status=? where id=?`, [
+      status,
+      clinicId
+    ]);
+  }
+  static deleteClinciById(clinicId) {
+    return db.execute(`delete from clinics where id=?`, [clinicId]);
+  }
 
   static getClinicsByStatus(status) {
     return db.execute(
       `
-    select * from clinics 
-    inner join locations on clinics.location_id = locations.location_id
-    where clinics.status = ?
-    `,
+  select * from clinics 
+  inner join locations on clinics.location_id = locations.location_id
+  where clinics.status = ?
+  `,
       [status]
     );
   }

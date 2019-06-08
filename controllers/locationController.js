@@ -2,7 +2,7 @@ const locationModel = require("../models/locationModel");
 
 // tested
 exports.getAllCountries = (req, res, next) => {
-
+  console.log("here");
   locationModel
     .getAllCountries()
     .then(result => {

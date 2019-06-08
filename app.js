@@ -8,6 +8,7 @@ const dbPool = require("./utilites/dbPool");
 const connection = require("./utilites/db2");
 const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
+const multer = require('multer');
 const app = express();
 
 //router
@@ -21,6 +22,7 @@ const travelAgent = require("./routers/travelAgencyRouter");
 const generalRouter = require("./routers/crudRouter");
 const server = http.createServer(app);
 
+
 //middleware
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
@@ -31,8 +33,10 @@ app.use(bodyParser.json());
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
 app.use("/privileges", privilegesRouter);
+// tested
 app.use("/general", generalRouter);
 app.use("/location", locationRouter);
+// tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
 

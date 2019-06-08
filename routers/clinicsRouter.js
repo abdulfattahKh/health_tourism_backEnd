@@ -1,9 +1,22 @@
 const express = require("express");
+const multer = require("multer");
 const router = express.Router();
 const check_auth = require("../middleWares/check_authentication");
 const check_author = require("../middlewares/check_authorization");
 
 const clinicsController = require("../controllers/clinicsController");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "upload/images/clinics");
+  },
+  filename: function(req, file, cb) {
+    console.log(file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
+
 router.get(
   "/clinicTypes",
   check_auth,
@@ -11,16 +24,13 @@ router.get(
   clinicsController.getClinicTypes
 );
 
-router.get("/getAllClinics", clinicsController.getAllClinics);
-
-// check for admin authentication
+router.get("/allClinics", clinicsController.getAllClinics);
 router.get(
-  "/clinicsStatus",
+  "/myClinics/:userId",
   check_auth,
-  check_author([1]),
-  clinicsController.getClinicsStatus
+  check_author([1, 2]),
+  clinicsController.getMyClinics
 );
-
 router.get(
   "/ClinicsByStatus",
   check_auth,
@@ -31,20 +41,8 @@ router.get(
 router.post(
   "/addClinic",
   check_auth,
-  check_author([1, 2]),
-  clinicsController.queryAddClinic
+  check_author([2]),
+  clinicsController.addClinic
 );
 
-router.get(
-  "/allClinics",
-  check_auth,
-  check_author([1]),
-  clinicsController.getAllClinics
-);
-router.get(
-  "/myClinics/:userId",
-  check_auth,
-  check_author([1, 2]),
-  clinicsController.getMyClinics
-);
 module.exports = router;
