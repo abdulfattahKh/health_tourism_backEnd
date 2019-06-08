@@ -53,12 +53,6 @@ exports.getClinicTypes = (req, res, next) => {
   clinicModel
     .getClinicTypes()
     .then(result => {
-      if (!result) {
-        return res.status(404).json({
-          success: false,
-          message: "request Not found"
-        });
-      }
       res.status(200).json({
         success: true,
         message: "the request was processed successfully.",
@@ -68,7 +62,7 @@ exports.getClinicTypes = (req, res, next) => {
     .catch(err => {
       res.status(500).json({
         success: false,
-        message: "Internal error"
+        message: err
       });
     });
 };

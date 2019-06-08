@@ -7,7 +7,7 @@ const clinicsController = require("../controllers/clinicsController");
 router.get(
   "/clinicTypes",
   check_auth,
-  check_author([2]),
+  check_author([1, 2]),
   clinicsController.getClinicTypes
 );
 
@@ -31,7 +31,7 @@ router.get(
 router.post(
   "/addClinic",
   check_auth,
-  check_author([2]),
+  check_author([1, 2]),
   clinicsController.queryAddClinic
 );
 
