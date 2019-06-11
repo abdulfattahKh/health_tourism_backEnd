@@ -12,6 +12,8 @@ module.exports = class Clinic {
         this.longitude = values.longitude;
         this.latitude = values.latitude;
 
+        this.mobileNumber = values.mobileNumber;
+        this.phoneNumber = values.phoneNumber;
 
         this.userId = values.userId;
         this.clinicName = values.name;
@@ -52,10 +54,9 @@ module.exports = class Clinic {
             .then(result => {
                 console.log('waledd');
                 locationId = result[0][0].location_id;
-                const d = 'asdf';
                 return db.execute(
-                    `insert into clinics (name, descreption, user_id, location_id) values (?, ?, ?, ?)`,
-                    [this.clinicName, d, this.userId, locationId]
+                    `insert into clinics (name, mobile_number, phone_number, user_id, location_id) values (?, ?, ?, ?, ?)`,
+                    [this.clinicName, this.mobileNumber, this.phoneNumber, this.userId, locationId]
                 );
             })
             .then(result => {
@@ -67,8 +68,8 @@ module.exports = class Clinic {
             .then(result => {
                 console.log('salim');
                 clinicId = result[0][0].id;
-                console.log(clinicId, this.clinicTypes);
-                console.log(addMultipleTypes(clinicId, this.clinicTypes));
+                // console.log(clinicId, this.clinicTypes);
+                // console.log(addMultipleTypes(clinicId, this.clinicTypes));
                 return addMultipleTypes(clinicId, this.clinicTypes);
                 // return db.execute(
                 //     `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
@@ -84,7 +85,6 @@ module.exports = class Clinic {
                 return true;
             })
             .catch(err => {
-                console.log(err);
                 console.log('There is an erro!!');
                 db.rollback();
                 return false;
