@@ -92,7 +92,7 @@ exports.getClinicsByStatus = (req, res, next) => {
 };
 
 exports.addClinic = (req, res, next) => {
-  const clinicObj = new clinicModel(req);
+  const clinicObj = new clinicModel(req.body);
   clinicObj
     .save()
     .then(result => {

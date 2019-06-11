@@ -41,7 +41,7 @@ router.get(
 router.post(
   "/addClinic",
   check_auth,
-  check_author([2]),
+  check_author([1, 2]),
   clinicsController.addClinic
 );
 

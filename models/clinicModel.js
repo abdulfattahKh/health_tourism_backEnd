@@ -4,12 +4,15 @@ const addImage = require("./addImages");
 // values{clinicType: @example, .... }
 module.exports = class Clinic {
   constructor(values) {
+    console.log(values);
     this.userId = values.userId;
-    this.clinicType = values.clinicType;
-    this.clinicName = values.clinicName;
-    this.clinicCountry = values.clinicCountry;
-    this.clinicCity = values.clinicCity;
-    this.clinicState = values.clinicState;
+    this.clinicType = values.clinicTypes;
+    this.clinicName = values.name;
+    this.clinicCountry = values.country;
+    this.clinicCity = values.city;
+    this.clinicState = values.state;
+    this.longitude = values.longitude;
+    this.latitude = values.latitude;
     // this.clinicMap = values.clinicMap;
   }
 
@@ -17,7 +20,6 @@ module.exports = class Clinic {
   save() {
     let clinicId;
     let locationId;
-
     return (
       db
         .beginTransaction()
@@ -55,10 +57,15 @@ module.exports = class Clinic {
         })
         .then(result => {
           console.log("waledd");
+
           locationId = result[0][0].location_id;
+          console.log(locationId);
+          console.log(this.clinicName);
+          console.log(this.userId);
+
           return db.execute(
-            `insert into clinics (name, descreption, user_id, location_id) values (?, ?, ?, ?)`,
-            [this.clinicName, this.clinicDescreption, this.userId, locationId]
+            `insert into clinics (name, user_id, location_id) values (? , ?, ?)`,
+            [this.clinicName, this.userId, locationId]
           );
         })
         .then(result => {
@@ -102,43 +109,53 @@ module.exports = class Clinic {
 
   static getAllClinics() {
     return db.execute(
-      `select * from clinics 
-      inner join users on clinics.user_id = users.id
-      inner join locations on clinics.location_id = locations.location_id 
-      `
+      this.getClinicInfoQuery()
     );
   }
 
+
   static getMyClinics(userId) {
-    return db.execute(
-      `select * from clinics 
-      inner join users on clinics.user_id = users.id 
-      inner join locations on clinics.location_id = locations.location_id
-      where clinics.user_id = ?`,
-      [userId]
-    );
+
+    return db.execute(this.getClinicInfoQuery() + "where c.user_id = ?",[userId]);
+
   }
   static getClinicTypes() {
+
     return db.execute(`select * from specializations;`);
+
   }
-  static changeClinicStatus(clinicId, status) {
-    return db.execute(`update clinics set status=? where id=?`, [
-      status,
-      clinicId
-    ]);
-  }
+
   static deleteClinciById(clinicId) {
+
     return db.execute(`delete from clinics where id=?`, [clinicId]);
+
   }
 
   static getClinicsByStatus(status) {
-    return db.execute(
-      `
-  select * from clinics 
-  inner join locations on clinics.location_id = locations.location_id
-  where clinics.status = ?
-  `,
-      [status]
-    );
+
+    return db.execute(this.getClinicInfoQuery()+'where c.status = ?',[status]);
+
+  }
+
+  static getClinicInfoQuery() {
+    
+    return (this.sql =`select 
+    c.id,
+    c.name as 'clinicName',
+    co.country_name as 'country',
+    ci.city_name as 'city',
+    st.state_name as 'state',
+    us.first_name as 'fOwnerName',
+    us.last_name as 'lOwnerName',
+    us.email,
+    us.mobile_number as '',
+    c.status
+    from clinics c 
+    inner join locations l on c.location_id = l.location_id
+    inner join countries co on l.country_id = co.country_id
+    inner join cities ci on ci.city_id = l.city_id
+    inner join states st on st.state_id = l.state_id
+    inner join users us on us.id = c.user_id
+    `)
   }
 };
