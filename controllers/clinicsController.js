@@ -1,4 +1,27 @@
 const clinicModel = require('../models/clinicModel');
+const Promise = require('bluebird');
+const connection = require("../utilites/db2");
+const imagesModel = require('../models/images');
+const descreptionModel = require('../models/descreption');
+const multer = require('multer');
+const db = require('../utilites/db');
+const fs = require('fs');
+// const fs = require('fs');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'upload/images/clinics')
+    },
+    filename: function (req, file, cb) {
+        console.log(file.originalname);
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+
+// get requests
 
 exports.getAllClinics = (req, res, next) => {
     clinicModel.getAllClinics()
@@ -70,7 +93,7 @@ exports.getClinicsStatus = (req, res, next) => {
                 message: 'Internal error server'
             });
         })
-
+        ``
 };
 
 
@@ -99,9 +122,12 @@ exports.getAllClinicsOfAnUser = (req, res, next) => {
         });
 };
 
-exports.addClinic = (req, res, next) => {
-    const clinicObj = new clinicModel(req);
-    clinicObj.save()
+
+// post requests 
+
+exports.postAddClinic = (req, res, next) => {
+    const clinicObj = new clinicModel(req.body);
+    clinicObj.save(callAddMultipleTypes)
         .then(result => {
             console.log(req.files);
             if (!result) {
@@ -124,6 +150,125 @@ exports.addClinic = (req, res, next) => {
         })
 };
 
+
+exports.postAddImages = async (req, res, next) => {
+    const clinicId = req.body.clinicId;
+
+    imagesModel.addImages({ clinicId: clinicId, array: req.files })
+        .then(result => {
+            console.log('Adding images successfully.');
+        })
+        .catch(err => {
+            new Promise((resolve, reject) => {
+                req.files.forEach(el => {
+                    const path = el.path;
+                    fs.unlink(path, (err) => {
+                        if (err) {
+                            reject();
+                        } else {
+                            resolve();
+                        }
+                    })
+                })
+            })
+                .then(result => {
+                    console.log('Deleting files successfully.');
+                    res.status(500).json({
+                        success: false,
+                        message: 'Internal server error!'
+                    });
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        success: false,
+                        message: 'Internal server error!'
+                    });
+                })
+        })
+
+
+};
+
+
+
+// delete requests
+
+exports.deleteClinicById = (req, res, next) => {
+    const clinicId = req.params.clinicId;
+    deleteClinicById(clinicId)
+        .then(result => {
+            return res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            });
+        })
+        .catch(err => {
+            return res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            });
+        })
+}
+
+exports.deleteImageById = (req, res, next) => {
+    console.log('delete');
+    let imageId = req.body.imageId;
+    let image;
+    imagesModel.getImageById(imageId)
+        .then(result => {
+            if (!result[0][0] || !result[0][0].image_id) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'image Not found!'
+                });
+            }
+            image = result[0][0];
+            return imagesModel.deleteImageFromDataBase(imageId);
+        })
+        .then(result => {
+            const path = image.image_path;
+            const name = path.split('\\')[3];
+            return imagesModel.deleteImageFromFolder(path, imageId);
+        })
+        .then(result => {
+            console.log(result);
+            console.log('Deleting images successfully.');
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error!'
+            })
+
+        })
+};
+
+
+// put requests
+
+exports.putAddDescreption = (req, res, next) => {
+    descreptionModel.addDescreption('clinics', req.body.descreption, req.body.clinicId, -1)
+        .then(result => {
+            console.log(result);
+            res.status(200).json({
+                success: true,
+                message: 'Adding descreption successfully.'
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error!'
+            })
+        })
+
+};
 
 exports.putChangeClinicStatus = (req, res, next) => {
     const clinicId = req.params.clinicId;
@@ -149,24 +294,82 @@ exports.putChangeClinicStatus = (req, res, next) => {
                 });
             })
     } else if (status === 'rejected') {
-        clinicModel.deleteClinciById(clinicId)
+        deleteClinicById(clinicId)
             .then(result => {
-                if (!result) {
-                    return res.status(404).json({
-                        success: false,
-                        message: 'Clinic Not found!'
-                    });
-                }
-                return res.status(200).json({
-                    success: true,
-                    message: 'Clinic was deleted.'
-                })
+                return res.status(result.status).json({
+                    success: result.success,
+                    message: result.message
+                });
             })
             .catch(err => {
-                return res.status(500).json({
-                    success: false,
-                    message: 'Internal error server!'
+                return res.status(result.status).json({
+                    success: result.success,
+                    message: result.message
                 })
             })
+        // clinicModel.deleteClinciById(clinicId)
+        //     .then(result => {
+        //         if (!result) {
+        //             return res.status(404).json({
+        //                 success: false,
+        //                 message: 'Clinic Not found!'
+        //             });
+        //         }
+        //         return res.status(200).json({
+        //             success: true,
+        //             message: 'Clinic was deleted.'
+        //         })
+        //     })
+        //     .catch(err => {
+        //         return res.status(500).json({
+        //             success: false,
+        //             message: 'Internal error server!'
+        //         })
+        //     })
     }
 };
+
+
+
+deleteClinicById = clinicId => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let deleteRes = await clinicModel.deleteClinciById(clinicId);
+            if (deleteRes[0].affectedRows > 0) {
+                resolve({ success: true, message: 'Deleting clinic successfully.', status: 200 });
+            } else {
+                resolve({ success: false, message: 'Deleting clinic failed!' });
+            }
+        } catch (err) {
+            console.log(err);
+            reject({ success: false, message: 'Internal server error!', status: 500 });
+        }
+    });
+};
+
+
+function callAddMultipleTypes(clinicId = -1, types = []) {
+    Promise.all(addMultipleTypes(clinicId, types));
+}
+
+
+function addMultipleTypes(clinicId, types = []) {
+    return (PromiseArray = types.map(value => {
+        console.log('Omar:    ' + value);
+        return new Promise((resolve, reject) => {
+            connection.query(
+                `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
+                [value, clinicId],
+                (err, RES) => {
+                    if (err) {
+                        console.log({ success: false, message: err });
+                        reject(err);
+                    } else {
+                        resolve({ success: true, message: "inserting was done correctly" });
+                    }
+                }
+            );
+        });
+    }));
+}
+

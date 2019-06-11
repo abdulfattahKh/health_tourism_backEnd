@@ -50,6 +50,7 @@ const upload = multer({storage: storage});
 //   clinicsController.getClinicsStatus
 // );
 
+// done
 router.put(
   '/changeClnincStatus/:clinicId',
   check_auth,
@@ -57,11 +58,39 @@ router.put(
   clinicsController.putChangeClinicStatus
 );
 
+// done
+router.delete(
+  '/deleteClinic/:clinicId',
+  check_auth,
+  check_author([1]),
+  clinicsController.deleteClinicById
+);
+
 router.post(
   "/addClinic",
   check_auth,
   check_author([2]),
-  clinicsController.addClinic
+  clinicsController.postAddClinic
+);
+
+router.put(
+  '/addClinic/addDescreption',
+  clinicsController.putAddDescreption
+);
+
+router.post(
+  '/addClinic/addImage',
+  upload.array('image'),
+  check_auth,
+  check_author([2]),
+  clinicsController.postAddImages
+);
+
+router.delete(
+  '/addClinic/deleteImage',
+  check_auth,
+  check_author([2]),
+  clinicsController.deleteClinicById
 );
 
 

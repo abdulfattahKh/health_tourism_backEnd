@@ -1,32 +1,33 @@
 const db = require('../utilites/db');
 const dbPool = require('../utilites/dbPool');
-const addImage = require('./addImages');
+const addImage = require('./images');
 
 
 // values{clinicType: @example, .... }
 module.exports = class Clinic {
     constructor(values) {
         // location
-        this.clinicCountry = values.body.clinicCountry;
-        this.clinicCity = values.body.clinicCity;
-        this.clinicState = values.body.clinicState;
-        this.longitude = values.body.longitude;
-        this.latitude = values.body.latitude;
+        this.clinicCountry = values.country;
+        this.clinicCity = values.city;
+        this.clinicState = values.state;
+        this.longitude = values.longitude;
+        this.latitude = values.latitude;
 
 
-        this.userId = values.body.userId;
-        this.clinicName = values.body.clinicName;
-        this.clinicDescreption = values.body.clinicDescreption;
+        this.userId = values.userId;
+        this.clinicName = values.name;
 
-        this.clinicType = values.body.clinicType;
+        this.clinicTypes = values.clinicTypes;
 
-        this.files = values.files;
 
     }
 
 
+    
+
+
     // just make the id autoincrement
-    save() {
+    save(addMultipleTypes) {
         let clinicId;
         let locationId;
 
@@ -56,9 +57,10 @@ module.exports = class Clinic {
             .then(result => {
                 console.log('waledd');
                 locationId = result[0][0].location_id;
+                const d = 'asdf';
                 return db.execute(
                     `insert into clinics (name, descreption, user_id, location_id) values (?, ?, ?, ?)`,
-                    [this.clinicName, this.clinicDescreption, this.userId, locationId]
+                    [this.clinicName, d, this.userId, locationId]
                 );
             })
             .then(result => {
@@ -70,17 +72,14 @@ module.exports = class Clinic {
             .then(result => {
                 console.log('salim');
                 clinicId = result[0][0].id;
-                return db.execute(
-                    `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
-                    [this.clinicType, clinicId]
-                );
+                console.log(clinicId, this.clinicTypes);
+                console.log(addMultipleTypes(clinicId, this.clinicTypes));                
+                return addMultipleTypes(clinicId, this.clinicTypes);
+                // return db.execute(
+                //     `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
+                //     [this.clinicType, clinicId]
+                // );
             })
-            // .then(result => {
-            //     console.log('mo');
-            //     if (this.files) {
-            //         return addImage.addImage({ clinicId: clinicId, array: this.files });
-            //     }
-            // })
             .then(result => {
                 console.log('mm');
                 return db.commit();
