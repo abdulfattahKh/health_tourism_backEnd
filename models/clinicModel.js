@@ -4,8 +4,6 @@ const dbPool = require('../utilites/dbPool');
 
 // values{clinicType: @example, .... }
 module.exports = class Clinic {
-
-
   constructor(values) {
     // location
     this.clinicCountry = values.country;
@@ -14,15 +12,17 @@ module.exports = class Clinic {
     this.longitude = values.longitude;
     this.latitude = values.latitude;
 
+    this.mobileNumber = values.mobileNumber;
+    this.phoneNumber = values.phoneNumber;
 
     this.userId = values.userId;
     this.clinicName = values.name;
 
     this.clinicTypes = values.clinicTypes;
 
-
   }
 
+  // just make the id autoincrement
   save(addMultipleTypes) {
     let clinicId;
     let locationId;
@@ -32,7 +32,7 @@ module.exports = class Clinic {
         console.log('Begin Transaction: ');
         return db.execute(
           `select * from locations where country_id=${this.clinicCountry} and   city_id=${this.clinicCity} and
-              state_id=${this.clinicState};`
+                    state_id=${this.clinicState};`
         );
       })
       .then(result => {
@@ -53,10 +53,9 @@ module.exports = class Clinic {
       .then(result => {
         console.log('waledd');
         locationId = result[0][0].location_id;
-        const d = 'asdf';
         return db.execute(
-          `insert into clinics (name, descreption, user_id, location_id) values (?, ?, ?, ?)`,
-          [this.clinicName, d, this.userId, locationId]
+          `insert into clinics (name, mobile_number, phone_number, user_id, location_id) values (?, ?, ?, ?, ?)`,
+          [this.clinicName, this.mobileNumber, this.phoneNumber, this.userId, locationId]
         );
       })
       .then(result => {
@@ -68,8 +67,8 @@ module.exports = class Clinic {
       .then(result => {
         console.log('salim');
         clinicId = result[0][0].id;
-        console.log(clinicId, this.clinicTypes);
-        console.log(addMultipleTypes(clinicId, this.clinicTypes));
+        // console.log(clinicId, this.clinicTypes);
+        // console.log(addMultipleTypes(clinicId, this.clinicTypes));
         return addMultipleTypes(clinicId, this.clinicTypes);
         // return db.execute(
         //     `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
@@ -85,16 +84,26 @@ module.exports = class Clinic {
         return true;
       })
       .catch(err => {
-        console.log(err);
         console.log('There is an erro!!');
         db.rollback();
         return false;
       });
   }
 
+
+
   static getClinicTypes() {
     return db.execute(`select * from specializations;`);
   }
+
+  static changeClinicStatus(clinicId, status) {
+    return db.execute(
+      `update clinics set status=? where id=?`,
+      [status, clinicId]
+    );
+  }
+
+
 
   static getAllClinics() {
     return db.execute(

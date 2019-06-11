@@ -151,7 +151,6 @@ exports.postAddClinic = (req, res, next) => {
                     success: false,
                     message: 'Could not adding clinic, Please try again!!'
                 });
-
             }
             res.status(200).json({
                 success: true,
