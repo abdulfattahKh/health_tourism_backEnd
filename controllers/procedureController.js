@@ -8,7 +8,6 @@
 const procSpecClinicModel = require("../models/procSpecClinicModel");
 const procedureModel = require("../models/procedureModel")
 
-// accept ...
 exports.addProcedure = (req, res, next) => {
     /// need at least (proc_id , spec_id ,clinic_id)
     obj = new procSpecClinicModel(req.body)

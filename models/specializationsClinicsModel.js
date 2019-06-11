@@ -6,12 +6,6 @@
  * 
  */
 const db = require("../utilites/db");
-<<<<<<< HEAD
-// const addImage = require("./addImages");
-=======
-const addImage = require("./Images");
->>>>>>> 1c795b5c7d2367a8f0c5a06cec9ee52964f0b4d4
-
 
 module.exports = class specializationsClinics {
     constructor(values) {
