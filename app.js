@@ -21,6 +21,15 @@ const locationRouter = require("./routers/locationRouter");
 const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
 const generalRouter = require("./routers/crudRouter");
+/****
+ * @author Abdulrahman Al hussein 
+ * @start
+ */
+const procedureRouter = require("./routers/procedureRouter");
+/****
+ * @author Abdulrahman Al hussein 
+ * @end 
+ */
 const server = http.createServer(app);
 
 
@@ -40,6 +49,17 @@ app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
+
+/****
+ * @author Abdulrahman Al hussein 
+ * @start 
+ */
+app.use("/procedure",procedureRouter);
+/****
+ * @author Abdulrahman Al hussein 
+ * @end 
+ */
+
 
 app.use('/', (req, res, next) => {
     res.status(404).json({
