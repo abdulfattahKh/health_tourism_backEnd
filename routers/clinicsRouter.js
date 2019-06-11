@@ -64,8 +64,8 @@ router.delete(
 
 router.post(
   "/addClinic",
-  check_auth,
-  check_author([2]),
+  // check_auth,
+  // check_author([2]),
   clinicsController.postAddClinic
 );
 
@@ -77,16 +77,16 @@ router.put(
 router.post(
   '/addClinic/addImage',
   upload.array('image'),
-  check_auth,
-  check_author([2]),
+  // check_auth,
+  // check_author([2]),
   clinicsController.postAddImages
 );
 
 router.delete(
   '/addClinic/deleteImage/:imageId',
-  check_auth,
-  check_author([2]),
-  clinicsController.deleteClinicById
+  // check_auth,
+  // check_author([2]),
+  clinicsController.deleteImageById
 );
 
 module.exports = router;
