@@ -6,8 +6,6 @@
  * 
  */
 const db = require("../utilites/db");
-const dbPool = require("../utilites/dbPool");
-const addImage = require("./addImages");
 
 
 module.exports = class Procedure {
@@ -15,21 +13,24 @@ module.exports = class Procedure {
         this.id = values.id;
         this.name = values.name;
         this.specializations_spec_id = values.spec_id;
+        this.table = "procedures"
     }
 
-    // save(){
+    static viewAccordSpecId(spec_id){
+        this.table = "procedures"
+        var query = `SELECT * FROM health_tourism.${this.table} WHERE specializations_spec_id = ${spec_id};`
 
-    //     var isSpecAlreadyExist = `SELECT * FROM health_tourism.specializations_clinics WHERE ${this.clinicCity} = 1 ;`
-    //     return db.beginTransaction()
-    //             .then(result => {
-    //                 return db.execute(
-    //                   `select * from locations where country_id=${
-    //                     this.clinicCountry
-    //                 } and   city_id=${this.clinicCity} and
-    //                     state_id=${this.clinicState};`
-    //                 );
-    //             })
-    // }
+        return db.execute(query)
+            .then( result => {
+                if( !result[0] ){
+                    return false;
+                }
+                return result[0];
+            })
+            .catch(err=>{
+                throw err;
+            })
+    }
 
 };
 /****

@@ -56,8 +56,15 @@ router.get(
 router.get(
     "/getProcAccordToClinic/:clinicId",
     check_auth,
-    check_author([1,5]), /// admin & clinic owner & doctor   ....
+    check_author([1,5]), /// admin & clinic owner   ....
     procController.getProcAccordToClinic
+);
+
+router.get(
+    "/getProcAccordToSpec/:specId",
+    check_auth,
+    check_author([1,5]), /// admin & clinic owner   ....
+    procController.getProcAccordToSpec
 );
 
 module.exports = router;
