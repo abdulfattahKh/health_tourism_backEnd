@@ -1,6 +1,5 @@
 const db = require('../utilites/db');
 const dbPool = require('../utilites/dbPool');
-const addImage = require('./images');
 
 
 // values{clinicType: @example, .... }
@@ -21,10 +20,6 @@ module.exports = class Clinic {
 
 
     }
-
-
-    
-
 
     // just make the id autoincrement
     save(addMultipleTypes) {
@@ -73,7 +68,7 @@ module.exports = class Clinic {
                 console.log('salim');
                 clinicId = result[0][0].id;
                 console.log(clinicId, this.clinicTypes);
-                console.log(addMultipleTypes(clinicId, this.clinicTypes));                
+                console.log(addMultipleTypes(clinicId, this.clinicTypes));
                 return addMultipleTypes(clinicId, this.clinicTypes);
                 // return db.execute(
                 //     `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
@@ -134,7 +129,7 @@ module.exports = class Clinic {
     //     );
     // }
 
-    static changeClinicStatus (clinicId, status) {
+    static changeClinicStatus(clinicId, status) {
         return db.execute(
             `update clinics set status=? where id=?`,
             [status, clinicId]
@@ -145,6 +140,37 @@ module.exports = class Clinic {
         return db.execute(
             `delete from clinics where id=?`,
             [clinicId]
+        );
+    }
+
+
+    static getAllClinics() {
+        return db.execute(
+            `select * from clinics 
+      inner join users on clinics.user_id = users.id
+      inner join locations on clinics.location_id = locations.location_id 
+      `
+        );
+    }
+
+    static getMyClinics(userId) {
+        return db.execute(
+            `select * from clinics 
+      inner join users on clinics.user_id = users.id 
+      inner join locations on clinics.location_id = locations.location_id
+      where clinics.user_id = ?`,
+            [userId]
+        );
+    }
+
+    static getClinicsByStatus(status) {
+        return db.execute(
+            `
+                select * from clinics 
+                inner join locations on clinics.location_id = locations.location_id
+                where clinics.status = ?
+            `,
+            [status]
         );
     }
 

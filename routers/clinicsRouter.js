@@ -1,5 +1,5 @@
 const express = require("express");
-const multer = require('multer');
+const multer = require("multer");
 const router = express.Router();
 const check_auth = require("../middleWares/check_authentication");
 const check_author = require("../middlewares/check_authorization");
@@ -8,36 +8,19 @@ const clinicsController = require("../controllers/clinicsController");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      cb(null, 'upload/images/clinics')
+    cb(null, "upload/images/clinics");
   },
   filename: function (req, file, cb) {
-      console.log(file.originalname);
-      cb(null, Date.now() + '-' + file.originalname);
+    console.log(file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
   }
 });
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 
-// done
-// router.get(
-//   '/allClinics',
-//   check_auth,
-//   check_author([1]),
-//   clinicsController.getAllClinics
-//   );
-
-// done
-// router.get(
-//   '/allClinics/:userId',
-//   check_auth,
-//   check_author([1]),
-//   clinicsController.getAllClinicsOfAnUser
-//   );
-
-// done
-  router.get(
+router.get(
   "/clinicTypes",
   check_auth,
-  check_author([2]),
+  check_author([1, 2]),
   clinicsController.getClinicTypes
 );
 
@@ -53,9 +36,22 @@ const upload = multer({storage: storage});
 // done
 router.put(
   '/changeClnincStatus/:clinicId',
+  clinicsController.putChangeClinicStatus
+);
+
+router.get("/allClinics", clinicsController.getAllClinics);
+
+router.get(
+  "/myClinics/:userId",
+  check_auth,
+  check_author([1, 2]),
+  clinicsController.getMyClinics
+);
+router.get(
+  "/ClinicsByStatus",
   check_auth,
   check_author([1]),
-  clinicsController.putChangeClinicStatus
+  clinicsController.getClinicsByStatus
 );
 
 // done
@@ -87,13 +83,10 @@ router.post(
 );
 
 router.delete(
-  '/addClinic/deleteImage',
+  '/addClinic/deleteImage/:imageId',
   check_auth,
   check_author([2]),
   clinicsController.deleteClinicById
 );
 
-
 module.exports = router;
-
-

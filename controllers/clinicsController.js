@@ -24,48 +24,50 @@ const upload = multer({ storage: storage });
 // get requests
 
 exports.getAllClinics = (req, res, next) => {
-    clinicModel.getAllClinics()
+    clinicModel
+        .getAllClinics()
         .then(result => {
-            if (!result) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Date not found'
-                })
-            }
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
-                message: 'the request was proccessed successfully.',
-                data: result[0]
-            })
+                data: result[0],
+                message: "data was fetched correctly"
+            });
         })
         .catch(err => {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
-                message: 'Internal server error!'
-            })
-        })
+                message: err
+            });
+        });
 };
 
+exports.getMyClinics = (req, res, next) => {
+    if (!req.params["userId"]) {
+        return res.status(400).json({
+            success: false,
+            message: "bad request"
+        });
+    }
 
-exports.getClinicTypes = (req, res, next) => {
-    clinicModel.getClinicTypes()
+    clinicModel
+        .getMyClinics(req.params["userId"])
         .then(result => {
             if (!result) {
                 return res.status(404).json({
                     success: false,
-                    message: 'Data Not found'
+                    message: "request Not found"
                 });
             }
             res.status(200).json({
                 success: true,
-                message: 'the request was processed successfully.',
+                message: "the request was processed successfully.",
                 data: result[0]
             });
         })
         .catch(err => {
             res.status(500).json({
                 success: false,
-                message: 'Internal error'
+                message: "Internal error"
             });
         });
 };
@@ -93,31 +95,45 @@ exports.getClinicsStatus = (req, res, next) => {
                 message: 'Internal error server'
             });
         })
-        ``
-};
-
-
-exports.getAllClinicsOfAnUser = (req, res, next) => {
-    clinicModel.getAllClinicsOfAnUser(req.params.userId)
+}
+exports.getClinicTypes = (req, res, next) => {
+    clinicModel
+        .getClinicTypes()
         .then(result => {
-            if (!result) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Data not found!'
-                });
-            }
-            console.log(result);
             res.status(200).json({
                 success: true,
-                message: 'the request was proccessed successfully.',
+                message: "the request was processed successfully.",
                 data: result[0]
-            })
+            });
         })
         .catch(err => {
-            console.log(err);
             res.status(500).json({
                 success: false,
-                message: 'Internal server error!'
+                message: err
+            });
+        });
+};
+
+exports.getClinicsByStatus = (req, res, next) => {
+    if (!req.query["status"]) {
+        return res.status(400).json({
+            success: false,
+            message: "bad requrest"
+        });
+    }
+    clinicModel
+        .getClinicsByStatus(req.query["status"])
+        .then(result => {
+            return res.json({
+                success: true,
+                message: "it was featchd correctly",
+                data: result[0]
+            });
+        })
+        .catch(err => {
+            return res.status(500).json({
+                success: false,
+                message: err
             });
         });
 };
@@ -211,8 +227,7 @@ exports.deleteClinicById = (req, res, next) => {
 }
 
 exports.deleteImageById = (req, res, next) => {
-    console.log('delete');
-    let imageId = req.body.imageId;
+    let imageId = req.params.imageId;
     let image;
     imagesModel.getImageById(imageId)
         .then(result => {
