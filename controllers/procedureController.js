@@ -6,6 +6,7 @@
  * 
  */
 const procSpecClinicModel = require("../models/procSpecClinicModel");
+const procedureModel = require("../models/procedureModel")
 
 exports.addProcedure = (req, res, next) => {
     /// need at least (proc_id , spec_id ,clinic_id)
@@ -93,6 +94,69 @@ exports.getProcAccordToClinic = (req, res, next) => {
         });
     });
 };
+
+
+/// get procedures according  to specialization_id 
+exports.getProcAccordToSpec = (req, res, next) => {
+    if (!req.params["specId"]) {
+        return res.status(400).json({
+            success: false,
+            message: "bad request"
+        });
+    }
+
+    procedureModel
+    .viewAccordSpecId(req.params["specId"])
+    .then(result => {
+        if (!result.length) {
+            return res.status(404).json({
+                success: false,
+                message: "request Not found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: "the request was processed successfully.",
+            data: result
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            success: false,
+            message: "Internal error"
+        });
+    });
+};
+
+
+/// get procedures according  to specialization_id 
+exports.getProcAccordToAutoComplate = (req, res, next) => {
+    if (!req.params["subWord"]) {
+        return res.status(400).json({
+            success: false,
+            message: "bad request"
+        });
+    }
+
+    procedureModel
+    .viewAccordAutoComplate(req.params["subWord"])
+    .then(result => {
+        /// my have empty list (list of expanded name)
+        res.status(200).json({
+            success: true,
+            message: "the request was processed successfully.",
+            data: result
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            success: false,
+            message: "Internal error"
+        });
+    });
+};
+
+
 
 /****
  * 

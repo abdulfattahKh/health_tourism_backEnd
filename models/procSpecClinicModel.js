@@ -7,7 +7,7 @@
  */
 const db = require("../utilites/db");
 const SpecClinicModel = require("./specializationsClinicsModel")
-const fs = require("fs")
+
 module.exports = class procSpecClinic {
 
     constructor(values) {

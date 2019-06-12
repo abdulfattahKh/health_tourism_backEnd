@@ -3,24 +3,24 @@ const db = require("../utilites/db");
 
 module.exports = class insertLocation {
     constructor(location) {
-        this.longitude = location.longitude;
-        this.latitude = location.latitude;
         this.city = location.city;
         this.country = location.country;
         this.state = location.state;
         this.id = location.locationId;
+        this.latitude = location.latitude;
+        this.longitude = location.longitude;
     }
 
     save() {
         return db.execute(`
-        INSERT INTO locations (longitude, latitude, country_id, city_id, state_id)
-        VALUES(?, ?, ?, ?, ?)`
+        INSERT INTO locations (country_id,city_id,state_id,longitude,latitude)
+        VALUES(?,?,?,?,?)`
             , [
-                this.longitude,
-                this.latitude,
                 this.country,
                 this.city,
-                this.state
+                this.state,
+                this.longitude,
+                this.latitude
             ]);
     }
 
