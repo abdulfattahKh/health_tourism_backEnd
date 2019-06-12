@@ -76,7 +76,7 @@ module.exports = class Clinic {
         // .then(result => {
         //     console.log('mo');
         //     if (this.files) {
-        //         return addImage.addImage({ clinicId: clinicId, array: this.files });
+        //       return addImage.addImage({ clinicId: clinicId, array: this.files });
         //     }
         // })
         .then(result => {

@@ -19,6 +19,7 @@ const privilegesRouter = require("./routers/PrivilegesRouter");
 const locationRouter = require("./routers/locationRouter");
 const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
+const trips = require("./routers/trips");
 const generalRouter = require("./routers/crudRouter");
 const server = http.createServer(app);
 
@@ -39,5 +40,6 @@ app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
+app.use("/trips", trips);
 
 server.listen(process.env.PORT || 3000);
