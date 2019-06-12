@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const multer = require('multer');
 const app = express();
-const contorller = require('./controllers/clinicsController');
+const createFolders = require('./utilites/folders');
 //router
 
 const AuthRouter = require("./routers/AuthRouter");
@@ -32,6 +32,7 @@ const procedureRouter = require("./routers/procedureRouter");
  */
 const server = http.createServer(app);
 
+createFolders.createFolders();
 
 //middleware
 app.use(cors());
