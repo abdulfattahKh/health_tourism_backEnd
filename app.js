@@ -12,7 +12,7 @@ const check_auth = require("./middleWares/check_authentication");
 const multer = require('multer');
 const app = express();
 const contorller = require('./controllers/clinicsController');
-
+const procedureModel = require("./models/procedureModel");
 //router
 
 const AuthRouter = require("./routers/AuthRouter");
@@ -67,6 +67,15 @@ app.use('/', (req, res, next) => {
         message: 'http Not found!!'
     });
 });
+
+
+procedureModel.viewAccordAutoComplate("AC")
+    .then(result=>{
+        console.log(result);
+    })
+
+console.log("done !!");
+
 
 
 server.listen(process.env.PORT || 3000);
