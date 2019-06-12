@@ -7,10 +7,10 @@ const check_author = require("../middlewares/check_authorization");
 const clinicsController = require("../controllers/clinicsController");
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, "upload/images/clinics");
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     console.log(file.originalname);
     cb(null, Date.now() + "-" + file.originalname);
   }
@@ -25,7 +25,23 @@ router.get(
   clinicsController.getClinicTypes
 );
 
+// done
+// check for admin authentication
+// router.get(
+//   "/clinicStatus",
+//   check_auth,
+//   check_author([1]),
+//   clinicsController.getClinicsStatus
+// );
+
+// done
+router.put(
+  '/changeClnincStatus/:clinicId',
+  clinicsController.putChangeClinicStatus
+);
+
 router.get("/allClinics", clinicsController.getAllClinics);
+
 router.get(
   "/myClinics/:userId",
   check_auth,
@@ -39,11 +55,39 @@ router.get(
   clinicsController.getClinicsByStatus
 );
 
+// done
+router.delete(
+  '/deleteClinic/:clinicId',
+  check_auth,
+  check_author([1]),
+  clinicsController.deleteClinicById
+);
+
 router.post(
   "/addClinic",
-  check_auth,
-  check_author([2]),
-  clinicsController.addClinic
+  // check_auth,
+  // check_author([2]),
+  clinicsController.postAddClinic
+);
+
+router.put(
+  '/addClinic/addDescreption',
+  clinicsController.putAddDescreption
+);
+
+router.post(
+  '/addClinic/addImage',
+  upload.array('image'),
+  // check_auth,
+  // check_author([2]),
+  clinicsController.postAddImages
+);
+
+router.delete(
+  '/addClinic/deleteImage/:imageId',
+  // check_auth,
+  // check_author([2]),
+  clinicsController.deleteImageById
 );
 
 module.exports = router;

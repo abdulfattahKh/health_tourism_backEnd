@@ -1,4 +1,5 @@
 //dependencies
+const fs = require('fs');
 const http = require("http");
 const path = require("path");
 const cors = require("cors");
@@ -10,6 +11,7 @@ const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const multer = require('multer');
 const app = express();
+const contorller = require('./controllers/clinicsController');
 
 //router
 
@@ -21,6 +23,15 @@ const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
 const trips = require("./routers/trips");
 const generalRouter = require("./routers/crudRouter");
+/****
+ * @author Abdulrahman Al hussein 
+ * @start
+ */
+const procedureRouter = require("./routers/procedureRouter");
+/****
+ * @author Abdulrahman Al hussein 
+ * @end 
+ */
 const server = http.createServer(app);
 
 
@@ -41,5 +52,23 @@ app.use("/location", locationRouter);
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
 app.use("/trips", trips);
+
+/****
+ * @author Abdulrahman Al hussein 
+ * @start 
+ */
+app.use("/procedure",procedureRouter);
+/****
+ * @author Abdulrahman Al hussein 
+ * @end 
+ */
+
+
+app.use('/', (req, res, next) => {
+    res.status(404).json({
+        message: 'http Not found!!'
+    });
+});
+
 
 server.listen(process.env.PORT || 3000);

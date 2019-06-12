@@ -1,0 +1,16 @@
+CREATE TABLE proc_spec_clinic(  
+   id INT NOT NULL AUTO_INCREMENT,  
+   proc_id INT NOT NULL,  
+   spec_clinic_id INT NOT NULL,  
+   min_price float ,
+   max_price float ,
+   duration int ,
+   num_visits float ,
+   bookable bool ,
+  `description` text ,
+  `img1` text ,
+  `img2` text ,
+   PRIMARY KEY ( id ) ,
+   FOREIGN KEY (proc_id) REFERENCES procedures(id),
+   FOREIGN KEY (spec_clinic_id) REFERENCES  specializations_clinics(specializations_clinics_id)
+), 
