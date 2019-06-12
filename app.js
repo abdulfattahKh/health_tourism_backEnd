@@ -21,6 +21,7 @@ const privilegesRouter = require("./routers/PrivilegesRouter");
 const locationRouter = require("./routers/locationRouter");
 const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
+const trips = require("./routers/trips");
 const generalRouter = require("./routers/crudRouter");
 /****
  * @author Abdulrahman Al hussein 
@@ -50,6 +51,7 @@ app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
+app.use("/trips", trips);
 
 /****
  * @author Abdulrahman Al hussein 
