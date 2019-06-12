@@ -34,12 +34,15 @@ const server = http.createServer(app);
 
 createFolders.createFolders();
 
+
 //middleware
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join("images")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
 
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
@@ -55,7 +58,7 @@ app.use("/travelAgency", travelAgent);
  * @author Abdulrahman Al hussein 
  * @start 
  */
-app.use("/procedure",procedureRouter);
+app.use("/procedure", procedureRouter);
 /****
  * @author Abdulrahman Al hussein 
  * @end 

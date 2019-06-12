@@ -89,4 +89,19 @@ router.delete(
   clinicsController.deleteImageById
 );
 
+router.post(
+  '/addClinic/addCurrency',
+  clinicsController.postAddCurrency
+);
+
+router.delete(
+  '/addClinic/deleteCurrency',
+  clinicsController.deleteCurrency
+);
+
+router.put(
+  '/addClinic/editCurrency',
+  clinicsController.updateCurrency
+);
+
 module.exports = router;

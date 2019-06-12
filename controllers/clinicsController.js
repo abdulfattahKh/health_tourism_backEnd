@@ -1,4 +1,5 @@
 const clinicModel = require('../models/clinicModel');
+const currencyModel = require('../models/currencyModel');
 const Promise = require('bluebird');
 const connection = require("../utilites/db2");
 const imagesModel = require('../models/images');
@@ -343,6 +344,68 @@ exports.putChangeClinicStatus = (req, res, next) => {
     }
 };
 
+
+exports.postAddCurrency = (req, res, next) => {
+
+    const values = { currencies: req.body.currencies, clinicId: req.body.clinicId ? req.body.clinicId : null, travelAgencyId: req.body.travelAgencyId ? req.body.travelAgencyId : null };
+
+    currencyModel.addCurrency(values)
+        .then(result => {
+            console.log(result);
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            })
+        })
+
+};
+
+
+exports.deleteCurrency = (req, res, next) => {
+
+    currencyModel.deleteCurrency(req.body.id)
+        .then(result => {
+            console.log(result);
+            res.status(200).json({
+                success: true,
+                message: 'Deleting currency successfully.'
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                success: false,
+                message: 'Deleting currency failed!'
+            })
+        })
+
+};
+
+exports.updateCurrency = (req, res, next) => {
+    console.log(req.body.id, req.body.newCurrencyId);
+    currencyModel.updateCurrency(req.body.id, req.body.newCurrencyId)
+        .then(result => {
+            console.log(result);
+            res.status(200).json({
+                success: true,
+                message: 'Updating currency successfully.'
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                success: false,
+                message: 'Updaing currency failed!'
+            })
+        })
+};
 
 
 deleteClinicById = clinicId => {
