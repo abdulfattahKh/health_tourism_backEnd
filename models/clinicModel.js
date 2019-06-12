@@ -84,6 +84,7 @@ module.exports = class Clinic {
         return true;
       })
       .catch(err => {
+        console.log(err);
         console.log('There is an erro!!');
         db.rollback();
         return false;
