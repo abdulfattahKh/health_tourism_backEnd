@@ -1,6 +1,5 @@
 /****
  * 
- * 
  * @author Abdulrahman Al hussein 
  * @start
  * 
@@ -12,17 +11,6 @@ const check_auth = require("../middleWares/check_authentication");
 const check_author = require("../middlewares/check_authorization");
 
 const procController = require("../controllers/procedureController");
-
-// const storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, "upload/images/clinics");
-//   },
-//   filename: function(req, file, cb) {
-//     console.log(file.originalname);
-//     cb(null, Date.now() + "-" + file.originalname);
-//   }
-// });
-// const upload = multer({ storage: storage });
 
 router.get(
     "/addProcedure",
@@ -56,8 +44,15 @@ router.get(
 router.get(
     "/getProcAccordToClinic/:clinicId",
     check_auth,
-    check_author([1,5]), /// admin & clinic owner & doctor   ....
+    check_author([1,5]), /// admin & clinic owner   ....
     procController.getProcAccordToClinic
+);
+
+router.get(
+    "/getProcAccordToSpec/:specId",
+    check_auth,
+    check_author([1,5]), /// admin & clinic owner   ....
+    procController.getProcAccordToSpec
 );
 
 module.exports = router;
