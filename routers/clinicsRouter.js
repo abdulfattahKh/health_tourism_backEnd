@@ -69,11 +69,13 @@ router.post(
   clinicsController.postAddClinic
 );
 
+router.get('/clinicById/:id',clinicsController.getClinicById);
+
+router.get('/clinicTypesById/:id',clinicsController.getClinicTypesById);
 router.put(
-  '/addClinic/addDescreption',
+  '/addDescreption',
   clinicsController.putAddDescreption
 );
-
 router.post(
   '/addClinic/addImage',
   upload.array('image'),

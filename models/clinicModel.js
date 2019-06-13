@@ -119,6 +119,17 @@ module.exports = class Clinic {
 
   }
 
+  static getClinicById(clinicId) {
+    return db.execute(this.getClinicInfoQuery() + "where c.id = ?", [clinicId])
+  }
+
+  static getClinicTypesById(clinicId) {
+    return db.execute(`
+    select specialization_id , name from specializations_clinics S inner join specializations fuck on S.specialization_id = fuck.spec_id
+where S.clinic_id = 25
+`)
+  }
+
   static deleteClinciById(clinicId) {
 
     return db.execute(`delete from clinics where id=?`, [clinicId]);

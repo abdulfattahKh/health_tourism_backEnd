@@ -41,6 +41,23 @@ exports.getAllClinics = (req, res, next) => {
         });
 };
 
+exports.getClinicTypesById = (req,res,next)=>{
+    if(!req.params['id']) {
+        res.json({
+            success:false,
+            message:'error with params'
+        })
+    }
+    clinicModel.getClinicTypesById(req.params['id'])
+    .then(result=>{
+        res.status(200).json({
+            success:true,
+            message:'success',
+            data:result[0]
+        })
+    })
+}
+
 exports.getMyClinics = (req, res, next) => {
     if (!req.params["userId"]) {
         return res.status(400).json({
@@ -95,6 +112,32 @@ exports.getClinicsStatus = (req, res, next) => {
                 message: 'Internal error server'
             });
         })
+}
+
+exports.getClinicById = (req,res,next)=>{
+    if(!req.params['id']) {
+        return res.status(400)
+        .json({
+            success:false,
+            message:'there was a problem with your params'
+        })
+    }
+    clinicModel
+    .getClinicById(req.params['id'])
+    .then(result=>{
+        return res.status(200).json({
+            success:true,
+            message:'success',
+            data:result[0]
+        })
+    })
+    .catch(err=>{
+        console.log(err);
+        return res.status(500).json({
+            success:false,
+            message:err
+        })
+    })
 }
 exports.getClinicTypes = (req, res, next) => {
     clinicModel
