@@ -99,12 +99,37 @@ router.post(
 
 router.delete(
   '/addClinic/deleteCurrency',
+  check_auth,
+  check_author([2]),
   clinicsController.deleteCurrency
 );
 
 router.put(
   '/addClinic/editCurrency',
+  check_auth,
+  check_author([1,2]),
   clinicsController.updateCurrency
+);
+
+router.get(
+  '/getClinicCountry/:locationId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getClinicCountry
+);
+
+router.get(
+  '/getClinicCity/:locationId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getClinicCity
+);
+
+router.get(
+  '/getClinicState/:locationId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getClinicState
 );
 
 module.exports = router;
