@@ -93,9 +93,14 @@ router.delete(
   clinicsController.deleteImageById
 );
 
+router.get(
+  '/getCurrencies/:clinicId',
+  clinicsController.getAllCurrenciesById
+);
 
 router.get(
-  '/getCurrency'
+  '/getCurrencies',
+  clinicsController.getAllCurrencies
 );
 
 router.post(
@@ -166,5 +171,6 @@ router.put(
   // check_author([2]),
   doctorController.updateDoctor
 );
+
 
 module.exports = router;

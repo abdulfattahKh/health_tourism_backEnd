@@ -489,7 +489,57 @@ exports.getDescreption = (req, res, next) => {
 
 };
 
+exports.getAllCurrencies = (req, res, next) => {
 
+    currencyModel.getAllCurrencies()
+        .then(result => {
+            if (!result) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'http Not found!'
+                })
+            }
+            res.status(200).json({
+                success: true,
+                message: 'Getting all currencies.',
+                data: result[0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error!',
+                err: err
+            })
+        })
+
+};
+
+
+exports.getAllCurrenciesById = (req, res, next) => {
+
+    const clinicId = req.params.clinicId ? req.params.clinicId : null;
+    const travelAgencyId = req.params.travelAgencyId ? req.params.travelAgencyId : null;
+
+    console.log(clinicId, travelAgencyId);
+
+    currencyModel.getAllCurrenciesById(clinicId, travelAgencyId)
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'Getting All currencies for one clinic.',
+                data: result[0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Getting currencies failed!',
+                err: err
+            })
+        })
+
+};
 
 deleteClinicById = clinicId => {
     return new Promise(async (resolve, reject) => {
