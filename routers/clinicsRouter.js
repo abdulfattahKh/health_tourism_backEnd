@@ -111,8 +111,8 @@ router.put(
 
 router.get(
   '/getClinicCountry/:clinicId',
-  check_auth,
-  check_author([2]),
+  // check_auth,
+  // check_author([2]),
   clinicsController.getClinicCountry
 );
 
@@ -128,6 +128,14 @@ router.get(
   check_auth,
   check_author([2]),
   clinicsController.getClinicState
+);
+
+
+router.get(
+  '/getDescreption/:clinicId',
+  check_auth,
+  check_author([2]),
+  clinicsController.getDescreption
 );
 
 module.exports = router;
