@@ -5,6 +5,7 @@ const check_auth = require("../middleWares/check_authentication");
 const check_author = require("../middlewares/check_authorization");
 
 const clinicsController = require("../controllers/clinicsController");
+const doctorController = require('../controllers/doctorController');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -65,45 +66,52 @@ router.delete(
 
 router.post(
   "/addClinic",
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   clinicsController.postAddClinic
 );
 
 router.put(
-  '/addClinic/addDescreption',
+  '/addDescreption',
+  check_auth,
+  check_author([2]),
   clinicsController.putAddDescreption
 );
 
 router.post(
-  '/addClinic/addImage',
+  '/addImage',
   upload.array('image'),
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   clinicsController.postAddImages
 );
 
 router.delete(
-  '/addClinic/deleteImage/:imageId',
-  // check_auth,
-  // check_author([2]),
+  '/deleteImage/:imageId',
+  check_auth,
+  check_author([2]),
   clinicsController.deleteImageById
 );
 
+
+router.get(
+  '/getCurrency'
+);
+
 router.post(
-  '/addClinic/addCurrency',
+  '/addCurrency',
   clinicsController.postAddCurrency
 );
 
 router.delete(
-  '/addClinic/deleteCurrency',
+  '/deleteCurrency',
   check_auth,
   check_author([2]),
   clinicsController.deleteCurrency
 );
 
 router.put(
-  '/addClinic/editCurrency',
+  '/editCurrency',
   check_auth,
   check_author([2]),
   clinicsController.updateCurrency
@@ -111,8 +119,8 @@ router.put(
 
 router.get(
   '/getClinicCountry/:clinicId',
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   clinicsController.getClinicCountry
 );
 
@@ -136,6 +144,27 @@ router.get(
   check_auth,
   check_author([2]),
   clinicsController.getDescreption
+);
+
+router.post(
+  '/addDoctor/:clinicId',
+  // check_auth,
+  // check_author([2]),
+  doctorController.addDoctor
+);
+
+router.delete(
+  '/deleteDoctor/:doctorId',
+  // check_auth,
+  // check_author([2]),
+  doctorController.deleteDoctor
+);
+
+router.put(
+  '/editDoctor/:doctorId',
+  // check_auth,
+  // check_author([2]),
+  doctorController.updateDoctor
 );
 
 module.exports = router;
