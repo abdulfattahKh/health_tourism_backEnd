@@ -409,7 +409,7 @@ exports.updateCurrency = (req, res, next) => {
 
 exports.getClinicCountry = (req, res, next) => {
 
-    clinicModel.getClinicCountry(req.params.locationId)
+    clinicModel.getClinicCountry(req.params.clinicId)
         .then(result => {
             console.log(result);
             res.status(200).json({
@@ -421,7 +421,8 @@ exports.getClinicCountry = (req, res, next) => {
         .catch(err => {
             res.status(500).json({
                 success: false,
-                message: 'Getting country failed!'
+                message: 'Getting country failed!',
+                err: err
             })
         })
 
@@ -430,7 +431,7 @@ exports.getClinicCountry = (req, res, next) => {
 
 exports.getClinicCity = (req, res, next) => {
 
-    clinicModel.getClinicCity(req.params.locationId)
+    clinicModel.getClinicCity(req.params.clinicId)
         .then(result => {
             res.status(200).json({
                 success: true,
@@ -441,7 +442,8 @@ exports.getClinicCity = (req, res, next) => {
         .catch(err => {
             res.status(500).json({
                 success: false,
-                message: 'Getting city failed!'
+                message: 'Getting city failed!',
+                err: err
             })
         })
 }
@@ -449,7 +451,7 @@ exports.getClinicCity = (req, res, next) => {
 
 exports.getClinicState = (req, res, next) => {
 
-    clinicModel.getClinicState(req.params.locationId)
+    clinicModel.getClinicState(req.params.clinicId)
         .then(result => {
             res.status(200).json({
                 success: true,
@@ -460,7 +462,8 @@ exports.getClinicState = (req, res, next) => {
         .catch(err => {
             res.status(500).json({
                 success: false,
-                message: 'Getting state failed!'
+                message: 'Getting state failed!',
+                err: err
             })
         })
 };

@@ -163,30 +163,33 @@ module.exports = class Clinic {
     );
   }
   
-  static getClinicCountry (locationId) {
+  static getClinicCountry (clinicId) {
 
     return db.execute(
-      `select * from locations left join
-       countries on locations.country_id=countries.country_id where location_id=?`,
-       [locationId]
+      `select countries.country_id, countries.country_name from clinics left join
+       locations on clinics.location_id=locations.location_id left join
+       countries on locations.country_id=countries.country_id where clinics.id=?`,
+       [clinicId]
     );
 
   };
 
-  static getClinicCity (locationId) {
+  static getClinicCity (clinicId) {
     return db.execute(
-      `select * from locations left join
-       cities on locations.city_id=cities.city_id where location_id=?`,
-       [locationId]
+      `select cities.city_id, cities.city_name from clinics left join
+       locations on clinics.location_id=locations.location_id left join
+       cities on locations.city_id=cities.city_id where clinics.id=?`,
+       [clinicId]
     );
   }
 
 
-  static getClinicState (locationId) {
+  static getClinicState (clinicId) {
     return db.execute(
-      `select * from locations left join
-       states on locations.state_id=states.state_id where location_id=?`,
-       [locationId]
+      `select states.state_id, states.state_name from clinics left join
+       locations on clinics.location_id=locations.location_id left join
+       states on locations.state_id=states.state_id where clinics.id=?`,
+       [clinicId]
     );
   }
 

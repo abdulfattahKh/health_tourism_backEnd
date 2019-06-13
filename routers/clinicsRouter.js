@@ -110,21 +110,21 @@ router.put(
 );
 
 router.get(
-  '/getClinicCountry/:locationId',
+  '/getClinicCountry/:clinicId',
   check_auth,
   check_author([2]),
   clinicsController.getClinicCountry
 );
 
 router.get(
-  '/getClinicCity/:locationId',
+  '/getClinicCity/:clinicId',
   check_auth,
   check_author([2]),
   clinicsController.getClinicCity
 );
 
 router.get(
-  '/getClinicState/:locationId',
+  '/getClinicState/:clinicId',
   check_auth,
   check_author([2]),
   clinicsController.getClinicState
