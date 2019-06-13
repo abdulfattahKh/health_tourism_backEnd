@@ -11,8 +11,9 @@ const bodyParser = require("body-parser");
 const check_auth = require("./middleWares/check_authentication");
 const multer = require('multer');
 const app = express();
+const createFolders = require('./utilites/folders');
 const contorller = require('./controllers/clinicsController');
-
+const procedureModel = require("./models/procedureModel");
 //router
 
 const AuthRouter = require("./routers/AuthRouter");
@@ -21,6 +22,7 @@ const privilegesRouter = require("./routers/PrivilegesRouter");
 const locationRouter = require("./routers/locationRouter");
 const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
+const trips = require("./routers/trips");
 const generalRouter = require("./routers/crudRouter");
 /****
  * @author Abdulrahman Al hussein 
@@ -33,6 +35,8 @@ const procedureRouter = require("./routers/procedureRouter");
  */
 const server = http.createServer(app);
 
+createFolders.createFolders();
+
 
 //middleware
 app.use(cors());
@@ -40,6 +44,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join("images")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
 
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
@@ -50,12 +56,13 @@ app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
+app.use("/trips", trips);
 
 /****
  * @author Abdulrahman Al hussein 
  * @start 
  */
-app.use("/procedure",procedureRouter);
+app.use("/procedure", procedureRouter);
 /****
  * @author Abdulrahman Al hussein 
  * @end 
@@ -67,6 +74,15 @@ app.use('/', (req, res, next) => {
         message: 'http Not found!!'
     });
 });
+
+
+procedureModel.viewAccordAutoComplate("AC")
+    .then(result=>{
+        console.log(result);
+    })
+
+console.log("done !!");
+
 
 
 server.listen(process.env.PORT || 3000);

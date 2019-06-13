@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   }
 });
+
 const upload = multer({ storage: storage });
 
 router.get(
@@ -89,6 +90,21 @@ router.delete(
   // check_auth,
   // check_author([2]),
   clinicsController.deleteImageById
+);
+
+router.post(
+  '/addClinic/addCurrency',
+  clinicsController.postAddCurrency
+);
+
+router.delete(
+  '/addClinic/deleteCurrency',
+  clinicsController.deleteCurrency
+);
+
+router.put(
+  '/addClinic/editCurrency',
+  clinicsController.updateCurrency
 );
 
 module.exports = router;

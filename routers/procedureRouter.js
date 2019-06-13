@@ -55,6 +55,14 @@ router.get(
     procController.getProcAccordToSpec
 );
 
+router.get(
+    "/getProcAccordToAutoComplate/:subWord",
+    check_auth,
+    check_author([1,5]), /// admin & clinic owner   ....
+    procController.getProcAccordToAutoComplate
+);
+
+
 module.exports = router;
 
 /****
