@@ -178,4 +178,35 @@ where S.clinic_id = 25
       [status, clinicId]
     );
   }
+  
+  static getClinicCountry (clinicId) {
+
+    return db.execute(
+      `select countries.country_id, countries.country_name from clinics left join
+       locations on clinics.location_id=locations.location_id left join
+       countries on locations.country_id=countries.country_id where clinics.id=?`,
+       [clinicId]
+    );
+
+  };
+
+  static getClinicCity (clinicId) {
+    return db.execute(
+      `select cities.city_id, cities.city_name from clinics left join
+       locations on clinics.location_id=locations.location_id left join
+       cities on locations.city_id=cities.city_id where clinics.id=?`,
+       [clinicId]
+    );
+  }
+
+
+  static getClinicState (clinicId) {
+    return db.execute(
+      `select states.state_id, states.state_name from clinics left join
+       locations on clinics.location_id=locations.location_id left join
+       states on locations.state_id=states.state_id where clinics.id=?`,
+       [clinicId]
+    );
+  }
+
 }
