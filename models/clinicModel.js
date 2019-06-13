@@ -146,6 +146,8 @@ where S.clinic_id = 25
 
     return (this.sql = `select 
     c.id,
+    l.latitude,
+    l.longitude 
     c.phone_number,
     c.mobile_number,
     c.name as 'clinicName',
