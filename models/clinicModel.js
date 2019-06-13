@@ -162,4 +162,32 @@ module.exports = class Clinic {
       [status, clinicId]
     );
   }
+  
+  static getClinicCountry (locationId) {
+
+    return db.execute(
+      `select * from locations left join
+       countries on locations.country_id=countries.country_id where location_id=?`,
+       [locationId]
+    );
+
+  };
+
+  static getClinicCity (locationId) {
+    return db.execute(
+      `select * from locations left join
+       cities on locations.city_id=cities.city_id where location_id=?`,
+       [locationId]
+    );
+  }
+
+
+  static getClinicState (locationId) {
+    return db.execute(
+      `select * from locations left join
+       states on locations.state_id=states.state_id where location_id=?`,
+       [locationId]
+    );
+  }
+
 }

@@ -407,6 +407,63 @@ exports.updateCurrency = (req, res, next) => {
         })
 };
 
+exports.getClinicCountry = (req, res, next) => {
+
+    clinicModel.getClinicCountry(req.params.locationId)
+        .then(result => {
+            console.log(result);
+            res.status(200).json({
+                success: true,
+                message: 'Getting country successfully.',
+                data: result[0][0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Getting country failed!'
+            })
+        })
+
+};
+
+
+exports.getClinicCity = (req, res, next) => {
+
+    clinicModel.getClinicCity(req.params.locationId)
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'Getting city successfully.',
+                data: result[0][0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Getting city failed!'
+            })
+        })
+}
+
+
+exports.getClinicState = (req, res, next) => {
+
+    clinicModel.getClinicState(req.params.locationId)
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'Getting state succesffully.',
+                data: result[0][0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Getting state failed!'
+            })
+        })
+};
 
 deleteClinicById = clinicId => {
     return new Promise(async (resolve, reject) => {
