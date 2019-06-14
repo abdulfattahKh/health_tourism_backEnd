@@ -174,5 +174,19 @@ router.put(
   doctorController.updateDoctor
 );
 
+router.get(
+  '/images/:clinicId',
+  clinicsController.getAllImagesByClinicId
+);
+
+router.post(
+  '/addExperinces/:doctorId',
+  doctorController.postAddExperincesToDoctor
+);
+
+router.get(
+  '/doctors/:clinicId',
+  doctorController.getAllDoctorsByClinicId
+);
 
 module.exports = router;
