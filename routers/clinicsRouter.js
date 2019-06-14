@@ -78,7 +78,7 @@ router.put(
   clinicsController.putAddDescreption
 );
 router.post(
-  '/addClinic/addImage',
+  '/addImage',
   upload.array('image'),
   // check_auth,
   // check_author([2]),
@@ -86,26 +86,26 @@ router.post(
 );
 
 router.delete(
-  '/addClinic/deleteImage/:imageId',
+  '/deleteImage/:imageId',
   // check_auth,
   // check_author([2]),
   clinicsController.deleteImageById
 );
 
 router.post(
-  '/addClinic/addCurrency',
+  '/addCurrency',
   clinicsController.postAddCurrency
 );
 
 router.delete(
-  '/addClinic/deleteCurrency',
+  '/deleteCurrency',
   check_auth,
   check_author([2]),
   clinicsController.deleteCurrency
 );
 
 router.put(
-  '/addClinic/editCurrency',
+  '/editCurrency',
   check_auth,
   check_author([1,2]),
   clinicsController.updateCurrency
@@ -130,6 +130,14 @@ router.get(
   check_auth,
   check_author([1,2]),
   clinicsController.getClinicState
+);
+
+
+router.get(
+  '/getDescreption/:clinicId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getDescreption
 );
 
 module.exports = router;

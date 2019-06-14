@@ -390,7 +390,11 @@ exports.putChangeClinicStatus = (req, res, next) => {
 
 exports.postAddCurrency = (req, res, next) => {
 
-    const values = { currencies: req.body.currencies, clinicId: req.body.clinicId ? req.body.clinicId : null, travelAgencyId: req.body.travelAgencyId ? req.body.travelAgencyId : null };
+    const values = 
+    { currencies: req.body.currencies, 
+        clinicId: req.body.clinicId ? req.body.clinicId : null, 
+        travelAgencyId: req.body.travelAgencyId ? req.body.travelAgencyId : null 
+    };
 
     currencyModel.addCurrency(values)
         .then(result => {
@@ -510,6 +514,29 @@ exports.getClinicState = (req, res, next) => {
             })
         })
 };
+
+
+exports.getDescreption = (req, res, next) => {
+
+    descreptionModel.getDescreption('clinics', req.params.clinicId)
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'Getting descreption successfully.',
+                data: result[0][0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Getting descreption failed!',
+                err: err
+            })
+        })
+
+};
+
+
 
 deleteClinicById = clinicId => {
     return new Promise(async (resolve, reject) => {

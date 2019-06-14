@@ -6,7 +6,10 @@ exports.addCurrency = (values) => {
     return new Promise((resolve, reject) => {
 
         values.currencies.forEach(currency => {
-            db.execute(`insert into clinic_currency_travel_agency (currency_id, clinics_id, travel_agency_id) values (?, ?, ?)`, [currency.id, values.clinicId, values.travelAgencyId])
+            db.execute(`
+            insert into clinic_currency_travel_agency (currency_id, clinics_id, travel_agency_id) 
+            values (?, ?, ?)`, 
+            [currency.id, values.clinicId, values.travelAgencyId])
                 .then(result => {
                     resolve({ success: true, message: 'Adding currency successfully.', status: 200 })
                 })
