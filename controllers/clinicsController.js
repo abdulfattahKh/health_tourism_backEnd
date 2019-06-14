@@ -19,7 +19,9 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage
+});
 
 
 // get requests
@@ -41,6 +43,23 @@ exports.getAllClinics = (req, res, next) => {
             });
         });
 };
+
+exports.getClinicTypesById = (req, res, next) => {
+    if (!req.params['id']) {
+        res.json({
+            success: false,
+            message: 'error with params'
+        })
+    }
+    clinicModel.getClinicTypesById(req.params['id'])
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'success',
+                data: result[0]
+            })
+        })
+}
 
 exports.getMyClinics = (req, res, next) => {
     if (!req.params["userId"]) {
@@ -95,6 +114,32 @@ exports.getClinicsStatus = (req, res, next) => {
                 success: false,
                 message: 'Internal error server'
             });
+        })
+}
+
+exports.getClinicById = (req, res, next) => {
+    if (!req.params['id']) {
+        return res.status(400)
+            .json({
+                success: false,
+                message: 'there was a problem with your params'
+            })
+    }
+    clinicModel
+        .getClinicById(req.params['id'])
+        .then(result => {
+            return res.status(200).json({
+                success: true,
+                message: 'success',
+                data: result[0]
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({
+                success: false,
+                message: err
+            })
         })
 }
 exports.getClinicTypes = (req, res, next) => {
@@ -169,25 +214,30 @@ exports.postAddClinic = (req, res, next) => {
 
 exports.postAddImages = async (req, res, next) => {
     const clinicId = req.body.clinicId;
-
-    imagesModel.addImages({ clinicId: clinicId, array: req.files })
+    imagesModel.addImages({
+            clinicId: clinicId,
+            array: req.files
+        })
         .then(result => {
-            console.log(result);
-            console.log('Adding images successfully.');
+            return res.status(200).json({
+                success: result.success,
+                message: result.message,
+                images: result.data
+            })
         })
         .catch(err => {
             new Promise((resolve, reject) => {
-                req.files.forEach(el => {
-                    const path = el.path;
-                    fs.unlink(path, (err) => {
-                        if (err) {
-                            reject();
-                        } else {
-                            resolve();
-                        }
+                    req.files.forEach(el => {
+                        const path = el.path;
+                        fs.unlink(path, (err) => {
+                            if (err) {
+                                reject();
+                            } else {
+                                resolve();
+                            }
+                        })
                     })
                 })
-            })
                 .then(result => {
                     console.log('Deleting files successfully.');
                     res.status(500).json({
@@ -348,7 +398,10 @@ exports.putChangeClinicStatus = (req, res, next) => {
 
 exports.postAddCurrency = (req, res, next) => {
     console.log(req.body.currencies, req.params.clinicId);
-    const values = { currencies: req.body.currencies, clinicId: req.params.clinicId };
+    const values = {
+        currencies: req.body.currencies,
+        clinicId: req.params.clinicId
+    };
     console.log(values);
     currencyModel.addCurrency(values)
         .then(result => {
@@ -416,7 +469,7 @@ exports.getClinicCountry = (req, res, next) => {
             res.status(200).json({
                 success: true,
                 message: 'Getting country successfully.',
-                data: result[0][0]
+                data: result[0]
             })
         })
         .catch(err => {
@@ -437,7 +490,7 @@ exports.getClinicCity = (req, res, next) => {
             res.status(200).json({
                 success: true,
                 message: 'Getting city successfully.',
-                data: result[0][0]
+                data: result[0]
             })
         })
         .catch(err => {
@@ -457,7 +510,7 @@ exports.getClinicState = (req, res, next) => {
             res.status(200).json({
                 success: true,
                 message: 'Getting state succesffully.',
-                data: result[0][0]
+                data: result[0]
             })
         })
         .catch(err => {
@@ -571,13 +624,24 @@ deleteClinicById = clinicId => {
         try {
             let deleteRes = await clinicModel.deleteClinciById(clinicId);
             if (deleteRes[0].affectedRows > 0) {
-                resolve({ success: true, message: 'Deleting clinic successfully.', status: 200 });
+                resolve({
+                    success: true,
+                    message: 'Deleting clinic successfully.',
+                    status: 200
+                });
             } else {
-                resolve({ success: false, message: 'Deleting clinic failed!' });
+                resolve({
+                    success: false,
+                    message: 'Deleting clinic failed!'
+                });
             }
         } catch (err) {
             console.log(err);
-            reject({ success: false, message: 'Internal server error!', status: 500 });
+            reject({
+                success: false,
+                message: 'Internal server error!',
+                status: 500
+            });
         }
     });
 };
@@ -597,10 +661,16 @@ function addMultipleTypes(clinicId, types = []) {
                 [value, clinicId],
                 (err, RES) => {
                     if (err) {
-                        console.log({ success: false, message: err });
+                        console.log({
+                            success: false,
+                            message: err
+                        });
                         reject(err);
                     } else {
-                        resolve({ success: true, message: "inserting was done correctly" });
+                        resolve({
+                            success: true,
+                            message: "inserting was done correctly"
+                        });
                     }
                 }
             );
@@ -998,4 +1068,3 @@ function addMultipleTypes(clinicId, types = []) {
 //         });
 //     }));
 // }
-

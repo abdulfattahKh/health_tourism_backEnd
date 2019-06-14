@@ -18,7 +18,7 @@ module.exports = class Procedure {
 
     static viewAccordSpecId(spec_id){
         this.table = "procedures"
-        var query = `SELECT * FROM health_tourism.${this.table} WHERE specializations_spec_id = ${spec_id};`
+        var query = `SELECT * FROM last.${this.table} WHERE specializations_spec_id = ${spec_id};`
 
         return db.execute(query)
             .then( result => {
@@ -35,7 +35,7 @@ module.exports = class Procedure {
 
     static viewAccordAutoComplate(sub_word){
         sub_word = sub_word + "%";
-        var query = `SELECT * FROM health_tourism.procedures 
+        var query = `SELECT * FROM last.procedures 
                 WHERE lower(name) LIKE lower("${sub_word}");`
         return db.execute(query)
                     .then(result=>{
@@ -61,7 +61,7 @@ module.exports = class Procedure {
             var obj = JSON.parse( data )
 
             
-            var query = `INSERT INTO health_tourism.procedures 
+            var query = `INSERT INTO last.procedures 
                         ( name, specializations_spec_id) VALUES (?,?);`
             for (let i = 0; i < obj.treatments.length ; i++) {
                 console.log("Spec_id " + (i+1) + ">>>>>>>");

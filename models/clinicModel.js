@@ -84,6 +84,7 @@ module.exports = class Clinic {
         return true;
       })
       .catch(err => {
+        console.log(err);
         console.log('There is an erro!!');
         db.rollback();
         return false;
@@ -118,6 +119,17 @@ module.exports = class Clinic {
 
   }
 
+  static getClinicById(clinicId) {
+    return db.execute(this.getClinicInfoQuery() + "where c.id = ?", [clinicId])
+  }
+
+  static getClinicTypesById(clinicId) {
+    return db.execute(`
+    select specialization_id , name from specializations_clinics S inner join specializations fuck on S.specialization_id = fuck.spec_id
+where S.clinic_id = 25
+`)
+  }
+
   static deleteClinciById(clinicId) {
 
     return db.execute(`delete from clinics where id=?`, [clinicId]);
@@ -134,6 +146,10 @@ module.exports = class Clinic {
 
     return (this.sql = `select 
     c.id,
+    l.latitude,
+    l.longitude,
+    c.phone_number as 'phoneNumber',
+    c.mobile_number as 'mobileNumber',
     c.name as 'clinicName',
     co.country_name as 'country',
     ci.city_name as 'city',
