@@ -6,16 +6,26 @@ exports.getAllCurrencies = () => {
 
 };
 
-// values = {currencies: array of currency, currencyId, clinicId, travelAgencyId}
+// values = {currencies: array of currency, currencyId, clinicId or travelAgencyId}
 exports.addCurrency = (values) => {
+
+    const data = [];
+
+    if (values.clinicId) {
+        values.travelAgencyId = null;
+    } else {
+        values.clincinId = null;
+    }
 
     return new Promise((resolve, reject) => {
 
         values.currencies.forEach(currency => {
-            console.log(currency, values);
             db.execute(`insert into clinic_currency_travel_agency (currency_id, clinics_id, travel_agency_id) values (?, ?, ?)`, [currency.id, values.clinicId, values.travelAgencyId])
                 .then(result => {
-                    resolve({ success: true, message: 'Adding currency successfully.', status: 200 })
+                    data.push({ id: result[0].insertId });
+                    if (data.length === values.currencies.length) {
+                        resolve({ success: true, message: 'Adding currency successfully.', status: 200 , data: data})
+                    }
                 })
                 .catch(err => {
                     reject({ success: false, status: 500, message: 'Adding currency failed!', err: err });
@@ -51,14 +61,14 @@ exports.getAllCurrenciesById = (clinicId, travelAgencyId) => {
             `select currency.name, currency.code from currency left join
              clinic_currency_travel_agency on currency.id=clinic_currency_travel_agency.currency_id
              left join clinics on clinic_currency_travel_agency.clinics_id=clinics.id where clinics.id=?`,
-             [clinicId]
+            [clinicId]
         );
     } else {
         return db.execute(
             `select currency.name, currency.code from currency left join
              clinic_currency_travel_agency on currency.id=clinic_currency_travel_agency.currency_id
              left join travel_agency on clinic_currency_travel_agency.travel_agency_id=travel_agency.id where travel_agency.id=?`,
-             [travelAgencyId]
+            [travelAgencyId]
         );
     }
 

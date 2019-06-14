@@ -397,19 +397,19 @@ exports.putChangeClinicStatus = (req, res, next) => {
 
 
 exports.postAddCurrency = (req, res, next) => {
-
+    console.log(req.body.currencies, req.params.clinicId);
     const values = {
         currencies: req.body.currencies,
-        clinicId: req.body.clinicId ? req.body.clinicId : null,
-        travelAgencyId: req.body.travelAgencyId ? req.body.travelAgencyId : null
+        clinicId: req.params.clinicId
     };
-
+    console.log(values);
     currencyModel.addCurrency(values)
         .then(result => {
             console.log(result);
             res.status(result.status).json({
                 success: result.success,
-                message: result.message
+                message: result.message,
+                data: result.data
             })
         })
         .catch(err => {
@@ -425,7 +425,7 @@ exports.postAddCurrency = (req, res, next) => {
 
 exports.deleteCurrency = (req, res, next) => {
 
-    currencyModel.deleteCurrency(req.body.id)
+    currencyModel.deleteCurrency(req.params.currencyId)
         .then(result => {
             console.log(result);
             res.status(200).json({
@@ -444,8 +444,7 @@ exports.deleteCurrency = (req, res, next) => {
 };
 
 exports.updateCurrency = (req, res, next) => {
-    console.log(req.body.id, req.body.newCurrencyId);
-    currencyModel.updateCurrency(req.body.id, req.body.newCurrencyId)
+    currencyModel.updateCurrency(req.params.currencyId, req.body.newCurrencyId)
         .then(result => {
             console.log(result);
             res.status(200).json({

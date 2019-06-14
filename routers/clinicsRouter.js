@@ -106,19 +106,21 @@ router.get(
 );
 
 router.post(
-  '/addCurrency',
+  '/addCurrency/:clinicId',
+  check_auth,
+  check_author([2]),
   clinicsController.postAddCurrency
 );
 
 router.delete(
-  '/deleteCurrency',
+  '/deleteCurrency/:currencyId',
   check_auth,
   check_author([2]),
   clinicsController.deleteCurrency
 );
 
 router.put(
-  '/editCurrency',
+  '/editCurrency/:currencyId',
   check_auth,
   check_author([1,2]),
   clinicsController.updateCurrency
@@ -155,22 +157,22 @@ router.get(
 
 router.post(
   '/addDoctor/:clinicId',
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   doctorController.addDoctor
 );
 
 router.delete(
   '/deleteDoctor/:doctorId',
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   doctorController.deleteDoctor
 );
 
 router.put(
   '/editDoctor/:doctorId',
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   doctorController.updateDoctor
 );
 
