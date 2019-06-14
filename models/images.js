@@ -58,3 +58,13 @@ exports.deleteImageFromFolder = (path, imageId) => {
         });
     })
 };
+
+exports.getAllImgaesByClinicId = (clinicId) => {
+
+    return db.execute(
+        `select image_id, image_path from clinics left join images
+         on clinics.id=images.clinics_id where clinics.id=?`,
+         [clinicId]
+    );
+
+};
