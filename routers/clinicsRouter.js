@@ -5,6 +5,7 @@ const check_auth = require("../middleWares/check_authentication");
 const check_author = require("../middlewares/check_authorization");
 
 const clinicsController = require("../controllers/clinicsController");
+const doctorController = require('../controllers/doctorController');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -65,8 +66,8 @@ router.delete(
 
 router.post(
   "/addClinic",
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   clinicsController.postAddClinic
 );
 
@@ -75,21 +76,33 @@ router.get('/clinicById/:id',clinicsController.getClinicById);
 router.get('/clinicTypesById/:id',clinicsController.getClinicTypesById);
 router.put(
   '/addDescreption',
+  check_auth,
+  check_author([1,2]),
   clinicsController.putAddDescreption
 );
 router.post(
   '/addImage',
   upload.array('image'),
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([1 , 2]),
   clinicsController.postAddImages
 );
 
 router.delete(
   '/deleteImage/:imageId',
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([1,2]),
   clinicsController.deleteImageById
+);
+
+router.get(
+  '/getCurrencies/:clinicId',
+  clinicsController.getAllCurrenciesById
+);
+
+router.get(
+  '/getAllCurrencies',
+  clinicsController.getAllCurrencies
 );
 
 router.post(
@@ -139,5 +152,27 @@ router.get(
   check_author([1,2]),
   clinicsController.getDescreption
 );
+
+router.post(
+  '/addDoctor/:clinicId',
+  // check_auth,
+  // check_author([2]),
+  doctorController.addDoctor
+);
+
+router.delete(
+  '/deleteDoctor/:doctorId',
+  // check_auth,
+  // check_author([2]),
+  doctorController.deleteDoctor
+);
+
+router.put(
+  '/editDoctor/:doctorId',
+  // check_auth,
+  // check_author([2]),
+  doctorController.updateDoctor
+);
+
 
 module.exports = router;

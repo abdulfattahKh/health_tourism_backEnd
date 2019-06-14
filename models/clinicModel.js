@@ -32,7 +32,7 @@ module.exports = class Clinic {
         console.log('Begin Transaction: ');
         return db.execute(
           `select * from locations where country_id=${this.clinicCountry} and   city_id=${this.clinicCity} and
-                    state_id=${this.clinicState};`
+                    state_id=${this.clinicState} ;`
         );
       })
       .then(result => {
@@ -178,35 +178,42 @@ where S.clinic_id = 25
       [status, clinicId]
     );
   }
-  
-  static getClinicCountry (clinicId) {
+
+  static getClinicCountry(clinicId) {
 
     return db.execute(
       `select countries.country_id, countries.country_name from clinics left join
        locations on clinics.location_id=locations.location_id left join
        countries on locations.country_id=countries.country_id where clinics.id=?`,
-       [clinicId]
+      [clinicId]
     );
 
   };
 
-  static getClinicCity (clinicId) {
+  static getClinicCity(clinicId) {
     return db.execute(
       `select cities.city_id, cities.city_name from clinics left join
        locations on clinics.location_id=locations.location_id left join
        cities on locations.city_id=cities.city_id where clinics.id=?`,
-       [clinicId]
+      [clinicId]
     );
   }
 
 
-  static getClinicState (clinicId) {
+  static getClinicState(clinicId) {
     return db.execute(
       `select states.state_id, states.state_name from clinics left join
        locations on clinics.location_id=locations.location_id left join
        states on locations.state_id=states.state_id where clinics.id=?`,
-       [clinicId]
+      [clinicId]
     );
+  }
+
+
+  static updateClinic (clinicId, clinic) {
+
+    
+
   }
 
 }
