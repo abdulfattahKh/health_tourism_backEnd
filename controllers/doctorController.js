@@ -13,7 +13,8 @@ exports.addDoctor = (req, res, next) => {
         .then(result => {
             res.status(200).json({
                 success: result.success,
-                message: result.message
+                message: result.message,
+                doctorId: result.doctorId
             })
         })
         .catch(err => {
@@ -73,7 +74,7 @@ exports.updateDoctor = (req, res, next) => {
             res.status(404).json({
                 success: false,
                 message: 'Doctor Not found!'
-           })
+            })
         })
         .catch(err => {
             console.log(err);
@@ -83,4 +84,50 @@ exports.updateDoctor = (req, res, next) => {
                 err: err
             })
         })
+};
+
+
+exports.postAddExperincesToDoctor = (req, res, next) => {
+
+    const experinces = req.body.experinces;
+    const doctorId = req.params.doctorId;
+
+    doctorModel.addExperiencesToDoctor(experinces, doctorId)
+        .then(result => {
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message,
+                data: result.data
+            })
+        })
+        .catch(result => {
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message,
+                err: result.err
+            })
+        })
+};
+
+exports.getAllDoctorsByClinicId = (req, res, next) => {
+
+    const clinicId = req.params.clinicId;
+
+    doctorModel.getAllDoctorsByClinicId(clinicId)
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'Getting all doctors of one clinic successfully.',
+                data: result[0]
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Getting all doctors of one clinic failes!',
+                err: err
+            })
+        })
+
+
 };

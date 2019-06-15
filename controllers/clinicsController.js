@@ -595,6 +595,49 @@ exports.getAllCurrenciesById = (req, res, next) => {
 
 };
 
+
+exports.getAllImagesByClinicId = (req, res, next) => {
+
+    imagesModel.getAllImgaesByClinicId(req.params.clinicId)
+        .then(result => {
+
+            res.status(200).json({
+                success: true,
+                message: 'Getting all images for an clinic.',
+                data: result[0]
+            })
+        })
+        .catch(err => {
+
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error!',
+                err: err
+            })
+        })
+
+};
+
+
+exports.putUpdateClinic = (req, res, next) => {
+    
+    clinicModel.updateClinic(req.params.clinicId, req.body.clinic)
+        .then(result => {
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            })
+        })
+        .catch(err => {
+            res.status(err.status).json({
+                success: err.success,
+                message: err.message,
+                err: err.err
+            })
+        })
+
+};
+
 deleteClinicById = clinicId => {
     return new Promise(async (resolve, reject) => {
         try {

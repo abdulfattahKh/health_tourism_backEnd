@@ -66,8 +66,8 @@ router.delete(
 
 router.post(
   "/addClinic",
-  check_auth,
-  check_author([2]),
+  // check_auth,
+  // check_author([2]),
   clinicsController.postAddClinic
 );
 
@@ -176,5 +176,24 @@ router.put(
   doctorController.updateDoctor
 );
 
+router.get(
+  '/images/:clinicId',
+  clinicsController.getAllImagesByClinicId
+);
+
+router.post(
+  '/addExperinces/:doctorId',
+  doctorController.postAddExperincesToDoctor
+);
+
+router.get(
+  '/doctors/:clinicId',
+  doctorController.getAllDoctorsByClinicId
+);
+
+router.put(
+  '/editClinic/:clinicId',
+  clinicsController.putUpdateClinic
+);
 
 module.exports = router;

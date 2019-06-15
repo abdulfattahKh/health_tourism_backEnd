@@ -32,7 +32,7 @@ module.exports = class Clinic {
         console.log('Begin Transaction: ');
         return db.execute(
           `select * from locations where country_id=${this.clinicCountry} and   city_id=${this.clinicCity} and
-                    state_id=${this.clinicState} ;`
+                    state_id=${this.clinicState} and longitude=${this.longitude} and latitude=${this.latitude} ;`
         );
       })
       .then(result => {
@@ -53,6 +53,7 @@ module.exports = class Clinic {
       .then(result => {
         console.log('waledd');
         locationId = result[0][0].location_id;
+        console.log(this, locationId);
         return db.execute(
           `insert into clinics (name, mobile_number, phone_number, user_id, location_id) values (?, ?, ?, ?, ?)`,
           [this.clinicName, this.mobileNumber, this.phoneNumber, this.userId, locationId]
@@ -210,10 +211,63 @@ where S.clinic_id = 25
   }
 
 
-  static updateClinic (clinicId, clinic) {
+  static updateClinic(clinicId, clinic) {
+    let locationId;
+    let r;
 
-    
+    return new Promise((rs, rj) => {
 
+      return db.beginTransaction()
+        .then(result => {
+          return db.execute(
+            `select * from locations where longitude=? and latitude=? and country_id=? and city_id=? and state_id=?`,
+            [clinic.longitude, clinic.latitude, clinic.countryId, clinic.cityId, clinic.stateId]
+          );
+        })
+        .then(result => {
+          if (!result[0][0]) {
+            return db.execute(
+              `insert into locations (longitude, latitude, country_id, city_id, state_id) values (?, ?, ?, ?, ?)`,
+              [clinic.longitude, clinic.latitude, clinic.countryId, clinic.cityId, clinic.stateId]);
+          } else {
+            locationId = result[0][0].location_id;
+          }
+        })
+        .then(result => {
+          if (result) {
+            locationId = result[0].insertId;
+          }
+          return db.execute(
+            `update clinics set name=?, descreption=?, mobile_number=?, phone_number=?, location_id=? where id=?`,
+            [clinic.name, clinic.descreption, clinic.mobileNumber, clinic.phoneNumber, locationId, clinicId]
+          );
+        })
+        .then(result => {
+          return new Promise((resolve, reject) => {
+            clinic.types.forEach(type => {
+              db.execute(`insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`, [type, clinicId])
+                .then(result => {
+                  resolve({ success: true, message: 'Updating clinic successfully.', status: 200 })
+                })
+                .catch(err => {
+                  reject({ success: false, message: 'Updating clinic failed!', err: err, status: 500 })
+                })
+            })
+          });
+        })
+        .then(result => {
+          r = result;
+          return db.commit();
+        })
+        .then(result => {
+          console.log('Transaction Completed!');
+          rs({ success: r.success, status: r.status, message: r.message })
+        })
+        .catch(result => {
+          db.rollback();
+          rj({ success: result.success, status: result.status, err: result.err })
+        })
+    });
   }
 
 }
