@@ -66,8 +66,8 @@ router.delete(
 
 router.post(
   "/addClinic",
-  check_auth,
-  check_author([2]),
+  // check_auth,
+  // check_author([2]),
   clinicsController.postAddClinic
 );
 
@@ -189,6 +189,11 @@ router.post(
 router.get(
   '/doctors/:clinicId',
   doctorController.getAllDoctorsByClinicId
+);
+
+router.put(
+  '/editClinic/:clinicId',
+  clinicsController.putUpdateClinic
 );
 
 module.exports = router;

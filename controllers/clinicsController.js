@@ -619,6 +619,25 @@ exports.getAllImagesByClinicId = (req, res, next) => {
 };
 
 
+exports.putUpdateClinic = (req, res, next) => {
+    
+    clinicModel.updateClinic(req.params.clinicId, req.body.clinic)
+        .then(result => {
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message
+            })
+        })
+        .catch(err => {
+            res.status(err.status).json({
+                success: err.success,
+                message: err.message,
+                err: err.err
+            })
+        })
+
+};
+
 deleteClinicById = clinicId => {
     return new Promise(async (resolve, reject) => {
         try {
