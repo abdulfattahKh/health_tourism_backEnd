@@ -35,5 +35,8 @@ exports.createFolders = () => {
         fs.mkdirSync(path.join(p + '/trips'));
     }
 
+    if (!fs.existsSync(path.join(p + '/doctors'))) {
+        fs.mkdirSync(path.join(p + '/doctors'));
+    }
 
 };

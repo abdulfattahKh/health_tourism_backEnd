@@ -211,6 +211,11 @@ module.exports = class Clinic {
 
   static putUpdateClinic(clinicId, clinic) {
 
+    clinic.name = clinic.name ? clinic.name : null;
+    clinic.descreption = clinic.descreption ? clinic.descreption : null;
+    clinic.phoneNumber = clinic.phoneNumber ? clinic.phoneNumber : null;
+    clinic.mobileNumber = clinic.mobileNumber ? clinic.mobileNumber : null;
+
     let locationId;
 
     return new Promise((resolve, reject) => {
