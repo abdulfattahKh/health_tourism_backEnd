@@ -66,14 +66,15 @@ router.delete(
 
 router.post(
   "/addClinic",
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([2]),
   clinicsController.postAddClinic
 );
 
 router.get('/clinicById/:id',clinicsController.getClinicById);
 
 router.get('/clinicTypesById/:id',clinicsController.getClinicTypesById);
+
 router.put(
   '/addDescreption',
   check_auth,
@@ -97,11 +98,15 @@ router.delete(
 
 router.get(
   '/getCurrencies/:clinicId',
+  check_auth,
+  check_author([2]),
   clinicsController.getAllCurrenciesById
 );
 
 router.get(
   '/getAllCurrencies',
+  check_auth,
+  check_author([2]),
   clinicsController.getAllCurrencies
 );
 
@@ -155,6 +160,13 @@ router.get(
   clinicsController.getDescreption
 );
 
+router.get(
+  '/getDoctor/:doctorId',
+  check_auth,
+  check_author([2]),
+  doctorController.getDoctorById
+);
+
 router.post(
   '/addDoctor/:clinicId',
   check_auth,
@@ -178,21 +190,39 @@ router.put(
 
 router.get(
   '/images/:clinicId',
+  check_auth,
+  check_author([2]),
   clinicsController.getAllImagesByClinicId
 );
 
 router.post(
   '/addExperinces/:doctorId',
+  check_auth,
+  check_author([2]),
   doctorController.postAddExperincesToDoctor
 );
 
 router.get(
   '/doctors/:clinicId',
+  check_auth,
+  check_author([2]),
   doctorController.getAllDoctorsByClinicId
+);
+
+router.post(
+  '/doctor/addImage/:doctorId',
+  doctorController.postAddImgae
+);
+
+router.delete(
+  '/doctor/deleteImage/:doctorId',
+  doctorController.deleteImage
 );
 
 router.put(
   '/editClinic/:clinicId',
+  check_auth,
+  check_author([2]),
   clinicsController.putUpdateClinic
 );
 

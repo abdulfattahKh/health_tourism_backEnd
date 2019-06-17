@@ -189,25 +189,21 @@ exports.getClinicsByStatus = (req, res, next) => {
 
 exports.postAddClinic = (req, res, next) => {
     const clinicObj = new clinicModel(req.body);
-    clinicObj.save(callAddMultipleTypes)
+    clinicObj.save()
         .then(result => {
-            console.log(req.files);
-            if (!result) {
-                return res.status(500).json({
-                    success: false,
-                    message: 'Could not adding clinic, Please try again!!'
-                });
-            }
-            res.status(200).json({
-                success: true,
-                message: 'adding clinic successfully.'
+            console.log(result);
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message,
+                id: result.id
             });
         })
-        .catch(err => {
-            res.json({
-                success: false,
-                message: 'Could not adding clinic, Please try again!!'
-            })
+        .catch(result => {
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message,
+                err: result.err 
+            });
         })
 };
 
@@ -621,21 +617,38 @@ exports.getAllImagesByClinicId = (req, res, next) => {
 
 exports.putUpdateClinic = (req, res, next) => {
 
-    clinicModel.updateClinic(req.params.clinicId, req.body)
+
+    clinicModel.putUpdateClinic(req.params.clinicId, req.body)
         .then(result => {
+            console.log('Updaited');
             res.status(result.status).json({
                 success: result.success,
                 message: result.message
             })
         })
-        .catch(err => {
-            console.log(err);
-            res.status(err.status).json({
-                success: err.success,
-                message: err.message,
-                err: err.err
+        .catch(result => {
+            console.log('Error');
+            res.status(result.status).json({
+                success: result.success,
+                message: result.message,
+                err: result.err
             })
         })
+
+    // clinicModel.updateClinic(req.params.clinicId, req.body)
+    //     .then(result => {
+    //         res.status(result.status).json({
+    //             success: result.success,
+    //             message: result.message
+    //         })
+    //     })
+    //     .catch(err => {
+    //         res.status(err.status).json({
+    //             success: err.success,
+    //             message: err.message,
+    //             err: err.err
+    //         })
+    //     })
 
 };
 
