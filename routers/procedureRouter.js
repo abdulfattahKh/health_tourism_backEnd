@@ -35,7 +35,7 @@ router.get(
 
 
 router.get(
-    "/getProcAccordToClinic/:clinicId",
+    "/getProcAccordClinic/:clinicId",
     check_auth,
     check_author([1,5]), /// admin & clinic owner   ....
     procController.getProcAccordToClinic

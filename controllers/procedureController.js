@@ -73,24 +73,15 @@ exports.getProcAccordToClinic = (req, res, next) => {
     }
 
     procSpecClinicModel
-    .viewAccordClinic(req.params["clinicId"])
+    .getClinicSpecializationsWithProcedures(req.params["clinicId"])
     .then(result => {
-        if (!result.length) {
-            return res.status(404).json({
-                success: false,
-                message: "request Not found"
-            });
-        }
         res.status(200).json({
-            success: true,
-            message: "the request was processed successfully.",
-            data: result
+            ...result
         });
     })
     .catch(err => {
         res.status(500).json({
-            success: false,
-            message: "Internal error"
+            ...err
         });
     });
 };

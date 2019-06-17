@@ -620,8 +620,8 @@ exports.getAllImagesByClinicId = (req, res, next) => {
 
 
 exports.putUpdateClinic = (req, res, next) => {
-    
-    clinicModel.updateClinic(req.params.clinicId, req.body.clinic)
+
+    clinicModel.updateClinic(req.params.clinicId, req.body)
         .then(result => {
             res.status(result.status).json({
                 success: result.success,
@@ -629,6 +629,7 @@ exports.putUpdateClinic = (req, res, next) => {
             })
         })
         .catch(err => {
+            console.log(err);
             res.status(err.status).json({
                 success: err.success,
                 message: err.message,
