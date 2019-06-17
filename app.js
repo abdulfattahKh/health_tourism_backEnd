@@ -24,15 +24,9 @@ const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
 const trips = require("./routers/trips");
 const generalRouter = require("./routers/crudRouter");
-/****
- * @author Abdulrahman Al hussein 
- * @start
- */
+
 const procedureRouter = require("./routers/procedureRouter");
-/****
- * @author Abdulrahman Al hussein 
- * @end 
- */
+
 const server = http.createServer(app);
 
 createFolders.createFolders();
@@ -43,7 +37,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join("upload/images")));
 console.log(path.join('images'))
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(bodyParser.json());
 
 
@@ -58,15 +54,9 @@ app.use("/clinics", clinicsRouter);
 app.use("/travelAgency", travelAgent);
 app.use("/trips", trips);
 
-/****
- * @author Abdulrahman Al hussein 
- * @start 
- */
+
 app.use("/procedure", procedureRouter);
-/****
- * @author Abdulrahman Al hussein 
- * @end 
- */
+
 
 
 app.use('/', (req, res, next) => {
@@ -74,15 +64,6 @@ app.use('/', (req, res, next) => {
         message: 'http Not found!!'
     });
 });
-
-
-procedureModel.viewAccordAutoComplate("AC")
-    .then(result=>{
-        console.log(result);
-    })
-
-console.log("done !!");
-
 
 
 server.listen(process.env.PORT || 3000);
