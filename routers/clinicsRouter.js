@@ -67,7 +67,7 @@ router.delete(
 router.post(
   "/addClinic",
   check_auth,
-  check_author([2]),
+  check_author([1,2]),
   clinicsController.postAddClinic
 );
 
@@ -222,7 +222,7 @@ router.delete(
 router.put(
   '/editClinic/:clinicId',
   check_auth,
-  check_author([2]),
+  check_author([1,2]),
   clinicsController.putUpdateClinic
 );
 

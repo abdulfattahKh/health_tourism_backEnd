@@ -12,14 +12,14 @@ const check_author = require("../middlewares/check_authorization");
 
 const procController = require("../controllers/procedureController");
 
-router.get(
+router.post(
     "/addProcedure",
     check_auth,
     check_author([1,5]), /// admin & clinic owner ....
     procController.addProcedure
 );
 
-router.get(
+router.post(
     "/updateProcedure",
     check_auth,
     check_author([1,5]), /// admin & clinic owner ....
