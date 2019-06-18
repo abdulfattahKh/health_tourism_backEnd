@@ -11,6 +11,7 @@ const bluePromise = require('bluebird');
 module.exports = class procSpecClinic {
 
     constructor(values) {
+        console.log(values);
         this.proc_id = values.proc_id;
         this.spec_id = values.spec_id;
         this.clinic_id = values.clinic_id;
@@ -139,6 +140,7 @@ module.exports = class procSpecClinic {
 
     delete() {
 
+        console.log(this.proc_id , this.spec_id , this.clinic_id);
         return db.beginTransaction()
             .then(result => {
                 return procSpecClinic.fKeysSelect(this.proc_id, this.spec_id, this.clinic_id);

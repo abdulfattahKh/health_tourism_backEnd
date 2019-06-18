@@ -26,7 +26,7 @@ router.get(
     procController.updateProcedure
 );
 
-router.get(
+router.post(
     "/deleteProcedure",
     check_auth,
     check_author([1,5]), /// admin & clinic owner ....
