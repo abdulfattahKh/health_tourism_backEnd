@@ -5,6 +5,7 @@ const check_auth = require("../middleWares/check_authentication");
 const check_author = require("../middlewares/check_authorization");
 
 const clinicsController = require("../controllers/clinicsController");
+const doctorController = require('../controllers/doctorController');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -65,29 +66,164 @@ router.delete(
 
 router.post(
   "/addClinic",
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([1,2]),
   clinicsController.postAddClinic
 );
 
+router.get('/clinicById/:id',clinicsController.getClinicById);
+
+router.get('/clinicTypesById/:id',clinicsController.getClinicTypesById);
+
 router.put(
-  '/addClinic/addDescreption',
+  '/addDescreption',
+  check_auth,
+  check_author([1,2]),
   clinicsController.putAddDescreption
 );
-
 router.post(
-  '/addClinic/addImage',
+  '/addImage',
   upload.array('image'),
-  // check_auth,
-  // check_author([2]),
+  check_auth,
+  check_author([1 , 2]),
   clinicsController.postAddImages
 );
 
 router.delete(
-  '/addClinic/deleteImage/:imageId',
-  // check_auth,
-  // check_author([2]),
+  '/deleteImage/:imageId',
+  check_auth,
+  check_author([1,2]),
   clinicsController.deleteImageById
+);
+
+router.get(
+  '/getCurrencies/:clinicId',
+  check_auth,
+  check_author([2]),
+  clinicsController.getAllCurrenciesById
+);
+
+router.get(
+  '/getAllCurrencies',
+  check_auth,
+  check_author([2]),
+  clinicsController.getAllCurrencies
+);
+
+router.post(
+  '/addCurrency/:clinicId',
+  check_auth,
+  check_author([2]),
+  clinicsController.postAddCurrency
+);
+
+router.delete(
+  '/deleteCurrency/:currencyId',
+  check_auth,
+  check_author([2]),
+  clinicsController.deleteCurrency
+);
+
+router.put(
+  '/editCurrency/:currencyId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.updateCurrency
+);
+
+router.get(
+  '/getClinicCountry/:clinicId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getClinicCountry
+);
+
+router.get(
+  '/getClinicCity/:clinicId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getClinicCity
+);
+
+router.get(
+  '/getClinicState/:clinicId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getClinicState
+);
+
+
+router.get(
+  '/getDescreption/:clinicId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.getDescreption
+);
+
+router.get(
+  '/getDoctor/:doctorId',
+  check_auth,
+  check_author([2]),
+  doctorController.getDoctorById
+);
+
+router.post(
+  '/addDoctor/:clinicId',
+  check_auth,
+  check_author([2]),
+  doctorController.addDoctor
+);
+
+router.delete(
+  '/deleteDoctor/:doctorId',
+  check_auth,
+  check_author([2]),
+  doctorController.deleteDoctor
+);
+
+router.put(
+  '/editDoctor/:doctorId',
+  check_auth,
+  check_author([2]),
+  doctorController.updateDoctor
+);
+
+router.get(
+  '/images/:clinicId',
+  check_auth,
+  check_author([2]),
+  clinicsController.getAllImagesByClinicId
+);
+
+router.post(
+  '/addExperinces/:doctorId',
+  check_auth,
+  check_author([2]),
+  doctorController.postAddExperincesToDoctor
+);
+
+router.get(
+  '/doctors/:clinicId',
+  check_auth,
+  check_author([2]),
+  doctorController.getAllDoctorsByClinicId
+);
+
+router.post(
+  '/doctor/addImage/:doctorId',
+  doctorController.postAddImgae
+);
+
+router.delete(
+  '/doctor/deleteImage/:doctorId',
+  doctorController.deleteImage
+);
+
+router.put(
+  '/editClinic/:clinicId',
+  check_auth,
+  check_author([1,2]),
+  clinicsController.putUpdateClinic
 );
 
 module.exports = router;

@@ -104,12 +104,7 @@ module.exports.getPrivilegeById = async (req, res, next) => {
 module.exports.getAllPrivileges = (req, res, next) => {
   PrivilegesModel.getAllPrivileges()
     .then(privilege_res => {
-      if (privilege_res[0].length == 0) {
-        return res.status(204).json({
-          success: true,
-          message: "there is no privileges"
-        });
-      }
+      console.log(privilege_res)
       return res.status(200).json({
         success: true,
         message: "got all privileges",

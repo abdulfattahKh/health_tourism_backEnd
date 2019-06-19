@@ -12,28 +12,21 @@ const check_author = require("../middlewares/check_authorization");
 
 const procController = require("../controllers/procedureController");
 
-router.get(
+router.post(
     "/addProcedure",
     check_auth,
     check_author([1,5]), /// admin & clinic owner ....
     procController.addProcedure
 );
 
-router.get(
+router.post(
     "/updateProcedure",
     check_auth,
     check_author([1,5]), /// admin & clinic owner ....
     procController.updateProcedure
 );
 
-router.get(
-    "/updateProcedure",
-    check_auth,
-    check_author([1,5]), /// admin & clinic owner ....
-    procController.updateProcedure
-);
-
-router.get(
+router.post(
     "/deleteProcedure",
     check_auth,
     check_author([1,5]), /// admin & clinic owner ....
@@ -42,7 +35,7 @@ router.get(
 
 
 router.get(
-    "/getProcAccordToClinic/:clinicId",
+    "/getProcAccordClinic/:clinicId",
     check_auth,
     check_author([1,5]), /// admin & clinic owner   ....
     procController.getProcAccordToClinic
@@ -54,6 +47,14 @@ router.get(
     check_author([1,5]), /// admin & clinic owner   ....
     procController.getProcAccordToSpec
 );
+
+router.get(
+    "/getProcAccordToAutoComplate/:subWord",
+    check_auth,
+    check_author([1,5]), /// admin & clinic owner   ....
+    procController.getProcAccordToAutoComplate
+);
+
 
 module.exports = router;
 

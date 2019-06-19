@@ -13,17 +13,28 @@ exports.getImageById = (imageId) => {
 exports.addImages = (values) => {
     const data = [];
 
+    const obj = {
+        clinicId: values.clinicId ? values.clinicId : null,
+        travelAgencyId: values.travelAgencyId ? values.travelAgencyId : null,
+        procedureId: values.procedureId ? values.procedureId : null,
+        tripId: values.tripId ? values.tripId : null
+    }
+
     return new Promise((resolve, reject) => {
         values.array.forEach(element => {
-            data.push(element.filename);
             const path = element.path;
-            db.execute(`insert into images (image_path, clinics_id) values (?, ?)`, [path, values.clinicId])
+
+            db.execute(`insert into images (image_path, clinics_id, travel_agency_id, procedures_id, trips_id) values (?, ?, ?, ?, ?)`, [path, obj.clinicId, obj.travelAgencyId, obj.procedureId, obj.tripId])
                 .then(result => {
-                    resolve({ success: true, message: 'Adding images successfully.', data: data });
+                    data.push({ id: result[0].insertId, name: element.filename });
+                    if (data.length === values.array.length) {
+                        resolve({ success: true, message: 'Adding images successfully.', data: data });
+                    }
                 })
                 .catch(err => {
                     reject({ err: err, success: false, message: 'Internal server error!' })
                 });
+
         });
 
     });
@@ -46,4 +57,14 @@ exports.deleteImageFromFolder = (path, imageId) => {
             }
         });
     })
+};
+
+exports.getAllImgaesByClinicId = (clinicId) => {
+
+    return db.execute(
+        `select image_id, image_path from clinics left join images
+         on clinics.id=images.clinics_id where clinics.id=?`,
+         [clinicId]
+    );
+
 };
