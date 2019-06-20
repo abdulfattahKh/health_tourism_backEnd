@@ -34,6 +34,7 @@ createFolders.createFolders();
 
 //middleware
 app.use(cors());
+app.use(express.static(path.join(__dirname,"dist")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join("upload/images")));
 console.log(path.join('images'))
@@ -52,12 +53,16 @@ app.use("/general", generalRouter);
 app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
-app.use("/travelAgency", travelAgent);
+app.use("/travelAgencies", travelAgent);
 app.use("/trips", trips);
 
 
 app.use("/procedure", procedureRouter);
 
+
+app.get('*',(req,res)=>{
+    res.sendfile(path.join('dist/index.html'));
+});
 
 
 app.use('/', (req, res, next) => {

@@ -57,7 +57,7 @@ module.exports.updateTravel1 = (req, res, next) => {
                    city_id 	  = ? and
                    state_id   = ?`
   connection.query(sql, [travel.country, travel.city, travel.state], function (err, rows) {
-    if (rows.length) {// location already exist
+    if (rows.length) { // location already exist
       let sql = `UPDATE travel_agency
                   SET
                   name = ? ,
@@ -69,12 +69,12 @@ module.exports.updateTravel1 = (req, res, next) => {
                   WHERE id = ?`
       connection.query(sql,
         [travel.name,
-        travel.address,
-        travel.map,
-        travel.userId,
-        travel.status,
-        rows[0].location_id,
-        travel.id
+          travel.address,
+          travel.map,
+          travel.userId,
+          travel.status,
+          rows[0].location_id,
+          travel.id
         ],
         function (err, rows) {
           if (err) return res.json({
@@ -101,12 +101,12 @@ module.exports.updateTravel1 = (req, res, next) => {
                   WHERE id = ?`
         connection.query(sql,
           [travel.name,
-          travel.address,
-          travel.map,
-          travel.userId,
-          travel.status,
-          rows.insertId,
-          travel.id
+            travel.address,
+            travel.map,
+            travel.userId,
+            travel.status,
+            rows.insertId,
+            travel.id
           ],
           function (err, rows) {
             if (err) return res.json({
@@ -147,8 +147,7 @@ module.exports.updateTravel = (req, res, next) => {
       if (result[0].length == 0) {
         //console.log('not found ??')
         return locationModel.save();
-      }
-      else {
+      } else {
         //console.log('found')
         const travelModelUpdated = new travelModel(travel);
         travelModelUpdated.locationId = result[0][0].location_id;
@@ -271,23 +270,28 @@ module.exports.getAllTravel = (req, res, next) => {
 }
 //// work
 module.exports.getAllTravelByStatus = (req, res, next) => {
-  travelModel.getAllTravleByStatus(req.params.stat)
+  console.log(req.query);
+  travelModel.getAllTravleByStatus(req.query['status'])
     .then(result => {
       if (!result) {
         return res.json({
+          success: false,
           status: 404,
           data: 'Data Not found'
         });
       }
       res.json({
+        success: true,
         status: 200,
         data: result[0]
       });
     })
     .catch(err => {
       res.json({
+        success: false,
         status: 500,
-        data: 'Internal error server'
+        data: 'Internal error server',
+        error: err
       })
     })
 
@@ -298,17 +302,20 @@ module.exports.getAllTravelById = (req, res, next) => {
     .then(result => {
       if (!result) {
         return res.json({
+          success: false,
           status: 404,
           data: 'Data Not found'
         });
       }
       res.json({
+        success: true,
         status: 200,
         data: result[0]
       });
     })
     .catch(err => {
       res.json({
+        success: false,
         status: 500,
         data: 'Internal error server'
       })
@@ -401,9 +408,9 @@ exports.deleteImage = (req, res, next) => {
 exports.getAllImgaesByTravelAgencyId = (clinicId) => {
 
   return db.execute(
-      `select image_id, image_path from clinics left join images
+    `select image_id, image_path from clinics left join images
        on clinics.id=images.clinics_id where clinics.id=?`,
-       [clinicId]
+    [clinicId]
   );
 
 };

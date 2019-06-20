@@ -6,25 +6,22 @@ const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
 /// work yes
-router.post("/:userId", travelAgencyController.addTravel);
+// router.post("/:userId", travelAgencyController.addTravel);
 
-//work yes
-router.put("/:id", travelAgencyController.updateTravel);
+// //work yes
+// router.put("/:id", travelAgencyController.updateTravel);
 
-///work yes
-router.delete("/:id", travelAgencyController.deleteTravel);
+// ///work yes
+// router.delete("/:id", travelAgencyController.deleteTravel);
 
-///work yes
-router.put("/changeStatus/:id", travelAgencyController.changeStatus);
+// ///work yes
+// router.put("/changeStatus/:id", travelAgencyController.changeStatus);
 
-//work yes
-router.get("/", travelAgencyController.getAllTravel);
+// //work yes
+// router.get("/:id", travelAgencyController.getAllTravelById);
 
-//work yes
-router.get("/:id", travelAgencyController.getAllTravelById);
-
-/// work yes
-router.get("/status/:stat", travelAgencyController.getAllTravelByStatus);
+// /// work yes
+router.get("/TravelAgenciesByStatus/", travelAgencyController.getAllTravelByStatus);
 
 ///
 router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
@@ -32,5 +29,6 @@ router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
 ///
 router.delete('/deleteImage/:imageId', travelAgencyController.deleteImage);
 
-
+//work yes
+router.get("/",travelAgencyController.getAllTravel);
 module.exports = router;
