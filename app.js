@@ -43,6 +43,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 
+
 app.use("/auth", AuthRouter);
 app.use("/roles", RolesRouter);
 app.use("/privileges", privilegesRouter);

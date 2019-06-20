@@ -5,19 +5,32 @@ const roleController = require("../controllers/RolesController");
 const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
-/// work
+/// work yes
 router.post("/:userId", travelAgencyController.addTravel);
-//work
+
+//work yes
 router.put("/:id", travelAgencyController.updateTravel);
-///work
+
+///work yes
 router.delete("/:id", travelAgencyController.deleteTravel);
-///work
+
+///work yes
 router.put("/changeStatus/:id", travelAgencyController.changeStatus);
-//work
+
+//work yes
 router.get("/", travelAgencyController.getAllTravel);
-//work
+
+//work yes
 router.get("/:id", travelAgencyController.getAllTravelById);
-/// work
+
+/// work yes
 router.get("/status/:stat", travelAgencyController.getAllTravelByStatus);
+
+///
+router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
+
+///
+router.delete('/deleteImage/:imageId', travelAgencyController.deleteImage);
+
 
 module.exports = router;
