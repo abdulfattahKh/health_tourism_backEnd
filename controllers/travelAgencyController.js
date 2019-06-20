@@ -251,17 +251,20 @@ module.exports.getAllTravel = (req, res, next) => {
     .then(result => {
       if (!result) {
         return res.json({
+          success: true,
           status: 404,
           data: 'Data Not found'
         });
       }
       res.json({
+        success: false,
         status: 200,
         data: result[0]
       });
     })
     .catch(err => {
       res.json({
+        success: false,
         status: 500,
         data: 'Internal error server'
       })
@@ -270,7 +273,6 @@ module.exports.getAllTravel = (req, res, next) => {
 }
 //// work
 module.exports.getAllTravelByStatus = (req, res, next) => {
-  console.log(req.query);
   travelModel.getAllTravleByStatus(req.query['status'])
     .then(result => {
       if (!result) {
@@ -402,13 +404,37 @@ exports.deleteImage = (req, res, next) => {
 
 };
 
+exports.getMyTravelAgencies = (req, res, next) => {
+  if (!req.params['userId']) {
+    return res.status('400').json({
+      success: false,
+      message: 'bad requrest'
+    })
+  }
+  travelModel.getMyTravelAgencies(req.params['userId'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'ok',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: 'error!!!!',
+        error: err
+      })
+    })
+};
+
 
 module.exports.getAllImgaesByTravelAgencyId = (clinicId) => {
 
   return db.execute(
-      `select image_id, image_path from travel_agency left join images
+    `select image_id, image_path from travel_agency left join images
        on travel_agency.id=images.travel_agency_id where travel_agency.id=?`,
-       [clinicId]
+    [clinicId]
   );
 
 };
