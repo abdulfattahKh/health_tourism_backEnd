@@ -1,20 +1,37 @@
+const fs = require('fs')
+const multer = require('multer');
 const travelModel = require('../models/travelAgencyModel')
 const insertLocationModel = require('../models/insertedLocationModel')
 const connection = require('../utilites/db2')
+const imagesModel = require('../models/images');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'upload/images/travelAgencies')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage: storage
+});
+
 
 // work
 module.exports.addTravel = (req, res, next) => {
   const travel = {
-    name          : req.body.name,
-    address       : req.body.address,
-    country       : req.body.country,
-    city          : req.body.city,
-    state         : req.body.state,
-    map           : req.body.map,
-    latitude      : req.body.latitude,
-    longitude     : req.body.longitude,
-    userId        : req.params.userId,
-    description   : req.body.description
+    name: req.body.name,
+    address: req.body.address,
+    country: req.body.country,
+    city: req.body.city,
+    state: req.body.state,
+    map: req.body.map,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude,
+    userId: req.params.userId,
+    description: req.body.description
   }
 
   travelModel.transactionInsert(res, travel);
@@ -40,7 +57,7 @@ module.exports.updateTravel1 = (req, res, next) => {
                    city_id 	  = ? and
                    state_id   = ?`
   connection.query(sql, [travel.country, travel.city, travel.state], function (err, rows) {
-    if (rows.length) {// location already exist
+    if (rows.length) { // location already exist
       let sql = `UPDATE travel_agency
                   SET
                   name = ? ,
@@ -52,12 +69,12 @@ module.exports.updateTravel1 = (req, res, next) => {
                   WHERE id = ?`
       connection.query(sql,
         [travel.name,
-        travel.address,
-        travel.map,
-        travel.userId,
-        travel.status,
-        rows[0].location_id,
-        travel.id
+          travel.address,
+          travel.map,
+          travel.userId,
+          travel.status,
+          rows[0].location_id,
+          travel.id
         ],
         function (err, rows) {
           if (err) return res.json({
@@ -84,12 +101,12 @@ module.exports.updateTravel1 = (req, res, next) => {
                   WHERE id = ?`
         connection.query(sql,
           [travel.name,
-          travel.address,
-          travel.map,
-          travel.userId,
-          travel.status,
-          rows.insertId,
-          travel.id
+            travel.address,
+            travel.map,
+            travel.userId,
+            travel.status,
+            rows.insertId,
+            travel.id
           ],
           function (err, rows) {
             if (err) return res.json({
@@ -110,18 +127,18 @@ module.exports.updateTravel1 = (req, res, next) => {
 //minimize // work
 module.exports.updateTravel = (req, res, next) => {
   const travel = {
-    name        : req.body.name,
-    address     : req.body.address,
-    country     : req.body.country,
-    city        : req.body.city,
-    state       : req.body.state,
-    map         : req.body.map,
-    status      : req.body.status,
-    userId      : req.body.userId,
-    id          : req.params.id,
-    latitude    : req.body.latitude,
-    longitude   : req.body.longitude,
-    description : req.body.description
+    name: req.body.name,
+    address: req.body.address,
+    country: req.body.country,
+    city: req.body.city,
+    state: req.body.state,
+    map: req.body.map,
+    status: req.body.status,
+    userId: req.body.userId,
+    id: req.params.id,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude,
+    description: req.body.description
   }
 
   const locationModel = new insertLocationModel(travel);
@@ -130,13 +147,11 @@ module.exports.updateTravel = (req, res, next) => {
       if (result[0].length == 0) {
         //console.log('not found ??')
         return locationModel.save();
-      }
-      else {
+      } else {
         //console.log('found')
         const travelModelUpdated = new travelModel(travel);
         travelModelUpdated.locationId = result[0][0].location_id;
         travelModelUpdated.id = req.params.id;
-        console.log(travelModelUpdated)
 
         return travelModelUpdated.update();
 
@@ -150,7 +165,6 @@ module.exports.updateTravel = (req, res, next) => {
         const travelModelUpdated = new travelModel(travel);
         travelModelUpdated.locationId = result[0].insertId;
         travelModelUpdated.id = req.params.id;
-        console.log(travelModelUpdated)
 
         return travelModelUpdated.update()
           .then(resule => {
@@ -237,17 +251,20 @@ module.exports.getAllTravel = (req, res, next) => {
     .then(result => {
       if (!result) {
         return res.json({
+          success: true,
           status: 404,
           data: 'Data Not found'
         });
       }
       res.json({
+        success: false,
         status: 200,
         data: result[0]
       });
     })
     .catch(err => {
       res.json({
+        success: false,
         status: 500,
         data: 'Internal error server'
       })
@@ -256,23 +273,27 @@ module.exports.getAllTravel = (req, res, next) => {
 }
 //// work
 module.exports.getAllTravelByStatus = (req, res, next) => {
-  travelModel.getAllTravleByStatus(req.params.stat)
+  travelModel.getAllTravleByStatus(req.query['status'])
     .then(result => {
       if (!result) {
         return res.json({
+          success: false,
           status: 404,
           data: 'Data Not found'
         });
       }
       res.json({
+        success: true,
         status: 200,
         data: result[0]
       });
     })
     .catch(err => {
       res.json({
+        success: false,
         status: 500,
-        data: 'Internal error server'
+        data: 'Internal error server',
+        error: err
       })
     })
 
@@ -283,20 +304,137 @@ module.exports.getAllTravelById = (req, res, next) => {
     .then(result => {
       if (!result) {
         return res.json({
+          success: false,
           status: 404,
           data: 'Data Not found'
         });
       }
       res.json({
+        success: true,
         status: 200,
         data: result[0]
       });
     })
     .catch(err => {
       res.json({
+        success: false,
         status: 500,
         data: 'Internal error server'
       })
     })
 
 }
+
+module.exports.postAddImage = (req, res, next) => {
+
+  const file = upload.array('image');
+
+  file(req, res, err => {
+
+    if (err) {
+      return res.json({
+        success: false,
+        message: 'Uploading image failed!',
+        err: err
+      })
+    }
+    const values = {
+      array: req.files,
+      travelAgencyId: req.params.travelAgencyId
+    }
+
+    imagesModel.addImages(values)
+      .then(result => {
+        res.status(result.status).json({
+          success: result.success,
+          message: result.message,
+          data: result.data
+        })
+      })
+      .catch(result => {
+        res.status(result.status).json({
+          success: result.success,
+          message: result.message,
+          err: result.err
+        })
+      })
+
+  })
+
+
+};
+
+
+exports.deleteImage = (req, res, next) => {
+
+
+  let imageId = req.params.imageId;
+  let image;
+  imagesModel.getImageById(imageId)
+    .then(result => {
+      if (!result[0][0] || !result[0][0].image_id) {
+        return res.status(404).json({
+          success: false,
+          message: 'image Not found!'
+        });
+      }
+      image = result[0][0];
+      return imagesModel.deleteImageFromDataBase(imageId);
+    })
+    .then(result => {
+      const path = image.image_path;
+      const name = path.split('\\')[3];
+      return imagesModel.deleteImageFromFolder(path, imageId);
+    })
+    .then(result => {
+      res.status(result.status).json({
+        success: result.success,
+        message: result.message
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error!'
+      })
+
+    })
+
+
+
+};
+
+exports.getMyTravelAgencies = (req, res, next) => {
+  if (!req.params['userId']) {
+    return res.status('400').json({
+      success: false,
+      message: 'bad requrest'
+    })
+  }
+  travelModel.getMyTravelAgencies(req.params['userId'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'ok',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: 'error!!!!',
+        error: err
+      })
+    })
+};
+
+
+module.exports.getAllImgaesByTravelAgencyId = (clinicId) => {
+
+  return db.execute(
+    `select image_id, image_path from travel_agency left join images
+       on travel_agency.id=images.travel_agency_id where travel_agency.id=?`,
+    [clinicId]
+  );
+
+};

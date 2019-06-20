@@ -160,7 +160,7 @@ module.exports = class Clinic {
     us.first_name as 'fOwnerName',
     us.last_name as 'lOwnerName',
     us.email,
-    us.mobile_number as 'userMobilePhone',
+    us.mobile_number as 'mobileNumber',
     c.status
     from clinics c 
     inner join locations l on c.location_id = l.location_id

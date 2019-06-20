@@ -19,23 +19,22 @@ router.post(
     procController.addProcedure
 );
 
-router.put(
+router.post(
     "/updateProcedure",
     // check_auth,
     // check_author([1,5]), /// admin & clinic owner ....
     procController.updateProcedure
 );
 
-router.delete(
+router.post(
     "/deleteProcedure",
     // check_auth,
     // check_author([1,5]), /// admin & clinic owner ....
     procController.deleteProcedure
 );
 
-
 router.get(
-    "/getProcAccordToClinic/:clinicId",
+    "/getProcAccordClinic/:clinicId",
     check_auth,
     check_author([1,5]), /// admin & clinic owner   ....
     procController.getProcAccordToClinic
@@ -55,7 +54,11 @@ router.get(
     procController.getProcAccordToAutoComplate
 );
 
+router.get("/getClinicSpecializations/:id",procController.getClinicSpecializations);
 
+router.post('/putSpecializationsPrimary/',procController.putSpecializationsPrimary);
+
+router.get('/deleteClinicSpecialization/',procController.deleteClinicSpecialization);
 module.exports = router;
 
 /****

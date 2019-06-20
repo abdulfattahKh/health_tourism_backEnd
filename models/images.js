@@ -11,6 +11,8 @@ exports.getImageById = (imageId) => {
 
 
 exports.addImages = (values) => {
+    console.log(values);
+
     const data = [];
 
     const obj = {
@@ -20,6 +22,9 @@ exports.addImages = (values) => {
         tripId: values.tripId ? values.tripId : null
     }
 
+
+    console.log(obj);
+
     return new Promise((resolve, reject) => {
         values.array.forEach(element => {
             const name = element.filename;
@@ -28,11 +33,11 @@ exports.addImages = (values) => {
                 .then(result => {
                     data.push({ id: result[0].insertId, name: name });
                     if (data.length === values.array.length) {
-                        resolve({ success: true, message: 'Adding images successfully.', data: data });
+                        resolve({ success: true, message: 'Adding images successfully.', data: data, status: 200 });
                     }
                 })
                 .catch(err => {
-                    reject({ err: err, success: false, message: 'Internal server error!' })
+                    reject({ err: err, success: false, message: 'Internal server error!', status: 500 })
                 });
 
         });

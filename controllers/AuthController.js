@@ -12,7 +12,7 @@ module.exports.signup = (req, res, next) => {
     User.getUserByEmail(req.body.email)
       .then(Email => {
         if (Email[0].length !== 0) {
-          res.json({
+          return res.json({
             success: false,
             message: "this email has already used"
           });
@@ -25,21 +25,29 @@ module.exports.signup = (req, res, next) => {
               return user.save();
             })
             .then(save_result => {
-              res.json({
+              return res.json({
                 success: true,
                 message: "the user information has been saved correctly"
               });
             })
             .catch(err => {
-              console.log(err);
+              return res.json({
+                success: false,
+                message: 'error',
+                err: err
+              })
             });
         }
       })
       .catch(err => {
-        console.log(err);
+        return res.json({
+          success: false,
+          message: "error",
+          err: err
+        })
       });
   } else {
-    res.json({
+    return res.json({
       success: false,
       message: result
     });
@@ -80,15 +88,13 @@ module.exports.signin = (req, res, next) => {
                 message: "password dosn't match"
               });
             }
-            const token = jwt.sign(
-              {
+            const token = jwt.sign({
                 email: result[0][0].email,
                 userId: result[0][0].id,
                 roleId: result[0][0].role_id
               },
 
-              "this is a health tourism website",
-              {
+              "this is a health tourism website", {
                 expiresIn: "24h"
               }
             );
@@ -96,7 +102,7 @@ module.exports.signin = (req, res, next) => {
               success: true,
               message: "sign in",
               token: token,
-              expiresIn: "3600",
+              expiresIn: 3600000,
               user: result[0][0]
             });
           })
@@ -107,14 +113,18 @@ module.exports.signin = (req, res, next) => {
             });
           });
       } else {
-        res.json({
+        return res.json({
           success: false,
           message: "the email is not exsist"
         });
       }
     })
     .catch(err => {
-      console.log(err);
+      return res.status(400).json({
+        success: false,
+        message: "error",
+        error: err
+      })
     });
 };
 

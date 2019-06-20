@@ -3,14 +3,13 @@ const fs = require('fs');
 const path = require('path');
 
 exports.createFolders = () => {
-    console.log('folders');
-
+    
     let p = path.dirname(__dirname);
 
     p = path.join(p + '/upload');
 
     if (!fs.existsSync(p)) {
-        console.log('scs');
+
         fs.mkdirSync(p);
     }
     p = path.join(p + '/images');
