@@ -29,6 +29,20 @@ router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
 ///
 router.delete('/deleteImage/:imageId', travelAgencyController.deleteImage);
 
-//work yes
-router.get("/",travelAgencyController.getAllTravel);
+router.get("/getAllImgaesByTravelAgencyId/:travelId",(req,res,next) => {
+    travelAgencyController.getAllImgaesByTravelAgencyId(req.params.travelId)
+    .then((result)=>{
+        res.status(200).json({
+            success: 'success',
+            message: result[0]
+          });
+    })
+    .catch((err)=>{
+        res.status(504).json({
+            success: 'internal error',
+            message:  "try again please !!"
+          });
+    })
+})
+
 module.exports = router;

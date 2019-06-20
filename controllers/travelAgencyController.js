@@ -403,14 +403,18 @@ exports.deleteImage = (req, res, next) => {
 };
 
 
-
-
-exports.getAllImgaesByTravelAgencyId = (clinicId) => {
+module.exports.getAllImgaesByTravelAgencyId = (clinicId) => {
 
   return db.execute(
+<<<<<<< HEAD
     `select image_id, image_path from clinics left join images
        on clinics.id=images.clinics_id where clinics.id=?`,
     [clinicId]
+=======
+      `select image_id, image_path from travel_agency left join images
+       on travel_agency.id=images.travel_agency_id where travel_agency.id=?`,
+       [clinicId]
+>>>>>>> 16bc25e9754f1060297796bf1dfac95134db2771
   );
 
 };
