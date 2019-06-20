@@ -11,6 +11,8 @@ exports.getImageById = (imageId) => {
 
 
 exports.addImages = (values) => {
+    console.log(values);
+
     const data = [];
 
     const obj = {
@@ -20,19 +22,22 @@ exports.addImages = (values) => {
         tripId: values.tripId ? values.tripId : null
     }
 
+
+    console.log(obj);
+
     return new Promise((resolve, reject) => {
         values.array.forEach(element => {
             const path = element.path;
-
+            console.log(path);
             db.execute(`insert into images (image_path, clinics_id, travel_agency_id, procedures_id, trips_id) values (?, ?, ?, ?, ?)`, [path, obj.clinicId, obj.travelAgencyId, obj.procedureId, obj.tripId])
                 .then(result => {
                     data.push({ id: result[0].insertId, name: element.filename });
                     if (data.length === values.array.length) {
-                        resolve({ success: true, message: 'Adding images successfully.', data: data });
+                        resolve({ success: true, message: 'Adding images successfully.', data: data, status: 200 });
                     }
                 })
                 .catch(err => {
-                    reject({ err: err, success: false, message: 'Internal server error!' })
+                    reject({ err: err, success: false, message: 'Internal server error!', status: 500 })
                 });
 
         });

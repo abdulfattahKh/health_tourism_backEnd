@@ -114,6 +114,7 @@ module.exports = class TravelAgency {
 
 
     static transactionInsert(res, travel) {
+        console.log(travel)
         connection.beginTransaction(function (err) {
             if (err) {
                 return res.json({
@@ -189,7 +190,7 @@ module.exports = class TravelAgency {
 
                                 connection.query(`insert into travel_agency 
                                                 (name,address,map,users_id,location_id,description)
-                                                values(?,?,?,?,?)`
+                                                values(?,?,?,?,?,?)`
                                     , [
                                         travel.name,
                                         travel.address,
@@ -200,7 +201,7 @@ module.exports = class TravelAgency {
                                     ], function (error, resu, fields) {
                                         if (error) return res.json({
                                             success: false,
-                                            message: err.message
+                                            message: error.message
                                         });
                                         connection.commit(function (err) {
                                             if (err) {
