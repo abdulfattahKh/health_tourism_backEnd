@@ -129,12 +129,35 @@ exports.getAllDoctorsByClinicId = (req, res, next) => {
 
     const clinicId = req.params.clinicId;
 
+    let data = [];
+
     doctorModel.getAllDoctorsByClinicId(clinicId)
+        .then(result => {
+            // console.log(result);
+            return new Promise((resolve, reject) => {
+                if (result[0].length === 0) {
+                    resolve();
+                } else {
+                    result[0].forEach(doctor => {
+                        doctorModel.getAllExperincesByDoctorId(doctor.id)
+                            .then(rs => {
+                                data.push({ id: doctor.id, firstName: doctor.first_name, lastName: doctor.last_name, gender: doctor.gender, imageName: doctor.image_name, phoneNumber: doctor.phone_number, mobileNumber: doctor.mobile_number, experinces: rs[0] });
+                                if (data.length === result[0].length) {
+                                    resolve();
+                                }
+                            })
+                            .catch(err => {
+                                reject({ err: err });
+                            })
+                    })
+                }
+            });
+        })
         .then(result => {
             res.status(200).json({
                 success: true,
-                message: 'Getting all doctors of one clinic successfully.',
-                data: result[0]
+                message: 'Getting all doctors of a clinic successfully.',
+                data: data
             })
         })
         .catch(err => {
@@ -152,12 +175,21 @@ exports.getAllDoctorsByClinicId = (req, res, next) => {
 
 exports.getDoctorById = (req, res, next) => {
 
+    let data = [];
+
+    let doctor;
+
     doctorModel.getDoctorById(req.params.doctorId)
         .then(result => {
+            doctor = result[0][0];
+            return doctorModel.getAllExperincesByDoctorId(result[0][0].id);
+        })
+        .then(result => {
+            data.push({ id: doctor.id, firstName: doctor.first_name, lastName: doctor.last_name, gender: doctor.gender, imageName: doctor.image_name, mobileNumber: doctor.mobile_number, phoneNumber: doctor.phone_number, experinces: result[0] });
             res.status(200).json({
                 success: true,
                 message: 'Getting doctor successfully.',
-                data: result[0]
+                data: data
             })
         })
         .catch(err => {
@@ -171,7 +203,7 @@ exports.getDoctorById = (req, res, next) => {
 };
 
 
-exports.postAddImgae = (req, res, next) => {
+exports.postAddImage = (req, res, next) => {
 
     const file = upload.single('image');
 
@@ -183,7 +215,7 @@ exports.postAddImgae = (req, res, next) => {
                 err: err
             })
         }
-        doctorModel.addImage(req.file.path, req.params.doctorId)
+        doctorModel.addImage(req.file.filename, req.params.doctorId)
             .then(result => {
                 res.status(200).json({
                     success: true,
@@ -197,7 +229,7 @@ exports.postAddImgae = (req, res, next) => {
                         success: false,
                         message: 'Adding image failed!'
                     })
-    
+
                 })
 
             })

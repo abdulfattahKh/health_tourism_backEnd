@@ -10,7 +10,7 @@ module.exports = class Doctor {
         this.firstName = values.firstName ? values.firstName : null;
         this.lastName = values.lastName ? values.lastName : null;
         this.gender = values.gender ? values.gender : null;
-        this.imagePath = values.imagePath ? values.imagePath : null;
+        this.imagePath = values.imageName ? values.imageName : null;
         this.mobileNumber = values.mobileNumber ? values.mobileNumber : null;
         this.phoneNumber = values.phoneNumber ? values.phoneNumber : null;
 
@@ -23,8 +23,29 @@ module.exports = class Doctor {
             db.beginTransaction()
                 .then(result => {
                     return db.execute(
-                        `insert into doctors (first_name, last_name, gender, image_path, phone_number, mobile_number, clinic_id) values (?, ?, ?, ?, ?, ?, ?)`,
-                        [this.firstName, this.lastName, this.gender, this.imagePath, this.phoneNumber, this.mobileNumber, clinicId]
+                        `select * from doctors where mobile_number=?`,
+                        [this.mobileNumber]
+                    );
+                })
+                .then(result => {
+                    if (!result[0][0]) {
+                        return db.execute(
+                            `insert into doctors (first_name, last_name, gender, image_name, phone_number, mobile_number) values (?, ?, ?, ?, ?, ?)`,
+                            [this.firstName, this.lastName, this.gender, this.imagePath, this.phoneNumber, this.mobileNumber]
+                        );
+                    } else {
+                        doctorId = result[0][0].id;
+                    }
+                })
+                .then(result => {
+                    if (!doctorId) {
+                        doctorId = result[0].insertId;
+                    }
+                })
+                .then(result => {
+                    return db.execute(
+                        `insert into clinics_doctors (clinic_id, doctor_id) values (?, ?)`,
+                        [clinicId, doctorId]
                     );
                 })
                 .then(result => {
@@ -56,24 +77,23 @@ module.exports = class Doctor {
         data.mobileNumber = (data.mobileNumber ? data.mobileNumber : null);
 
         return db.execute(
-            `update doctors set first_name=?, last_name=?, gender=?, image_path=?, phone_number=?, mobile_number=? where id=?`,
+            `update doctors set first_name=?, last_name=?, gender=?, image_name=?, phone_number=?, mobile_number=? where id=?`,
             [data.firstName, data.lastName, data.gender, data.imagePath, data.phoneNumber, data.mobileNumber, doctorId]
         );
     }
 
     static getDoctorById(doctorId) {
         return db.execute(
-            `select * from doctors left join experinces
-             on doctors.id=experinces.doctor_id where doctors.id=${doctorId}`
+            `select * from doctors where doctors.id=${doctorId}`
         );
     }
 
     static getAllDoctorsByClinicId(clinicId) {
 
         return db.execute(
-            `select doctors.id as doctorId, clinics.id as clinicsId, experinces.id as experinceId from clinics left join doctors
-             on clinics.id=doctors.clinic_id left join experinces
-             on doctors.id=experinces.doctor_id where clinics.id=?`,
+            `select doctors.id, doctors.first_name, doctors.last_name, doctors.gender, doctors.image_name, doctors.phone_number, doctors.mobile_number from clinics inner join clinics_doctors
+             on clinics.id=clinics_doctors.clinic_id inner join doctors
+             on clinics_doctors.doctor_id=doctors.id where clinics.id=?`,
             [clinicId]
         );
     }
@@ -91,7 +111,7 @@ module.exports = class Doctor {
                     [experince.organizationName, experince.experinceName, doctorId]
                 )
                     .then(result => {
-                        data.push(result[0].insertId);
+                        data.push({ id: result[0].insertId });
                         if (data.length === experinces.length) {
                             resolve({ success: true, message: 'Adding experinces successfully.', data: data, status: 200 })
                         }
@@ -105,11 +125,11 @@ module.exports = class Doctor {
 
     }
 
-    static addImage(path, doctorId) {
+    static addImage(name, doctorId) {
 
         return db.execute(
-            `update doctors set image_path=? where id=?`,
-            [path, doctorId]
+            `update doctors set image_name=? where id=?`,
+            [name, doctorId]
         );
 
     }
@@ -122,18 +142,18 @@ module.exports = class Doctor {
         return new Promise((resolve, reject) => {
 
             db.execute(
-                `select image_path from doctors where id=?`,
+                `select image_name from doctors where id=?`,
                 [doctorId]
             )
                 .then(result => {
-                    imagePath = result[0][0].image_path;
+                    imagePath = result[0][0].image_name;
                     return db.execute(
-                        `update doctors set image_path=NULL where id=?`,
+                        `update doctors set image_name=NULL where id=?`,
                         [doctorId]
                     )
                 })
                 .then(result => {
-                    fs.unlink(imagePath, err => {
+                    fs.unlink('upload/images/doctors/' + imagePath, err => {
 
                         if (err) {
                             db.rollback();
@@ -156,5 +176,14 @@ module.exports = class Doctor {
         })
     }
 
+    static getAllExperincesByDoctorId (doctorId) {
+
+        return db.execute(
+            `select experinces.experince_name, experinces.organization_name, experinces.from, experinces.to, experinces.createdAt, experinces.updatedAt from experinces inner join doctors
+             on experinces.doctor_id=doctors.id where doctors.id=?`,
+             [doctorId]
+        );
+
+    }
 
 }
