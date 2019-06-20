@@ -6,7 +6,7 @@ const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
 /// work yes
-// router.post("/:userId", travelAgencyController.addTravel);
+router.post("/addTravelAgency/:userId", travelAgencyController.addTravel);
 
 // //work yes
 // router.put("/:id", travelAgencyController.updateTravel);
@@ -26,7 +26,7 @@ router.get("/allTravelAgencies", travelAgencyController.getAllTravel);
 router.get("/TravelAgenciesByStatus/", travelAgencyController.getAllTravelByStatus);
 
 router.get("/myTravelAgencies/:userId",travelAgencyController.getMyTravelAgencies);
-///
+///OK
 router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
 
 ///

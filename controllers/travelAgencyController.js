@@ -257,7 +257,7 @@ module.exports.getAllTravel = (req, res, next) => {
         });
       }
       res.json({
-        success: false,
+        success: true,
         status: 200,
         data: result[0]
       });
