@@ -14,22 +14,22 @@ const procController = require("../controllers/procedureController");
 
 router.post(
     "/addProcedure",
-    check_auth,
-    check_author([1,5]), /// admin & clinic owner ....
+    // check_auth,
+    // check_author([1,5]), /// admin & clinic owner ....
     procController.addProcedure
 );
 
 router.post(
     "/updateProcedure",
-    check_auth,
-    check_author([1,5]), /// admin & clinic owner ....
+    // check_auth,
+    // check_author([1,5]), /// admin & clinic owner ....
     procController.updateProcedure
 );
 
 router.post(
     "/deleteProcedure",
-    check_auth,
-    check_author([1,5]), /// admin & clinic owner ....
+    // check_auth,
+    // check_author([1,5]), /// admin & clinic owner ....
     procController.deleteProcedure
 );
 

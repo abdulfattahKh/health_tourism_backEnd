@@ -27,11 +27,11 @@ exports.addImages = (values) => {
 
     return new Promise((resolve, reject) => {
         values.array.forEach(element => {
-            const path = element.path;
-            console.log(path);
-            db.execute(`insert into images (image_path, clinics_id, travel_agency_id, procedures_id, trips_id) values (?, ?, ?, ?, ?)`, [path, obj.clinicId, obj.travelAgencyId, obj.procedureId, obj.tripId])
+            const name = element.filename;
+
+            db.execute(`insert into images (image_name, clinics_id, travel_agency_id, procedures_id, trips_id) values (?, ?, ?, ?, ?)`, [name, obj.clinicId, obj.travelAgencyId, obj.procedureId, obj.tripId])
                 .then(result => {
-                    data.push({ id: result[0].insertId, name: element.filename });
+                    data.push({ id: result[0].insertId, name: name });
                     if (data.length === values.array.length) {
                         resolve({ success: true, message: 'Adding images successfully.', data: data, status: 200 });
                     }
@@ -67,9 +67,10 @@ exports.deleteImageFromFolder = (path, imageId) => {
 exports.getAllImgaesByClinicId = (clinicId) => {
 
     return db.execute(
-        `select image_id, image_path from clinics left join images
+        `select * from clinics inner join images
          on clinics.id=images.clinics_id where clinics.id=?`,
          [clinicId]
     );
 
 };
+

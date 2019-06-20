@@ -11,6 +11,7 @@ module.exports = class Clinic {
     this.clinicState = values.state;
     this.longitude = values.longitude;
     this.latitude = values.latitude;
+    this.address = values.address;
 
     this.mobileNumber = values.mobileNumber;
     this.phoneNumber = values.phoneNumber;
@@ -18,12 +19,15 @@ module.exports = class Clinic {
     this.userId = values.userId;
     this.clinicName = values.name;
 
+
+
     this.clinicTypes = values.clinicTypes;
 
   }
 
   // just make the id autoincrement
   save() {
+    
     let clinicId;
     let locationId;
 
@@ -53,8 +57,8 @@ module.exports = class Clinic {
         .then(result => {
           locationId = result[0][0].location_id;
           return db.execute(
-            `insert into clinics (name, mobile_number, phone_number, user_id, location_id) values (?, ?, ?, ?, ?)`,
-            [this.clinicName, this.mobileNumber, this.phoneNumber, this.userId, locationId]
+            `insert into clinics (name, mobile_number, phone_number, address, user_id, location_id) values (?, ?, ?, ?, ?, ?)`,
+            [this.clinicName, this.mobileNumber, this.phoneNumber, this.address, this.userId, locationId]
           );
         })
         .then(result => {
@@ -85,7 +89,7 @@ module.exports = class Clinic {
         .catch(err => {
           console.log('Failed!');
           db.rollback();
-          reject({ success: false, status: 500, message: 'Adding clinic failed!', err: err.err != undefined ? err.err : err });
+          reject({ success: false, status: 500, message: 'Adding clinic failed!', err: err.err ? err.err : err });
         });
     });
   }
@@ -215,6 +219,7 @@ module.exports = class Clinic {
     clinic.descreption = clinic.descreption ? clinic.descreption : null;
     clinic.phoneNumber = clinic.phoneNumber ? clinic.phoneNumber : null;
     clinic.mobileNumber = clinic.mobileNumber ? clinic.mobileNumber : null;
+    clinic.address = clinic.address ? clinic.address : null;
 
     let locationId;
 
@@ -242,26 +247,27 @@ module.exports = class Clinic {
         .then(result => {
           locationId = result[0][0].location_id;
           return db.execute(
-            `update clinics set name=?, descreption=?, mobile_number=?, phone_number=?, location_id=? where id=?`,
-            [clinic.name, clinic.descreption, clinic.mobileNumber, clinic.phoneNumber, locationId, clinicId]
+            `update clinics set name=?, descreption=?, mobile_number=?, phone_number=?, location_id=?, address=? where id=?`,
+            [clinic.name, clinic.descreption, clinic.mobileNumber, clinic.phoneNumber, locationId, clinic.address, clinicId]
           );
         })
         .then(result => {
-          return new Promise((rs, rj) => {
-            clinic.clinicTypes.forEach(type => {
-              db.execute(
-                `delete from specializations_clinics where specialization_id=? and clinic_id=?`,
-                [type, clinicId]
-              )
-                .then(result => {
-                  rs();
-                })
-                .catch(err => {
-                  db.rollback();
-                  rj({ err: err })
-                })
-            })
-          })
+          // return new Promise((rs, rj) => {
+          //   clinic.clinicTypes.forEach(type => {
+          //     db.execute(
+          //       `delete from specializations_clinics where specialization_id=? and clinic_id=?`,
+          //       [type, clinicId]
+          //     )
+          //       .then(result => {
+          //         rs();
+          //       })
+          //       .catch(err => {
+          //         db.rollback();
+          //         rj({ err: err })
+          //       })
+          //   })
+          // })
+          return db.execute(`delete from specializations_clinics where clinic_id=?`, [clinicId])
         })
         .then(result => {
           return new Promise((rs, rj) => {

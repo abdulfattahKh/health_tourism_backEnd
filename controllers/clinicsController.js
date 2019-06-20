@@ -188,10 +188,10 @@ exports.getClinicsByStatus = (req, res, next) => {
 // post requests 
 
 exports.postAddClinic = (req, res, next) => {
+    console.log(req.body);
     const clinicObj = new clinicModel(req.body);
     clinicObj.save()
         .then(result => {
-            console.log(result);
             res.status(result.status).json({
                 success: result.success,
                 message: result.message,
@@ -199,17 +199,18 @@ exports.postAddClinic = (req, res, next) => {
             });
         })
         .catch(result => {
+            console.log(result.err);
             res.status(result.status).json({
                 success: result.success,
                 message: result.message,
-                err: result.err 
+                err: result.err
             });
         })
 };
 
 
-exports.postAddImages = async (req, res, next) => {
-    const clinicId = req.body.clinicId;
+exports.postAddImages = (req, res, next) => {
+    const clinicId = req.params.clinicId;
     imagesModel.addImages({
             clinicId: clinicId,
             array: req.files
@@ -288,8 +289,7 @@ exports.deleteImageById = (req, res, next) => {
             return imagesModel.deleteImageFromDataBase(imageId);
         })
         .then(result => {
-            const path = image.image_path;
-            const name = path.split('\\')[3];
+            const path = 'upload/images/clinics/' + image.image_name;
             return imagesModel.deleteImageFromFolder(path, imageId);
         })
         .then(result => {
@@ -314,7 +314,7 @@ exports.deleteImageById = (req, res, next) => {
 // put requests
 
 exports.putAddDescreption = (req, res, next) => {
-    descreptionModel.addDescreption('clinics', req.body.descreption, req.body.clinicId, -1)
+    descreptionModel.addDescreption('clinics', req.body.descreption, req.params.clinicId, -1)
         .then(result => {
             console.log(result);
             res.status(200).json({
@@ -393,12 +393,10 @@ exports.putChangeClinicStatus = (req, res, next) => {
 
 
 exports.postAddCurrency = (req, res, next) => {
-    console.log(req.body.currencies, req.params.clinicId);
     const values = {
         currencies: req.body.currencies,
         clinicId: req.params.clinicId
     };
-    console.log(values);
     currencyModel.addCurrency(values)
         .then(result => {
             console.log(result);
@@ -410,9 +408,9 @@ exports.postAddCurrency = (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
-            res.status(result.status).json({
-                success: result.success,
-                message: result.message
+            res.status(err.status).json({
+                success: err.success,
+                message: err.message
             })
         })
 
@@ -440,19 +438,19 @@ exports.deleteCurrency = (req, res, next) => {
 };
 
 exports.updateCurrency = (req, res, next) => {
-    currencyModel.updateCurrency(req.params.currencyId, req.body.newCurrencyId)
+    currencyModel.updateCurrency({clinicId: req.params.clinicId, currencies: req.body.currencies})
         .then(result => {
-            console.log(result);
             res.status(200).json({
                 success: true,
-                message: 'Updating currency successfully.'
+                message: 'Updating currencies in clinic successfully.'
             })
         })
         .catch(err => {
             console.log(err);
             res.status(500).json({
                 success: false,
-                message: 'Updaing currency failed!'
+                message: 'Updaing currency failed!',
+                err: err.err
             })
         })
 };
@@ -593,14 +591,16 @@ exports.getAllCurrenciesById = (req, res, next) => {
 
 
 exports.getAllImagesByClinicId = (req, res, next) => {
-
+    const data = [] ;
     imagesModel.getAllImgaesByClinicId(req.params.clinicId)
         .then(result => {
-
+            result[0].forEach(image => {
+                data.push({id: image.image_id, name: image.image_name});
+            })
             res.status(200).json({
                 success: true,
                 message: 'Getting all images for an clinic.',
-                data: result[0]
+                data: data
             })
         })
         .catch(err => {
@@ -634,21 +634,6 @@ exports.putUpdateClinic = (req, res, next) => {
                 err: result.err
             })
         })
-
-    // clinicModel.updateClinic(req.params.clinicId, req.body)
-    //     .then(result => {
-    //         res.status(result.status).json({
-    //             success: result.success,
-    //             message: result.message
-    //         })
-    //     })
-    //     .catch(err => {
-    //         res.status(err.status).json({
-    //             success: err.success,
-    //             message: err.message,
-    //             err: err.err
-    //         })
-    //     })
 
 };
 
