@@ -33,7 +33,6 @@ router.post(
     procController.deleteProcedure
 );
 
-
 router.get(
     "/getProcAccordClinic/:clinicId",
     check_auth,
@@ -55,7 +54,11 @@ router.get(
     procController.getProcAccordToAutoComplate
 );
 
+router.get("/getClinicSpecializations/:id",procController.getClinicSpecializations);
 
+router.post('/putSpecializationsPrimary/',procController.putSpecializationsPrimary);
+
+router.get('/deleteClinicSpecialization/',procController.deleteClinicSpecialization);
 module.exports = router;
 
 /****

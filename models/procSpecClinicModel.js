@@ -140,7 +140,7 @@ module.exports = class procSpecClinic {
 
     delete() {
 
-        console.log(this.proc_id , this.spec_id , this.clinic_id);
+        console.log(this.proc_id, this.spec_id, this.clinic_id);
         return db.beginTransaction()
             .then(result => {
                 return procSpecClinic.fKeysSelect(this.proc_id, this.spec_id, this.clinic_id);
@@ -324,6 +324,15 @@ module.exports = class procSpecClinic {
         })
     }
 
+    static putSpecializationsPrimary(clinic_id,specializations_clinics_id) {
+        return db.execute(`update specializations_clinics
+        set is_primary = true 
+        where specializations_clinics_id = ? and clinic_id = ?`, [specializations_clinics_id, clinic_id])
+    }
+
+    deleteClinicSpecialization(clinic_id ,specializations_clinics_id) {
+        // return db.execute(`delete form`)
+    }
 
     checkForUpdatedColumns(prev_values, values) {
 

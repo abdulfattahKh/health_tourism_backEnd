@@ -74,7 +74,7 @@ module.exports = class User {
       return false;
     }
     if (values.password.length < 8) {
-      return "lastName must be more than 7 characters ";
+      return "password must be more than 7 characters ";
     }
     if (values.password !== values.confirmPassword) {
       return "Password does not match";
