@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
         cb(null, 'upload/images/clinics')
     },
     filename: function (req, file, cb) {
-        console.log(file.originalname);
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
@@ -316,7 +315,6 @@ exports.deleteImageById = (req, res, next) => {
 exports.putAddDescreption = (req, res, next) => {
     descreptionModel.addDescreption('clinics', req.body.descreption, req.params.clinicId, -1)
         .then(result => {
-            console.log(result);
             res.status(200).json({
                 success: true,
                 message: 'Adding descreption successfully.'
@@ -399,7 +397,6 @@ exports.postAddCurrency = (req, res, next) => {
     };
     currencyModel.addCurrency(values)
         .then(result => {
-            console.log(result);
             res.status(result.status).json({
                 success: result.success,
                 message: result.message,
@@ -421,7 +418,6 @@ exports.deleteCurrency = (req, res, next) => {
 
     currencyModel.deleteCurrency(req.params.currencyId)
         .then(result => {
-            console.log(result);
             res.status(200).json({
                 success: true,
                 message: 'Deleting currency successfully.'
@@ -459,7 +455,7 @@ exports.getClinicCountry = (req, res, next) => {
 
     clinicModel.getClinicCountry(req.params.clinicId)
         .then(result => {
-            console.log(result);
+
             res.status(200).json({
                 success: true,
                 message: 'Getting country successfully.',
@@ -569,7 +565,6 @@ exports.getAllCurrenciesById = (req, res, next) => {
     const clinicId = req.params.clinicId ? req.params.clinicId : null;
     const travelAgencyId = req.params.travelAgencyId ? req.params.travelAgencyId : null;
 
-    console.log(clinicId, travelAgencyId);
 
     currencyModel.getAllCurrenciesById(clinicId, travelAgencyId)
         .then(result => {
@@ -679,10 +674,6 @@ function addMultipleTypes(clinicId, types = []) {
                 [value, clinicId],
                 (err, RES) => {
                     if (err) {
-                        console.log({
-                            success: false,
-                            message: err
-                        });
                         reject(err);
                     } else {
                         resolve({

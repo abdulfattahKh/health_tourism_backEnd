@@ -40,6 +40,7 @@ module.exports = class Procedure {
                 WHERE lower(name) LIKE lower("${sub_word}") limit 10;`
         return db.execute(query)
                     .then(result=>{
+                        console.log(result);
                         if( !result[0].length ){
                             return false
                         }
@@ -71,7 +72,6 @@ module.exports = class Procedure {
                     
                     db.execute(query,[obj.treatments[i].procedures[j],i+1])
                         .then(result=>{
-
                         }).catch(err=>{
                             throw err;
                         })

@@ -245,5 +245,4 @@ router.put(
   check_author([1, 2]),
   clinicsController.putUpdateClinic
 );
-
 module.exports = router;
