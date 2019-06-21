@@ -252,22 +252,10 @@ module.exports = class Clinic {
           );
         })
         .then(result => {
-          // return new Promise((rs, rj) => {
-          //   clinic.clinicTypes.forEach(type => {
-          //     db.execute(
-          //       `delete from specializations_clinics where specialization_id=? and clinic_id=?`,
-          //       [type, clinicId]
-          //     )
-          //       .then(result => {
-          //         rs();
-          //       })
-          //       .catch(err => {
-          //         db.rollback();
-          //         rj({ err: err })
-          //       })
-          //   })
-          // })
-          return db.execute(`delete from specializations_clinics where clinic_id=?`, [clinicId])
+          return db.execute(
+            `delete from specializations_clinics where clinic_id=?`,
+            [clinicId]
+          );
         })
         .then(result => {
           return new Promise((rs, rj) => {

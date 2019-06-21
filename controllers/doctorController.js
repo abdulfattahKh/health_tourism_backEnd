@@ -35,7 +35,7 @@ exports.addDoctor = (req, res, next) => {
             })
         })
         .catch(err => {
-            res.status(500).json({
+            res.status(err.status).json({
                 success: err.success,
                 message: err.message,
                 err: err.err
@@ -117,6 +117,7 @@ exports.postAddExperincesToDoctor = (req, res, next) => {
             })
         })
         .catch(result => {
+            console.log(result);
             res.status(result.status).json({
                 success: result.success,
                 message: result.message,

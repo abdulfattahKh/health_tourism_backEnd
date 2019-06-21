@@ -68,8 +68,8 @@ router.get(
 // done
 router.delete(
   '/deleteClinic/:clinicId',
-  // check_auth,
-  // check_author([1, 2]),
+  check_auth,
+  check_author([1, 2]),
   clinicsController.deleteClinicById
 );
 
@@ -95,7 +95,7 @@ router.get(
 );
 
 router.put(
-  '/addDescreption/:clinicId',
+  '/addDescreption',
   check_auth,
   check_author([1, 2]),
   clinicsController.putAddDescreption
@@ -231,11 +231,15 @@ router.get(
 
 router.post(
   '/doctor/addImage/:doctorId',
+  check_auth,
+  check_author([1, 2]),
   doctorController.postAddImage
 );
 
 router.delete(
   '/doctor/deleteImage/:doctorId',
+  check_auth,
+  check_author([1, 2]),
   doctorController.deleteImage
 );
 

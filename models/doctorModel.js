@@ -34,6 +34,7 @@ module.exports = class Doctor {
                             [this.firstName, this.lastName, this.gender, this.imagePath, this.phoneNumber, this.mobileNumber]
                         );
                     } else {
+                        throw new Error('This doctor is already exists.');
                         doctorId = result[0][0].id;
                     }
                 })
@@ -57,8 +58,14 @@ module.exports = class Doctor {
                 })
                 .catch(err => {
                     console.log(err);
+                    if (err.message) {
+                        err.status = 421;
+                    } else {
+                        err.message = 'Adding doctor failed!';
+                        err.status = 500;
+                    }
                     db.rollback();
-                    reject({ success: false, status: 500, message: 'Adding doctor failed!', err: err })
+                    reject({ success: false, status: err.status, message: err.message, err: err })
                 })
         });
     }

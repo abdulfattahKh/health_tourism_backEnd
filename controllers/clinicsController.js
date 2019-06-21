@@ -314,7 +314,10 @@ exports.deleteImageById = (req, res, next) => {
 // put requests
 
 exports.putAddDescreption = (req, res, next) => {
-    descreptionModel.addDescreption('clinics', req.body.descreption, req.params.clinicId, -1)
+
+    console.log(req.body);
+
+    descreptionModel.addDescreption('clinics', req.body.descreption, req.body.clinicId, -1)
         .then(result => {
             console.log(result);
             res.status(200).json({
@@ -617,6 +620,8 @@ exports.getAllImagesByClinicId = (req, res, next) => {
 
 exports.putUpdateClinic = (req, res, next) => {
 
+    console.log(req.body);
+
 
     clinicModel.putUpdateClinic(req.params.clinicId, req.body)
         .then(result => {
@@ -627,6 +632,7 @@ exports.putUpdateClinic = (req, res, next) => {
             })
         })
         .catch(result => {
+            console.log(result);
             console.log('Error');
             res.status(result.status).json({
                 success: result.success,
