@@ -12,4 +12,10 @@ router.get('/cities/:countryId', locationController.getAllCitiesByCountryId);
 
 router.get('/states/:countryId/:cityId', locationController.getAllStatesByCityId);
 
-module.exports = router ;
+router.post('/getCountry', locationController.getCountry)
+
+router.post('/getCity', locationController.getCity)
+
+router.post('/getState', locationController.getState)
+
+module.exports = router;

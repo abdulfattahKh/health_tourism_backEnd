@@ -140,7 +140,7 @@ module.exports.updateTravel = (req, res, next) => {
     longitude: req.body.longitude,
     description: req.body.description
   }
-
+  console.log(travel);
   const locationModel = new insertLocationModel(travel);
   locationModel.count()
     .then(result => {
@@ -298,6 +298,32 @@ module.exports.getAllTravelByStatus = (req, res, next) => {
     })
 
 }
+
+
+module.exports.getTravelAgencyById = (req, res, next) => {
+  if (!req.params['travelId']) {
+    return res.status(400).json({
+      success: false,
+      message: "bad requrest"
+    })
+  }
+  travelModel.getTravelAgencyById(req.params['travelId'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: "ok",
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: "error",
+        error: err
+      })
+    })
+}
+
 ///// work 
 module.exports.getAllTravelById = (req, res, next) => {
   travelModel.getAllTravleById(req.params.id)

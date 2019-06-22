@@ -1,10 +1,4 @@
-/****
- * 
- * 
- * @author Abdulrahman Al hussein 
- * @start
- * 
- */
+
 const procSpecClinicModel = require("../models/procSpecClinicModel");
 const procedureModel = require("../models/procedureModel")
 
@@ -209,12 +203,3 @@ exports.deleteClinicSpecialization = (req, res, next) => {
 exports.insertProceduresIntoDB = (req, res, next) => {
     procedureModel.insertProceduresIntoDB();
 }
-
-
-/****
- * 
- * 
- * @author Abdulrahman Al hussein 
- * @end
- * 
- */

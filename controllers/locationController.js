@@ -77,3 +77,77 @@ exports.getAllStatesByCityId = (req, res, next) => {
       });
     });
 };
+
+module.exports.getCity = (req, res, next) => {
+  if (!req.body['tableName'] || !req.body['id']) {
+    return res.status(400).json({
+      success: false,
+      message: "bad requrest"
+    })
+  }
+  locationModel.getCity(req.body['tableName'], req.body['id'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'ok',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: 'error',
+        error: err
+      })
+    })
+};
+
+
+module.exports.getCountry = (req, res, next) => {
+  if (!req.body['tableName'] || !req.body['id']) {
+    return res.status(400).json({
+      success: false,
+      message: "bad requrest"
+    })
+  }
+  locationModel.getCountry(req.body['tableName'], req.body['id'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'ok',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: 'error',
+        error: err
+      })
+    })
+};
+
+
+module.exports.getState = (req, res, next) => {
+  if (!req.body['tableName'] || !req.body['id']) {
+    return res.status(400).json({
+      success: false,
+      message: "bad requrest"
+    })
+  }
+  locationModel.getState(req.body['tableName'], req.body['id'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'ok',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: 'error',
+        error: err
+      })
+    })
+};
