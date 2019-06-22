@@ -74,3 +74,11 @@ exports.getAllImgaesByClinicId = (clinicId) => {
 
 };
 
+exports.getAllImgaesByTravelId = (travelId) => {
+    return db.execute(
+        `select * from travel_agency inner join images 
+        on travel_agency.id = images.travel_agency_id where travel_agency.id = ?`
+        ,[travelId]
+    )
+}
+

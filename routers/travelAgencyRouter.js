@@ -43,20 +43,21 @@ router.delete('/deleteImage/:imageId', travelAgencyController.deleteImage);
 //work yes
 router.get("/:id", travelAgencyController.getAllTravelById);
 
-router.get("/getAllImgaesByTravelAgencyId/:travelId", (req, res, next) => {
-    travelAgencyController.getAllImgaesByTravelAgencyId(req.params.travelId)
-        .then((result) => {
-            res.status(200).json({
-                success: 'success',
-                message: result[0]
-            });
-        })
-        .catch((err) => {
-            res.status(504).json({
-                success: 'internal error',
-                message: "try again please !!"
-            });
-        })
-})
+router.put(
+    '/addDescreption/:travelId',
+    // check_auth,
+    // check_author([1, 2]),
+    travelAgencyController.putAddDescreption
+);
+
+router.get(
+    '/getDescreption/:travelId',
+    // check_auth,
+    // check_author([1, 2]),
+    travelAgencyController.getDescreption
+  );
+
+router.get('/getAllImgaesByTravelAgencyId/:travelId',travelAgencyController.getAllImagesByTravelId);
+
 
 module.exports = router;

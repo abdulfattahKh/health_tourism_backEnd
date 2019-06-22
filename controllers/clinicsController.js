@@ -187,7 +187,6 @@ exports.getClinicsByStatus = (req, res, next) => {
 // post requests 
 
 exports.postAddClinic = (req, res, next) => {
-    console.log(req.body);
     const clinicObj = new clinicModel(req.body);
     clinicObj.save()
         .then(result => {
@@ -198,7 +197,6 @@ exports.postAddClinic = (req, res, next) => {
             });
         })
         .catch(result => {
-            console.log(result.err);
             res.status(result.status).json({
                 success: result.success,
                 message: result.message,
@@ -292,7 +290,6 @@ exports.deleteImageById = (req, res, next) => {
             return imagesModel.deleteImageFromFolder(path, imageId);
         })
         .then(result => {
-            console.log(result);
             console.log('Deleting images successfully.');
             res.status(result.status).json({
                 success: result.success,
