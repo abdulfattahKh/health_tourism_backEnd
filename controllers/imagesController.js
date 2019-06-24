@@ -15,6 +15,12 @@ exports.addImages = (req, res, next) => {
     })
 }
 
+/*
+obj = {
+    hotelId:number,
+    array:images
+}
+*/
 exports.addImagesById = obj => {
 
     return imagesModule.addImages(obj)

@@ -1,5 +1,6 @@
 const connection = require('../utilites/db')
 const tripsModel = require('../models/tripsModel')
+const hotelController = require('../controllers/hotelsController');
 const imagesController = require('../controllers/imagesController');
 
 module.exports.addTrip = (req, res, next) => {
@@ -21,11 +22,12 @@ module.exports.addTrip = (req, res, next) => {
 
 
 module.exports.addCompleteTrip = (req, res, next) => {
-  let tripId;
+  let tripId, hotelId;
   let TravelAgencyId = req.body.TravelAgencyId;
   let tripGeneralInformation = req.body.tripGeneralInformation;
   let tripImages = req.body.tripImages;
   let hotelInfo = req.body.hotelInfo;
+  let hotelImages = req.body.hotelImages;
   // console.log(tripGeneralInformation,tripImages,hotelInfo);
   if (!tripGeneralInformation || !tripImages || !hotelInfo) {
     return res.status(400).json({
@@ -53,7 +55,16 @@ module.exports.addCompleteTrip = (req, res, next) => {
       })
     })
     .then(tripImagesResult => {
-
+      return hotelController.addHotelWithPhotos({
+        hotelInfo,
+        hotelImages
+      })
+    })
+    .then(hotelResult => {
+      hotelId = hotelResult.hotelId;
+      return hotelController.addTripHotel(tripId, hotelId)
+    })
+    .then(tripHotelResult => {
       connection.commit();
       return res.status(200).json({
         success: true,
@@ -61,7 +72,7 @@ module.exports.addCompleteTrip = (req, res, next) => {
       })
     })
     .catch(err => {
-
+      connection.rollback();
       return res.status(500).json({
         success: false,
         message: 'error',

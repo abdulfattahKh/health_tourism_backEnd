@@ -18,7 +18,8 @@ exports.addImages = (values) => {
         clinicId: values.clinicId ? values.clinicId : null,
         travelAgencyId: values.travelAgencyId ? values.travelAgencyId : null,
         procedureId: values.procedureId ? values.procedureId : null,
-        tripId: values.tripId ? values.tripId : null
+        tripId: values.tripId ? values.tripId : null,
+        hotelId: values.hotelId ? values.hotelId : null
     }
 
     return new Promise((resolve, reject) => {
