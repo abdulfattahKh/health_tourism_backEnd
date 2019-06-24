@@ -1,3 +1,5 @@
+
+
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
@@ -5,19 +7,22 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema health_tourism
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema test
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema health_tourism
+-- Schema test
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `health_tourism` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-USE `health_tourism` ;
+CREATE SCHEMA IF NOT EXISTS `test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `test` ;
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`countries`
+-- Table `test`.`countries`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`countries` (
+CREATE TABLE IF NOT EXISTS `test`.`countries` (
   `country_id` INT(11) NOT NULL,
   `country_name` VARCHAR(45) NOT NULL,
   `country_code` VARCHAR(45) NULL DEFAULT NULL,
@@ -28,9 +33,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`cities`
+-- Table `test`.`cities`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`cities` (
+CREATE TABLE IF NOT EXISTS `test`.`cities` (
   `city_id` INT(11) NOT NULL,
   `city_name` VARCHAR(255) NOT NULL,
   `city_code` VARCHAR(255) NULL DEFAULT NULL,
@@ -39,38 +44,36 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`cities` (
   INDEX `fk_cities_countries1_idx` (`country_id` ASC) VISIBLE,
   CONSTRAINT `fk_cities_countries1`
     FOREIGN KEY (`country_id`)
-    REFERENCES `health_tourism`.`countries` (`country_id`))
+    REFERENCES `test`.`countries` (`country_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`states`
+-- Table `test`.`states`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`states` (
+CREATE TABLE IF NOT EXISTS `test`.`states` (
   `state_id` INT(11) NOT NULL,
   `state_name` VARCHAR(255) NULL DEFAULT NULL,
   `state_code` VARCHAR(255) NULL DEFAULT NULL,
   `statescol` VARCHAR(45) NULL DEFAULT NULL,
   `cities_city_id` INT(11) NOT NULL,
   PRIMARY KEY (`state_id`),
-  INDEX `fk_states_cities1_idx` (`cities_city_id` ASC) VISIBLE,
-  CONSTRAINT `fk_states_cities1`
-    FOREIGN KEY (`cities_city_id`)
-    REFERENCES `health_tourism`.`cities` (`city_id`))
+  INDEX `fk_states_cities1_idx` (`cities_city_id` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`locations`
+-- Table `test`.`locations`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`locations` (
+CREATE TABLE IF NOT EXISTS `test`.`locations` (
   `location_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `longitude` DECIMAL(9,6) NOT NULL,
-  `latitude` DECIMAL(9,6) NOT NULL,
+  `longitude` DECIMAL(25,15) NOT NULL,
+  `latitude` DECIMAL(25,15) NOT NULL,
   `country_id` INT(11) NOT NULL,
   `city_id` INT(11) NOT NULL,
   `state_id` INT(11) NOT NULL,
@@ -80,69 +83,77 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`locations` (
   INDEX `fk_locations_states1_idx` (`state_id` ASC) VISIBLE,
   CONSTRAINT `fk_locations_cities1`
     FOREIGN KEY (`city_id`)
-    REFERENCES `health_tourism`.`cities` (`city_id`),
+    REFERENCES `test`.`cities` (`city_id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_locations_countries1`
     FOREIGN KEY (`country_id`)
-    REFERENCES `health_tourism`.`countries` (`country_id`),
+    REFERENCES `test`.`countries` (`country_id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_locations_states1`
     FOREIGN KEY (`state_id`)
-    REFERENCES `health_tourism`.`states` (`state_id`))
+    REFERENCES `test`.`states` (`state_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 54
+AUTO_INCREMENT = 139
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`roles`
+-- Table `test`.`roles`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`roles` (
-  `role_id` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `test`.`roles` (
+  `role_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `createdAt` DATETIME NULL DEFAULT NULL,
   `updatedAt` DATETIME NULL DEFAULT NULL,
+  `description` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`role_id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`users`
+-- Table `test`.`users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`users` (
+CREATE TABLE IF NOT EXISTS `test`.`users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(255) NOT NULL,
   `last_name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
-  `gender` TINYINT(2) NOT NULL,
+  `gender` VARCHAR(12) NOT NULL,
   `birthday` DATETIME NOT NULL,
   `user_name` VARCHAR(255) NULL DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
   `createdAt` DATETIME NULL DEFAULT NULL,
   `updatedAt` DATETIME NULL DEFAULT NULL,
   `role_id` INT(11) NOT NULL,
+  `mobile_number` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_users_roles1_idx` (`role_id` ASC) VISIBLE,
   CONSTRAINT `fk_users_roles1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `health_tourism`.`roles` (`role_id`))
+    REFERENCES `test`.`roles` (`role_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
+AUTO_INCREMENT = 17
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`clinics`
+-- Table `test`.`clinics`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`clinics` (
+CREATE TABLE IF NOT EXISTS `test`.`clinics` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL DEFAULT NULL,
-  `location` VARCHAR(255) NULL DEFAULT NULL,
-  `informations` VARCHAR(255) NULL DEFAULT NULL,
   `status` VARCHAR(45) NULL DEFAULT 'pending',
-  `descreption` TEXT NOT NULL,
+  `description` TEXT NULL DEFAULT NULL,
+  `address` TEXT NULL DEFAULT NULL,
+  `mobile_number` VARCHAR(255) NULL DEFAULT NULL,
+  `phone_number` VARCHAR(255) NULL DEFAULT NULL,
   `user_id` INT(11) NOT NULL,
   `location_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -150,19 +161,22 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`clinics` (
   INDEX `fk_clinic_location_id_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `fk_clinic_location_id`
     FOREIGN KEY (`location_id`)
-    REFERENCES `health_tourism`.`locations` (`location_id`),
+    REFERENCES `test`.`locations` (`location_id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_clinics_users1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `health_tourism`.`users` (`id`))
+    REFERENCES `test`.`users` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 87
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`travel_agency`
+-- Table `test`.`travel_agency`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`travel_agency` (
+CREATE TABLE IF NOT EXISTS `test`.`travel_agency` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `address` VARCHAR(255) NOT NULL,
@@ -170,25 +184,28 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`travel_agency` (
   `users_id` INT(11) NOT NULL,
   `status` VARCHAR(45) NOT NULL DEFAULT 'waiting',
   `location_id` INT(11) NOT NULL,
+  `description` LONGTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_travel_agency_users1_idx` (`users_id` ASC) VISIBLE,
   INDEX `fk_location_location_id_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `fk_travel_agency_location`
     FOREIGN KEY (`location_id`)
-    REFERENCES `health_tourism`.`locations` (`location_id`),
+    REFERENCES `test`.`locations` (`location_id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_travel_agency_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `health_tourism`.`users` (`id`))
+    REFERENCES `test`.`users` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 132
+AUTO_INCREMENT = 135
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`applications`
+-- Table `test`.`applications`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`applications` (
+CREATE TABLE IF NOT EXISTS `test`.`applications` (
   `content` VARCHAR(255) NOT NULL,
   `info` VARCHAR(255) NOT NULL,
   `users_id` INT(11) NOT NULL,
@@ -199,22 +216,25 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`applications` (
   INDEX `fk_applications_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
   CONSTRAINT `fk_applications_clinics1`
     FOREIGN KEY (`clinic_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_applications_travel_agency1`
     FOREIGN KEY (`travel_agency_id`)
-    REFERENCES `health_tourism`.`travel_agency` (`id`),
+    REFERENCES `test`.`travel_agency` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_applications_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `health_tourism`.`users` (`id`))
+    REFERENCES `test`.`users` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`appointements`
+-- Table `test`.`appointements`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`appointements` (
+CREATE TABLE IF NOT EXISTS `test`.`appointements` (
   `id` INT(11) NOT NULL,
   `clinics_id` INT(11) NOT NULL,
   `users_id` INT(11) NOT NULL,
@@ -223,135 +243,200 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`appointements` (
   INDEX `fk_appointements_users1_idx` (`users_id` ASC) VISIBLE,
   CONSTRAINT `fk_appointements_clinics1`
     FOREIGN KEY (`clinics_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_appointements_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `health_tourism`.`users` (`id`))
+    REFERENCES `test`.`users` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`doctors`
+-- Table `test`.`currency`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`doctors` (
-  `id` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `test`.`currency` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NULL DEFAULT NULL,
+  `code` VARCHAR(100) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 168
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `test`.`clinic_currency_travel_agency`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test`.`clinic_currency_travel_agency` (
+  `clinic_currency_travel_agency_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `currency_id` INT(11) NOT NULL,
+  `clinics_id` INT(11) NULL DEFAULT NULL,
+  `travel_agency_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`clinic_currency_travel_agency_id`),
+  INDEX `fk_clinic_currency_travel_agency_clinics1_idx` (`clinics_id` ASC) VISIBLE,
+  INDEX `fk_clinic_currency_travel_agency_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
+  INDEX `fk_clinic_currency_travel_agency_currency1_idx` (`currency_id` ASC) VISIBLE,
+  CONSTRAINT `fk_clinic_currency_travel_agency_clinics1`
+    FOREIGN KEY (`clinics_id`)
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_clinic_currency_travel_agency_currency1`
+    FOREIGN KEY (`currency_id`)
+    REFERENCES `test`.`currency` (`id`),
+  CONSTRAINT `fk_clinic_currency_travel_agency_travel_agency1`
+    FOREIGN KEY (`travel_agency_id`)
+    REFERENCES `test`.`travel_agency` (`id`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 93
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `test`.`doctors`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test`.`doctors` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(255) NOT NULL,
   `last_name` VARCHAR(255) NOT NULL,
   `gender` VARCHAR(255) NOT NULL,
-  `doctorscol` VARCHAR(45) NOT NULL,
-  `phone_number` INT(11) NULL DEFAULT NULL,
-  `mobile_number` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
+  `image_name` VARCHAR(255) NULL DEFAULT NULL,
+  `phone_number` VARCHAR(255) NULL DEFAULT NULL,
+  `mobile_number` VARCHAR(255) NULL DEFAULT NULL,
+  `clinic_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_doctors_clinics1_idx` (`clinic_id` ASC) VISIBLE,
+  CONSTRAINT `fk_doctors_clinics1`
+    FOREIGN KEY (`clinic_id`)
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 42
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`clinics_doctors`
+-- Table `test`.`clinics_doctors`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`clinics_doctors` (
+CREATE TABLE IF NOT EXISTS `test`.`clinics_doctors` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `clinic_id` INT(11) NOT NULL,
   `doctor_id` INT(11) NOT NULL,
-  PRIMARY KEY (`clinic_id`, `doctor_id`),
-  INDEX `fk_clinics_has_doctors_doctors1_idx` (`doctor_id` ASC) VISIBLE,
-  INDEX `fk_clinics_has_doctors_clinics1_idx` (`clinic_id` ASC) VISIBLE,
-  CONSTRAINT `fk_clinics_has_doctors_clinics1`
+  PRIMARY KEY (`id`),
+  INDEX `fk_clinics_doctors_clinics1_idx` (`clinic_id` ASC) VISIBLE,
+  INDEX `fk_clinics_doctors_doctors1_idx` (`doctor_id` ASC) VISIBLE,
+  CONSTRAINT `fk_clinics_doctors_clinics1`
     FOREIGN KEY (`clinic_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
-  CONSTRAINT `fk_clinics_has_doctors_doctors1`
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_clinics_doctors_doctors1`
     FOREIGN KEY (`doctor_id`)
-    REFERENCES `health_tourism`.`doctors` (`id`))
+    REFERENCES `test`.`doctors` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`specializations`
+-- Table `test`.`specializations`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`specializations` (
-  `spec_id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL,
+CREATE TABLE IF NOT EXISTS `test`.`specializations` (
+  `spec_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`spec_id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 36
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`procedures`
+-- Table `test`.`procedures`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`procedures` (
+CREATE TABLE IF NOT EXISTS `test`.`procedures` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `start_price` VARCHAR(45) NULL DEFAULT NULL,
-  `end_price` VARCHAR(255) NULL DEFAULT NULL,
-  `type` VARCHAR(255) NULL DEFAULT NULL,
-  `expected_time` DATETIME NULL DEFAULT NULL,
-  `specializations_spec_id` INT NOT NULL,
+  `specializations_spec_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_procedures_specializations1_idx` (`specializations_spec_id` ASC) VISIBLE,
   CONSTRAINT `fk_procedures_specializations1`
     FOREIGN KEY (`specializations_spec_id`)
-    REFERENCES `health_tourism`.`specializations` (`spec_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `test`.`specializations` (`spec_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 2283
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`clinics_procedures`
+-- Table `test`.`clinics_procedures`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`clinics_procedures` (
+CREATE TABLE IF NOT EXISTS `test`.`clinics_procedures` (
+  `clinics_procedures_id` INT(11) NOT NULL,
   `clinic_id` INT(11) NOT NULL,
   `procedure_id` INT(11) NOT NULL,
-  PRIMARY KEY (`clinic_id`, `procedure_id`),
+  PRIMARY KEY (`clinics_procedures_id`),
   INDEX `fk_clinics_has_procedures_procedures1_idx` (`procedure_id` ASC) VISIBLE,
   INDEX `fk_clinics_has_procedures_clinics1_idx` (`clinic_id` ASC) VISIBLE,
   CONSTRAINT `fk_clinics_has_procedures_clinics1`
     FOREIGN KEY (`clinic_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_clinics_has_procedures_procedures1`
     FOREIGN KEY (`procedure_id`)
-    REFERENCES `health_tourism`.`procedures` (`id`))
+    REFERENCES `test`.`procedures` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`experinces`
+-- Table `test`.`experinces`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`experinces` (
+CREATE TABLE IF NOT EXISTS `test`.`experinces` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `from` DATETIME NOT NULL,
-  `to` DATETIME NOT NULL,
+  `experince_name` VARCHAR(255) NOT NULL,
   `organization_name` VARCHAR(255) NOT NULL,
-  `createdAt` DATETIME NOT NULL,
-  `updatedAt` DATETIME NOT NULL,
-  `experincescol` VARCHAR(45) NOT NULL,
+  `from` DATETIME NULL DEFAULT NULL,
+  `to` DATETIME NULL DEFAULT NULL,
+  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `doctor_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_experinces_doctors1_idx` (`doctor_id` ASC) VISIBLE,
   CONSTRAINT `fk_experinces_doctors1`
     FOREIGN KEY (`doctor_id`)
-    REFERENCES `health_tourism`.`doctors` (`id`))
+    REFERENCES `test`.`doctors` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 28
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`hotels`
+-- Table `test`.`hotels`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`hotels` (
+CREATE TABLE IF NOT EXISTS `test`.`hotels` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `address` VARCHAR(255) NOT NULL,
   `price` INT(11) NOT NULL,
+  `mobile_number` VARCHAR(255) NULL,
+  `emai` VARCHAR(255) NULL,
+  `description` LONGTEXT NULL,
+  `evaluation` INT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -359,32 +444,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`images`
+-- Table `test`.`trips`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`images` (
-  `image_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `image_path` VARCHAR(255) NULL DEFAULT NULL,
-  `image_type` TINYINT(4) NULL DEFAULT NULL,
-  `clinics_id` INT(11) NOT NULL,
-  `travel_agency_id` INT(11) NOT NULL,
-  PRIMARY KEY (`image_id`),
-  INDEX `fk_images_clinics1_idx` (`clinics_id` ASC) VISIBLE,
-  INDEX `fk_images_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
-  CONSTRAINT `fk_images_clinics1`
-    FOREIGN KEY (`clinics_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
-  CONSTRAINT `fk_images_travel_agency1`
-    FOREIGN KEY (`travel_agency_id`)
-    REFERENCES `health_tourism`.`travel_agency` (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `health_tourism`.`trips`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`trips` (
+CREATE TABLE IF NOT EXISTS `test`.`trips` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `start_from` DATETIME NOT NULL,
   `finish_to` DATETIME NOT NULL,
@@ -395,70 +457,174 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`trips` (
   INDEX `fk_trips_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
   CONSTRAINT `fk_trips_travel_agency1`
     FOREIGN KEY (`travel_agency_id`)
-    REFERENCES `health_tourism`.`travel_agency` (`id`))
+    REFERENCES `test`.`travel_agency` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`mumbers_trips`
+-- Table `test`.`images`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`mumbers_trips` (
+CREATE TABLE IF NOT EXISTS `test`.`images` (
+  `image_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `image_name` VARCHAR(255) NULL DEFAULT NULL,
+  `clinics_id` INT(11) NULL DEFAULT NULL,
+  `travel_agency_id` INT(11) NULL DEFAULT NULL,
+  `procedures_id` INT(11) NULL DEFAULT NULL,
+  `trips_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  INDEX `fk_images_clinics1_idx` (`clinics_id` ASC) VISIBLE,
+  INDEX `fk_images_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
+  INDEX `fk_images_procedures1_idx` (`procedures_id` ASC) VISIBLE,
+  INDEX `fk_images_trips1_idx` (`trips_id` ASC) VISIBLE,
+  CONSTRAINT `fk_images_clinics1`
+    FOREIGN KEY (`clinics_id`)
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_images_procedures1`
+    FOREIGN KEY (`procedures_id`)
+    REFERENCES `test`.`procedures` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_images_travel_agency1`
+    FOREIGN KEY (`travel_agency_id`)
+    REFERENCES `test`.`travel_agency` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_images_trips1`
+    FOREIGN KEY (`trips_id`)
+    REFERENCES `test`.`trips` (`id`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 255
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `test`.`mumbers_trips`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test`.`mumbers_trips` (
+  `user_trip_id` INT(11) NOT NULL AUTO_INCREMENT,
   `users_id` INT(11) NOT NULL,
-  `users_role_id` INT(11) NOT NULL,
   `trips_id` INT(11) NOT NULL,
-  PRIMARY KEY (`users_id`, `users_role_id`, `trips_id`),
+  PRIMARY KEY (`user_trip_id`),
   INDEX `fk_users_has_trips_trips1_idx` (`trips_id` ASC) VISIBLE,
-  INDEX `fk_users_has_trips_users1_idx` (`users_id` ASC, `users_role_id` ASC) VISIBLE,
+  INDEX `fk_users_has_trips_users1_idx` (`users_id` ASC, `user_trip_id` ASC) VISIBLE,
   CONSTRAINT `fk_users_has_trips_trips1`
     FOREIGN KEY (`trips_id`)
-    REFERENCES `health_tourism`.`trips` (`id`),
+    REFERENCES `test`.`trips` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_users_has_trips_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `health_tourism`.`users` (`id`))
+    REFERENCES `test`.`users` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`permissions`
+-- Table `test`.`permissions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`permissions` (
-  `permission_id` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `test`.`permissions` (
+  `permission_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL DEFAULT NULL,
   `createdAt` VARCHAR(255) NULL DEFAULT NULL,
+  `description` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`permission_id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 8
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`permissions_roles`
+-- Table `test`.`permissions_roles`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`permissions_roles` (
+CREATE TABLE IF NOT EXISTS `test`.`permissions_roles` (
+  `permissions_roles_id` INT(11) NOT NULL AUTO_INCREMENT,
   `permission_id` INT(11) NOT NULL,
   `role_id` INT(11) NOT NULL,
+  PRIMARY KEY (`permissions_roles_id`),
   INDEX `fk_permissions_roles_permissions1_idx` (`permission_id` ASC) VISIBLE,
   INDEX `fk_permissions_roles_roles1_idx` (`role_id` ASC) VISIBLE,
   CONSTRAINT `fk_permissions_roles_permissions1`
     FOREIGN KEY (`permission_id`)
-    REFERENCES `health_tourism`.`permissions` (`permission_id`),
+    REFERENCES `test`.`permissions` (`permission_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_permissions_roles_roles1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `health_tourism`.`roles` (`role_id`))
+    REFERENCES `test`.`roles` (`role_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 44
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`reviews`
+-- Table `test`.`specializations_clinics`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`reviews` (
-  `id` INT(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `test`.`specializations_clinics` (
+  `specializations_clinics_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `specialization_id` INT(11) NOT NULL,
+  `clinic_id` INT(11) NOT NULL,
+  `is_primary` TINYINT(4) NULL DEFAULT NULL,
+  PRIMARY KEY (`specializations_clinics_id`),
+  INDEX `fk_specializations_clinics_specializations1_idx` (`specialization_id` ASC) VISIBLE,
+  INDEX `fk_specializations_clinics_clinics1_idx` (`clinic_id` ASC) VISIBLE,
+  CONSTRAINT `fk_specializations_clinics_clinics1`
+    FOREIGN KEY (`clinic_id`)
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_specializations_clinics_specializations1`
+    FOREIGN KEY (`specialization_id`)
+    REFERENCES `test`.`specializations` (`spec_id`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 341
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `test`.`proc_spec_clinic`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test`.`proc_spec_clinic` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `proc_id` INT(11) NOT NULL,
+  `spec_clinic_id` INT(11) NOT NULL,
+  `min_price` FLOAT NULL DEFAULT NULL,
+  `max_price` FLOAT NULL DEFAULT NULL,
+  `duration` INT(11) NULL DEFAULT NULL,
+  `num_visits` FLOAT NULL DEFAULT NULL,
+  `bookable` TINYINT(1) NULL DEFAULT NULL,
+  `description` TEXT NULL DEFAULT NULL,
+  `img1` TEXT NULL DEFAULT NULL,
+  `img2` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `proc_id` (`proc_id` ASC) VISIBLE,
+  INDEX `spec_clinic_id` (`spec_clinic_id` ASC) VISIBLE,
+  CONSTRAINT `proc_spec_clinic_ibfk_1`
+    FOREIGN KEY (`proc_id`)
+    REFERENCES `test`.`procedures` (`id`),
+  CONSTRAINT `proc_spec_clinic_ibfk_2`
+    FOREIGN KEY (`spec_clinic_id`)
+    REFERENCES `test`.`specializations_clinics` (`specializations_clinics_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `test`.`reviews`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test`.`reviews` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `clinics_id` INT(11) NOT NULL,
   `users_id` INT(11) NOT NULL,
   `travel_agency_id` INT(11) NOT NULL,
@@ -470,101 +636,80 @@ CREATE TABLE IF NOT EXISTS `health_tourism`.`reviews` (
   INDEX `fk_reviews_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
   CONSTRAINT `fk_reviews_clinics1`
     FOREIGN KEY (`clinics_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_reviews_travel_agency1`
     FOREIGN KEY (`travel_agency_id`)
-    REFERENCES `health_tourism`.`travel_agency` (`id`),
+    REFERENCES `test`.`travel_agency` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_reviews_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `health_tourism`.`users` (`id`))
+    REFERENCES `test`.`users` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`travel_agency_clinics`
+-- Table `test`.`travel_agency_clinics`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`travel_agency_clinics` (
+CREATE TABLE IF NOT EXISTS `test`.`travel_agency_clinics` (
+  `travel_agency_clinics_id` INT(11) NOT NULL,
   `travel_agency_id` INT(11) NOT NULL,
   `clinic_id` INT(11) NOT NULL,
-  PRIMARY KEY (`travel_agency_id`, `clinic_id`),
+  PRIMARY KEY (`travel_agency_clinics_id`),
   INDEX `fk_travel_agency_has_clinics_clinics1_idx` (`clinic_id` ASC) VISIBLE,
   INDEX `fk_travel_agency_has_clinics_travel_agency1_idx` (`travel_agency_id` ASC) INVISIBLE,
   CONSTRAINT `fk_travel_agency_has_clinics_clinics1`
     FOREIGN KEY (`clinic_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`),
+    REFERENCES `test`.`clinics` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_travel_agency_has_clinics_travel_agency1`
     FOREIGN KEY (`travel_agency_id`)
-    REFERENCES `health_tourism`.`travel_agency` (`id`))
+    REFERENCES `test`.`travel_agency` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `health_tourism`.`trips_hotels`
+-- Table `test`.`trips_hotels`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`trips_hotels` (
+CREATE TABLE IF NOT EXISTS `test`.`trips_hotels` (
+  `trips_hotels_id` INT(11) NOT NULL AUTO_INCREMENT,
   `trip_id` INT(11) NOT NULL,
   `hotel_id` INT(11) NOT NULL,
-  PRIMARY KEY (`trip_id`, `hotel_id`),
+  PRIMARY KEY (`trips_hotels_id`),
   INDEX `fk_trips_has_hotels_hotels1_idx` (`hotel_id` ASC) VISIBLE,
   INDEX `fk_trips_has_hotels_trips1_idx` (`trip_id` ASC) VISIBLE,
   CONSTRAINT `fk_trips_has_hotels_hotels1`
     FOREIGN KEY (`hotel_id`)
-    REFERENCES `health_tourism`.`hotels` (`id`),
+    REFERENCES `test`.`hotels` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `fk_trips_has_hotels_trips1`
     FOREIGN KEY (`trip_id`)
-    REFERENCES `health_tourism`.`trips` (`id`))
+    REFERENCES `test`.`trips` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `health_tourism`.`specializations_clinics`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`specializations_clinics` (
-  `specialization_id` INT NOT NULL,
-  `clinic_id` INT(11) NOT NULL,
-  INDEX `fk_specializations_clinics_specializations1_idx` (`specialization_id` ASC) VISIBLE,
-  INDEX `fk_specializations_clinics_clinics1_idx` (`clinic_id` ASC) VISIBLE,
-  PRIMARY KEY (`clinic_id`, `specialization_id`),
-  CONSTRAINT `fk_specializations_clinics_specializations1`
-    FOREIGN KEY (`specialization_id`)
-    REFERENCES `health_tourism`.`specializations` (`spec_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_specializations_clinics_clinics1`
-    FOREIGN KEY (`clinic_id`)
-    REFERENCES `health_tourism`.`clinics` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `health_tourism`.`experinces_doctors`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_tourism`.`experinces_doctors` (
-  `experinces_id` INT(11) NOT NULL,
-  `doctors_id` INT(11) NOT NULL,
-  INDEX `fk_experinces_doctors_experinces1_idx` (`experinces_id` ASC) VISIBLE,
-  INDEX `fk_experinces_doctors_doctors1_idx` (`doctors_id` ASC) VISIBLE,
-  CONSTRAINT `fk_experinces_doctors_experinces1`
-    FOREIGN KEY (`experinces_id`)
-    REFERENCES `health_tourism`.`experinces` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_experinces_doctors_doctors1`
-    FOREIGN KEY (`doctors_id`)
-    REFERENCES `health_tourism`.`doctors` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+
+
+
+
+
+
+
+
+
+
+
