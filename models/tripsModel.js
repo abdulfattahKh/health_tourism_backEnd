@@ -4,14 +4,15 @@ const db = require("../utilites/db");
 
 module.exports = class Trips {
     constructor(trip){
-        this.startFrom      = trip.body.startFrom;
-        this.finishTo       = trip.body.finishTo;
-        this.name           = trip.body.name;
-        this.tripFlow       = trip.body.tripFlow;
-        this.description    = trip.body.description;
-        this.price          = trip.body.price;
-        this.evaluation     = trip.body.evaluation;
-        this.TravelAgencyId = trip.body.TravelAgencyId;
+        
+        this.startFrom      = trip.startFrom;
+        this.finishTo       = trip.finishTo;
+        this.name           = trip.name;
+        this.tripFlow       = trip.tripFlow;
+        this.description    = trip.description;
+        this.price          = trip.price;
+        this.evaluation     = trip.evaluation;
+        this.TravelAgencyId = trip.TravelAgencyId;
     }
 
     save(){

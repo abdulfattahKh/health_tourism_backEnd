@@ -38,4 +38,10 @@ exports.createFolders = () => {
         fs.mkdirSync(path.join(p + '/doctors'));
     }
 
+    if (!fs.existsSync(path.join(p + '/shared'))) {
+        fs.mkdirSync(path.join(p + '/shared'));
+    }
+
+
+
 };

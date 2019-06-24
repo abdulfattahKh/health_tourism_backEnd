@@ -22,7 +22,8 @@ const privilegesRouter = require("./routers/PrivilegesRouter");
 const locationRouter = require("./routers/locationRouter");
 const clinicsRouter = require("./routers/clinicsRouter");
 const travelAgent = require("./routers/travelAgencyRouter");
-const trips = require("./routers/trips");
+const tripsRouter = require("./routers/tripsRouter");
+const images = require("./routers/imagesRouter");
 const generalRouter = require("./routers/crudRouter");
 
 const procedureRouter = require("./routers/procedureRouter");
@@ -37,7 +38,6 @@ app.use(express.static(path.join(__dirname,"dist")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join("dist")));
 app.use("/images", express.static(path.join("upload/images")));
-console.log(path.join('images'))
 app.use(bodyParser.urlencoded({
     extended: false
 }));
@@ -54,8 +54,8 @@ app.use("/location", locationRouter);
 // tested
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgencies", travelAgent);
-app.use("/trips", trips);
-
+app.use("/trips", tripsRouter);
+app.use('/images',images);
 
 app.use("/procedure", procedureRouter);
 

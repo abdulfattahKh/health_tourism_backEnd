@@ -9,18 +9,18 @@ const db = require('../utilites/db');
 const fs = require('fs');
 // const fs = require('fs');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'upload/images/clinics')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'upload/images/clinics')
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, Date.now() + '-' + file.originalname);
+//     }
+// });
 
-const upload = multer({
-    storage: storage
-});
+// const upload = multer({
+//     storage: storage
+// });
 
 
 // get requests
@@ -216,7 +216,7 @@ exports.postAddImages = (req, res, next) => {
             return res.status(200).json({
                 success: result.success,
                 message: result.message,
-                images: result.data
+                data: result.data
             })
         })
         .catch(err => {

@@ -352,7 +352,7 @@ module.exports.getAllTravelById = (req, res, next) => {
 }
 
 module.exports.postAddImage = (req, res, next) => {
-
+  console.log(req.body);
   const file = upload.array('image');
 
   file(req, res, err => {

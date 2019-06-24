@@ -25,8 +25,6 @@ router.get("/TravelAgenciesByStatus/", travelAgencyController.getAllTravelByStat
 router.get("/myTravelAgencies/:userId", travelAgencyController.getMyTravelAgencies);
 ///OK
 
-router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
-
 router.get('/travelAgencyById/:travelId', travelAgencyController.getTravelAgencyById);
 
 //OK
@@ -44,20 +42,22 @@ router.delete('/deleteImage/:imageId', travelAgencyController.deleteImage);
 router.get("/:id", travelAgencyController.getAllTravelById);
 
 router.put(
-    '/addDescreption/:travelId',
-    // check_auth,
-    // check_author([1, 2]),
-    travelAgencyController.putAddDescreption
+  '/addDescreption/:travelId',
+  // check_auth,
+  // check_author([1, 2]),
+  travelAgencyController.putAddDescreption
 );
 
 router.get(
-    '/getDescreption/:travelId',
-    // check_auth,
-    // check_author([1, 2]),
-    travelAgencyController.getDescreption
-  );
+  '/getDescreption/:travelId',
+  // check_auth,
+  // check_author([1, 2]),
+  travelAgencyController.getDescreption
+);
 
-router.get('/getAllImgaesByTravelAgencyId/:travelId',travelAgencyController.getAllImagesByTravelId);
+router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
+
+router.get('/getAllImgaesByTravelAgencyId/:travelId', travelAgencyController.getAllImagesByTravelId);
 
 
 module.exports = router;

@@ -11,7 +11,6 @@ exports.getImageById = (imageId) => {
 
 
 exports.addImages = (values) => {
-    console.log(values);
 
     const data = [];
 
@@ -22,22 +21,31 @@ exports.addImages = (values) => {
         tripId: values.tripId ? values.tripId : null
     }
 
-
-    console.log(obj);
-
     return new Promise((resolve, reject) => {
         values.array.forEach(element => {
-            const name = element.filename;
-
+            const name = element.filename || element.name;
             db.execute(`insert into images (image_name, clinics_id, travel_agency_id, procedures_id, trips_id) values (?, ?, ?, ?, ?)`, [name, obj.clinicId, obj.travelAgencyId, obj.procedureId, obj.tripId])
                 .then(result => {
-                    data.push({ id: result[0].insertId, name: name });
+                    data.push({
+                        id: result[0].insertId,
+                        name: name
+                    });
                     if (data.length === values.array.length) {
-                        resolve({ success: true, message: 'Adding images successfully.', data: data, status: 200 });
+                        resolve({
+                            success: true,
+                            message: 'Adding images successfully.',
+                            data: data,
+                            status: 200
+                        });
                     }
                 })
                 .catch(err => {
-                    reject({ err: err, success: false, message: 'Internal server error!', status: 500 })
+                    reject({
+                        err: err,
+                        success: false,
+                        message: 'Internal server error!',
+                        status: 500
+                    })
                 });
 
         });
@@ -56,9 +64,18 @@ exports.deleteImageFromFolder = (path, imageId) => {
     return new Promise((resolve, reject) => {
         fs.unlink(path, (err) => {
             if (err) {
-                reject({ status: 500, err: err, success: false, message: 'Deleting image failed!' });
+                reject({
+                    status: 500,
+                    err: err,
+                    success: false,
+                    message: 'Deleting image failed!'
+                });
             } else {
-                resolve({ status: 200, success: true, message: 'Deleting image successfully.' });
+                resolve({
+                    status: 200,
+                    success: true,
+                    message: 'Deleting image successfully.'
+                });
             }
         });
     })
@@ -69,7 +86,7 @@ exports.getAllImgaesByClinicId = (clinicId) => {
     return db.execute(
         `select * from clinics inner join images
          on clinics.id=images.clinics_id where clinics.id=?`,
-         [clinicId]
+        [clinicId]
     );
 
 };
@@ -77,8 +94,6 @@ exports.getAllImgaesByClinicId = (clinicId) => {
 exports.getAllImgaesByTravelId = (travelId) => {
     return db.execute(
         `select * from travel_agency inner join images 
-        on travel_agency.id = images.travel_agency_id where travel_agency.id = ?`
-        ,[travelId]
+        on travel_agency.id = images.travel_agency_id where travel_agency.id = ?`, [travelId]
     )
 }
-
