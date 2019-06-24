@@ -1,5 +1,3 @@
-
-
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
@@ -433,10 +431,10 @@ CREATE TABLE IF NOT EXISTS `test`.`hotels` (
   `name` VARCHAR(255) NOT NULL,
   `address` VARCHAR(255) NOT NULL,
   `price` INT(11) NOT NULL,
-  `mobile_number` VARCHAR(255) NULL,
-  `emai` VARCHAR(255) NULL,
-  `description` LONGTEXT NULL,
-  `evaluation` INT NULL,
+  `mobile_number` VARCHAR(255) NULL DEFAULT NULL,
+  `emai` VARCHAR(255) NULL DEFAULT NULL,
+  `description` LONGTEXT NULL DEFAULT NULL,
+  `evaluation` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -453,6 +451,9 @@ CREATE TABLE IF NOT EXISTS `test`.`trips` (
   `name` VARCHAR(255) NOT NULL,
   `trip_flow` VARCHAR(255) NOT NULL,
   `travel_agency_id` INT(11) NOT NULL,
+  `description` LONGTEXT NULL DEFAULT NULL,
+  `price` INT(11) NULL DEFAULT NULL,
+  `evaluation` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_trips_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
   CONSTRAINT `fk_trips_travel_agency1`
@@ -460,6 +461,7 @@ CREATE TABLE IF NOT EXISTS `test`.`trips` (
     REFERENCES `test`.`travel_agency` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 32
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -474,11 +476,13 @@ CREATE TABLE IF NOT EXISTS `test`.`images` (
   `travel_agency_id` INT(11) NULL DEFAULT NULL,
   `procedures_id` INT(11) NULL DEFAULT NULL,
   `trips_id` INT(11) NULL DEFAULT NULL,
+  `hotel_id` INT(11) NOT NULL,
   PRIMARY KEY (`image_id`),
   INDEX `fk_images_clinics1_idx` (`clinics_id` ASC) VISIBLE,
   INDEX `fk_images_travel_agency1_idx` (`travel_agency_id` ASC) VISIBLE,
   INDEX `fk_images_procedures1_idx` (`procedures_id` ASC) VISIBLE,
   INDEX `fk_images_trips1_idx` (`trips_id` ASC) VISIBLE,
+  INDEX `fk_images_hotels1_idx` (`hotel_id` ASC) VISIBLE,
   CONSTRAINT `fk_images_clinics1`
     FOREIGN KEY (`clinics_id`)
     REFERENCES `test`.`clinics` (`id`)
@@ -494,9 +498,14 @@ CREATE TABLE IF NOT EXISTS `test`.`images` (
   CONSTRAINT `fk_images_trips1`
     FOREIGN KEY (`trips_id`)
     REFERENCES `test`.`trips` (`id`)
-    ON DELETE CASCADE)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_images_hotels1`
+    FOREIGN KEY (`hotel_id`)
+    REFERENCES `test`.`hotels` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 255
+AUTO_INCREMENT = 306
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -700,16 +709,3 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-
-
-
-
-
-
-
-
-
-
-
-

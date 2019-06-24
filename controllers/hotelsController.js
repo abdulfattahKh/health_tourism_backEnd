@@ -9,28 +9,29 @@ exports.addHotel = (req, res, next) => {
 //add hotel
 exports.addHotelWithPhotos = (values) => {
     return new Promise((resolve, reject) => {
-        let images = values.images;
-        let generalInfo = values.generalInfo;
-
+        let images = values.hotelImages;
+        let generalInfo = values.hotelInfo;
+        let hotelId;
         connection.beginTransaction()
             .then(result => {
                 return this.addHotelFunction(generalInfo);
             })
             .then(generalInfoResult => {
+                hotelId = generalInfoResult.insertId;
                 return imagesController.addImagesById({
-                    hotelId: generalInfoResult.insertId,
+                    hotelId: hotelId,
                     array: images
                 });
             })
             .then(imagesResult => {
-                connection.commit();
-                connection.release();
                 resolve({
                     success: true,
                     message: 'hotel was added',
+                    hotelId: hotelId
                 })
             })
             .catch(err => {
+                connection.rollback();
                 reject({
                     success: false,
                     message: 'error',
@@ -52,11 +53,32 @@ exports.addHotelFunction = values => {
                 })
             })
             .catch(err => {
+                connection.rollback();
                 reject({
                     success: false,
-                    message: "error"
+                    message: "error",
+                    err
                 })
             })
 
+    })
+}
+
+exports.addTripHotel = (tripId, hotelId) => {
+    return new Promise((resolve, reject) => {
+        hotelModel.addTripHotel(tripId, hotelId)
+            .then(result => {
+                resolve({
+                    success: true,
+                    message: "added hotel trip"
+                })
+            })
+            .catch(err => {
+                reject({
+                    success: false,
+                    message: 'error with adding hotel trip',
+                    err
+                })
+            })
     })
 }

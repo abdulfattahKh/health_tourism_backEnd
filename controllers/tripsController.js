@@ -22,7 +22,7 @@ module.exports.addTrip = (req, res, next) => {
 
 
 module.exports.addCompleteTrip = (req, res, next) => {
-  let tripId;
+  let tripId, hotelId;
   let TravelAgencyId = req.body.TravelAgencyId;
   let tripGeneralInformation = req.body.tripGeneralInformation;
   let tripImages = req.body.tripImages;
@@ -55,9 +55,16 @@ module.exports.addCompleteTrip = (req, res, next) => {
       })
     })
     .then(tripImagesResult => {
-      // hotelController.addHotelWithPhotos({
-
-      // })
+      return hotelController.addHotelWithPhotos({
+        hotelInfo,
+        hotelImages
+      })
+    })
+    .then(hotelResult => {
+      hotelId = hotelResult.hotelId;
+      return hotelController.addTripHotel(tripId, hotelId)
+    })
+    .then(tripHotelResult => {
       connection.commit();
       return res.status(200).json({
         success: true,
@@ -65,7 +72,7 @@ module.exports.addCompleteTrip = (req, res, next) => {
       })
     })
     .catch(err => {
-
+      connection.rollback();
       return res.status(500).json({
         success: false,
         message: 'error',
