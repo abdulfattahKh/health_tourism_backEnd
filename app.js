@@ -25,6 +25,8 @@ const travelAgent = require("./routers/travelAgencyRouter");
 const tripsRouter = require("./routers/tripsRouter");
 const images = require("./routers/imagesRouter");
 const generalRouter = require("./routers/crudRouter");
+const reviewsRouter = require("./routers/reviewsRouter");
+
 
 const procedureRouter = require("./routers/procedureRouter");
 
@@ -58,6 +60,7 @@ app.use("/trips", tripsRouter);
 app.use('/images',images);
 
 app.use("/procedure", procedureRouter);
+app.use('/reviews',reviewsRouter)
 
 
 // app.get('*',(req,res)=>{
