@@ -237,4 +237,40 @@ module.exports = class TravelAgency {
                         where t.users_id = ?`,
             [userId]);
     }
+
+    static getLastTravelAgencyAdded () {
+        return db.execute(`select * from travel_agency order by id desc limit 1`);
+    }
+
+
+    static getTravelAgencyInfo (travelAgencyId) {
+
+        return db.execute(
+            `select
+            t.id as travelAgencyId,
+            t.name,
+            t.address,
+            t.map,
+            t.status,
+            u.id as userId,
+            u.first_name as fOwnerName,
+            u.last_name as lOwnerName,
+            u.email,
+            u.mobile_number as userMobileNumber,
+            l.longitude,
+            l.latitude,
+            co.country_name as country,
+            ci.city_name as city,
+            st.state_name as state
+            from travel_agency t
+            inner join users u on t.users_id=u.id
+            inner join locations l on t.location_id=l.location_id
+            inner join countries co on l.country_id=co.country_id
+            inner join cities ci on l.city_id=ci.city_id
+            inner join states st on l.state_id=st.state_id
+            where t.id=?`,
+            [travelAgencyId]
+        );
+
+    }
 }
