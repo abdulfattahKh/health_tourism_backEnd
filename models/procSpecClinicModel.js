@@ -324,10 +324,11 @@ module.exports = class procSpecClinic {
         })
     }
 
-    static putSpecializationsPrimary(clinic_id,specializations_clinics_id) {
+    static putSpecializationsPrimary(value,clinic_id,specializations_clinics_id) {
+        console.log(value);
         return db.execute(`update specializations_clinics
-        set is_primary = true 
-        where specializations_clinics_id = ? and clinic_id = ?`, [specializations_clinics_id, clinic_id])
+        set is_primary = ? 
+        where specializations_clinics_id = ? and clinic_id = ?`, [value,specializations_clinics_id, clinic_id])
     }
 
     deleteClinicSpecialization(clinic_id ,specializations_clinics_id) {

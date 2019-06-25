@@ -252,6 +252,8 @@ router.put(
 
 router.post(
   '/addRequest/:userId',
+  check_auth,
+  check_author([1, 2]),
   clinicsController.addRequestOfTreatment
 );
 

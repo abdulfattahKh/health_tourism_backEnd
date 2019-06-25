@@ -54,6 +54,8 @@ router.get(
     procController.getProcAccordToAutoComplate
 );
 
+router.get('/insertProceduresIntoDB',procController.insertProceduresIntoDB);
+
 router.get("/getClinicSpecializations/:id",procController.getClinicSpecializations);
 
 router.post('/putSpecializationsPrimary/',procController.putSpecializationsPrimary);

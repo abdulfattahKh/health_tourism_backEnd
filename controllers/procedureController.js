@@ -1,10 +1,4 @@
-/****
- * 
- * 
- * @author Abdulrahman Al hussein 
- * @start
- * 
- */
+
 const procSpecClinicModel = require("../models/procSpecClinicModel");
 const procedureModel = require("../models/procedureModel")
 
@@ -178,7 +172,7 @@ exports.putSpecializationsPrimary = (req, res, next) => {
             message: "bad requrest"
         })
     }
-    procSpecClinicModel.putSpecializationsPrimary(req.body['clinic_id'], req.body['specializations_clinics_id'])
+    procSpecClinicModel.putSpecializationsPrimary(req.body['value'], req.body['clinic_id'], req.body['specializations_clinics_id'])
         .then(result => {
             res.status(200).json({
                 success: true,
@@ -195,22 +189,17 @@ exports.putSpecializationsPrimary = (req, res, next) => {
 
 }
 
-exports.deleteClinicSpecialization = (req,res,next)=>{
-    if(!req.body.clinic_id || !req.body.specializations_clinics_id) {
+exports.deleteClinicSpecialization = (req, res, next) => {
+    if (!req.body.clinic_id || !req.body.specializations_clinics_id) {
         return res.status(400).json({
-            success:false,
-            message:'bad requrest'
+            success: false,
+            message: 'bad requrest'
         })
     }
-    procSpecClinicModel.deleteClinicSpecialization(req.body.clinicId,req.body.specializations_clinics_id)
-    
+    procSpecClinicModel.deleteClinicSpecialization(req.body.clinicId, req.body.specializations_clinics_id)
+
 }
 
-
-/****
- * 
- * 
- * @author Abdulrahman Al hussein 
- * @end
- * 
- */
+exports.insertProceduresIntoDB = (req, res, next) => {
+    procedureModel.insertProceduresIntoDB();
+}

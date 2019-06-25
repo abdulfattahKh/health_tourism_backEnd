@@ -10,19 +10,18 @@ const db = require('../utilites/db');
 const fs = require('fs');
 // const fs = require('fs');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'upload/images/clinics')
-    },
-    filename: function (req, file, cb) {
-        console.log(file.originalname);
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'upload/images/clinics')
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, Date.now() + '-' + file.originalname);
+//     }
+// });
 
-const upload = multer({
-    storage: storage
-});
+// const upload = multer({
+//     storage: storage
+// });
 
 
 // get requests
@@ -235,7 +234,7 @@ exports.postAddImages = (req, res, next) => {
             return res.status(200).json({
                 success: result.success,
                 message: result.message,
-                images: result.data
+                data: result.data
             })
         })
         .catch(err => {
@@ -309,7 +308,6 @@ exports.deleteImageById = (req, res, next) => {
             return imagesModel.deleteImageFromFolder(path, imageId);
         })
         .then(result => {
-            console.log(result);
             console.log('Deleting images successfully.');
             res.status(result.status).json({
                 success: result.success,
@@ -335,7 +333,6 @@ exports.putAddDescreption = (req, res, next) => {
 
     descreptionModel.addDescreption('clinics', req.body.descreption, req.body.clinicId, -1)
         .then(result => {
-            console.log(result);
             res.status(200).json({
                 success: true,
                 message: 'Adding descreption successfully.'
@@ -421,7 +418,6 @@ exports.postAddCurrency = (req, res, next) => {
     };
     currencyModel.addCurrency(values)
         .then(result => {
-            console.log(result);
             res.status(result.status).json({
                 success: result.success,
                 message: result.message,
@@ -443,7 +439,6 @@ exports.deleteCurrency = (req, res, next) => {
 
     currencyModel.deleteCurrency(req.params.currencyId)
         .then(result => {
-            console.log(result);
             res.status(200).json({
                 success: true,
                 message: 'Deleting currency successfully.'
@@ -481,7 +476,7 @@ exports.getClinicCountry = (req, res, next) => {
 
     clinicModel.getClinicCountry(req.params.clinicId)
         .then(result => {
-            console.log(result);
+
             res.status(200).json({
                 success: true,
                 message: 'Getting country successfully.',
@@ -591,7 +586,6 @@ exports.getAllCurrenciesById = (req, res, next) => {
     const clinicId = req.params.clinicId ? req.params.clinicId : null;
     const travelAgencyId = req.params.travelAgencyId ? req.params.travelAgencyId : null;
 
-    console.log(clinicId, travelAgencyId);
 
     currencyModel.getAllCurrenciesById(clinicId, travelAgencyId)
         .then(result => {
@@ -743,10 +737,6 @@ function addMultipleTypes(clinicId, types = []) {
                 [value, clinicId],
                 (err, RES) => {
                     if (err) {
-                        console.log({
-                            success: false,
-                            message: err
-                        });
                         reject(err);
                     } else {
                         resolve({

@@ -25,3 +25,30 @@ exports.getAllStatesByCityId = (countryId, cityId) => {
     [countryId, cityId]
   );
 };
+
+exports.getCountry = (tabelName, id) => {
+  return db.execute(
+    `select countries.country_id, countries.country_name from ${tabelName} left join
+     locations on ${tabelName}.location_id=locations.location_id left join
+     countries on locations.country_id=countries.country_id where ${tabelName}.id=?`,
+    [id]
+  );
+}
+
+exports.getCity = (tabelName, id) => {
+  return db.execute(
+    `select cities.city_id, cities.city_name from ${tabelName} left join
+     locations on ${tabelName}.location_id=locations.location_id left join
+     cities on locations.city_id=cities.city_id where ${tabelName}.id=?`,
+    [id]
+  );
+}
+
+exports.getState = (tabelName, id) => {
+  return db.execute(
+    `select states.state_id, states.state_name from ${tabelName} left join
+     locations on ${tabelName}.location_id=locations.location_id left join
+     states on locations.state_id=states.state_id where ${tabelName}.id=?`,
+    [id]
+  );
+}

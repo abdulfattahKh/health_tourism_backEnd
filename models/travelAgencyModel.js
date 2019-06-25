@@ -40,6 +40,7 @@ module.exports = class TravelAgency {
 
 
     update() {
+        console.log(this.address);
         return db.execute(
             `UPDATE travel_agency
         SET
@@ -224,6 +225,36 @@ module.exports = class TravelAgency {
         }); //begin transaction
 
     } //transaction method 
+
+    static getTravelAgencyById(travelId) {
+        return db.execute(
+            `select 
+            c.id,
+            l.latitude,
+            l.longitude,
+            c.name as 'name',
+            c.description,
+            c.status,
+            co.country_name as 'country',
+            ci.city_name as 'city',
+            st.state_name as 'state',
+            us.id as 'userId',
+            us.first_name as 'fOwnerName',
+            us.last_name as 'lOwnerName',
+            us.email,
+            us.mobile_number as 'mobileNumber'
+
+            from travel_agency c 
+            inner join locations l on c.location_id = l.location_id
+            inner join countries co on l.country_id = co.country_id
+            inner join cities ci on ci.city_id = l.city_id
+            inner join states st on st.state_id = l.state_id
+            inner join users us on us.id = c.users_id`
+        )
+        /*we should add  those */
+        /*  c.phone_number as 'phoneNumber',
+            c.mobile_number as 'mobileNumber'*/
+    }
 
     static getMyTravelAgencies(userId) {
         return db.execute(`

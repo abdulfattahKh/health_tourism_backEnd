@@ -6,13 +6,12 @@ const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
 /// work yes
-router.post("/:userId", travelAgencyController.addTravel);
+// router.post("/:userId", travelAgencyController.addTravel);
+
 
 // //work yes
 // router.put("/:id", travelAgencyController.updateTravel);
 
-// ///work yes
-// router.delete("/:id", travelAgencyController.deleteTravel);
 
 // ///work yes
 // router.put("/changeStatus/:id", travelAgencyController.changeStatus);
@@ -25,29 +24,42 @@ router.get("/allTravelAgencies", travelAgencyController.getAllTravel);
 //OK
 router.get("/TravelAgenciesByStatus/", travelAgencyController.getAllTravelByStatus);
 
-router.get("/myTravelAgencies/:userId",travelAgencyController.getMyTravelAgencies);
-///
-router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
+router.get("/myTravelAgencies/:userId", travelAgencyController.getMyTravelAgencies);
+///OK
+
+router.get('/travelAgencyById/:travelId', travelAgencyController.getTravelAgencyById);
+
+//OK
+router.post("/addTravelAgency/:userId", travelAgencyController.addTravel);
+
+//OK
+router.put("/editTravel/:id", travelAgencyController.updateTravel);
+
+//OK
+router.delete("/deleteTravelAgency/:id", travelAgencyController.deleteTravel);
 
 ///
 router.delete('/deleteImage/:imageId', travelAgencyController.deleteImage);
 //work yes
 router.get("/:id", travelAgencyController.getAllTravelById);
 
-router.get("/getAllImgaesByTravelAgencyId/:travelId", (req, res, next) => {
-    travelAgencyController.getAllImgaesByTravelAgencyId(req.params.travelId)
-        .then((result) => {
-            res.status(200).json({
-                success: 'success',
-                message: result[0]
-            });
-        })
-        .catch((err) => {
-            res.status(504).json({
-                success: 'internal error',
-                message: "try again please !!"
-            });
-        })
-})
+router.put(
+  '/addDescreption/:travelId',
+  // check_auth,
+  // check_author([1, 2]),
+  travelAgencyController.putAddDescreption
+);
+
+router.get(
+  '/getDescreption/:travelId',
+  // check_auth,
+  // check_author([1, 2]),
+  travelAgencyController.getDescreption
+);
+
+router.post("/addImage/:travelAgencyId", travelAgencyController.postAddImage);
+
+router.get('/getAllImgaesByTravelAgencyId/:travelId', travelAgencyController.getAllImagesByTravelId);
+
 
 module.exports = router;

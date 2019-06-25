@@ -2,6 +2,7 @@ const io = require('../utilites/socket');
 const fs = require('fs')
 const multer = require('multer');
 const travelModel = require('../models/travelAgencyModel')
+const descreptionModel = require('../models/descreption');
 const insertLocationModel = require('../models/insertedLocationModel')
 const connection = require('../utilites/db2')
 const imagesModel = require('../models/images');
@@ -156,7 +157,6 @@ module.exports.updateTravel = (req, res, next) => {
     longitude: req.body.longitude,
     description: req.body.description
   }
-
   const locationModel = new insertLocationModel(travel);
   locationModel.count()
     .then(result => {
@@ -276,7 +276,7 @@ module.exports.getAllTravel = (req, res, next) => {
         });
       }
       res.json({
-        success: false,
+        success: true,
         status: 200,
         data: result[0]
       });
@@ -317,6 +317,32 @@ module.exports.getAllTravelByStatus = (req, res, next) => {
     })
 
 }
+
+
+module.exports.getTravelAgencyById = (req, res, next) => {
+  if (!req.params['travelId']) {
+    return res.status(400).json({
+      success: false,
+      message: "bad requrest"
+    })
+  }
+  travelModel.getTravelAgencyById(req.params['travelId'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: "ok",
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: "error",
+        error: err
+      })
+    })
+}
+
 ///// work 
 module.exports.getAllTravelById = (req, res, next) => {
   travelModel.getAllTravleById(req.params.id)
@@ -345,7 +371,7 @@ module.exports.getAllTravelById = (req, res, next) => {
 }
 
 module.exports.postAddImage = (req, res, next) => {
-
+  console.log(req.body);
   const file = upload.array('image');
 
   file(req, res, err => {
@@ -448,12 +474,75 @@ exports.getMyTravelAgencies = (req, res, next) => {
 };
 
 
-module.exports.getAllImgaesByTravelAgencyId = (clinicId) => {
+// module.exports.getAllImgaesByTravelAgencyId = (clinicId) => {
 
-  return db.execute(
-    `select image_id, image_path from travel_agency left join images
-       on travel_agency.id=images.travel_agency_id where travel_agency.id=?`,
-    [clinicId]
-  );
+//   return db.execute(
+//     `select image_id, image_path from travel_agency left join images
+//        on travel_agency.id=images.travel_agency_id where travel_agency.id=?`,
+//     [clinicId]
+//   );
+
+// };
+
+exports.getAllImagesByTravelId = (req, res, next) => {
+  const data = [] ;
+  imagesModel.getAllImgaesByTravelId(req.params.travelId)
+      .then(result => {
+          result[0].forEach(image => {
+              data.push({id: image.image_id, name: image.image_name});
+          })
+          res.status(200).json({
+              success: true,
+              message: 'Getting all images for an travel agency.',
+              data: data
+          })
+      })
+      .catch(err => {
+
+          res.status(500).json({
+              success: false,
+              message: 'Internal server error!',
+              err: err
+          })
+      })
+
+};
+
+exports.putAddDescreption = (req, res, next) => {
+  descreptionModel.addDescreption('travel_agency', req.body.descreption, -1, req.params.travelId)
+    .then(result => {
+      res.status(200).json({
+        success: true,
+        message: 'Adding descreption successfully.'
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error!'
+      })
+    })
+
+};
+
+
+exports.getDescreption = (req, res, next) => {
+
+  descreptionModel.getDescreption('travel_agency', req.params.travelId)
+    .then(result => {
+      res.status(200).json({
+        success: true,
+        message: 'Getting descreption successfully.',
+        data: result[0][0]
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        message: 'Getting descreption failed!',
+        err: err
+      })
+    })
 
 };

@@ -5,14 +5,16 @@ const roleController = require("../controllers/RolesController");
 const tripsController = require("../controllers/tripsController");
 const router = express.Router();
 
-router.post('/',tripsController.addTrip)
+router.post('/addTrip/', tripsController.addTrip)
 
-router.delete('/:id',tripsController.deleteTrip)
+router.post('/addCompleteTrip', tripsController.addCompleteTrip);
 
-router.get('/',tripsController.getAllTrips)
+router.delete('/deleteTrip/:id', tripsController.deleteTrip)
 
-router.get('/:id',tripsController.getTripById)
+router.get('/getAllTrips/', tripsController.getAllTrips)
 
-router.put('/:id',tripsController.updateTrip)
+router.get('/getTripById/:id', tripsController.getTripById)
+
+router.put('/updateTrip/:id', tripsController.updateTrip)
 
 module.exports = router;
