@@ -11,9 +11,11 @@ router.post('/addCompleteTrip', tripsController.addCompleteTrip);
 
 router.delete('/deleteTrip/:id', tripsController.deleteTrip)
 
-router.get('/getAllTrips/', tripsController.getAllTrips)
+router.get('/AllTrips/', tripsController.getAllTrips)
 
 router.get('/getTripById/:id', tripsController.getTripById)
+
+router.get('/myTrips/:id',tripsController.getAllTripsByTravelId)
 
 router.put('/updateTrip/:id', tripsController.updateTrip)
 

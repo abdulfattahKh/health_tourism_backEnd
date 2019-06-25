@@ -149,6 +149,33 @@ module.exports.updateTrip = (req, res, next) => {
 }
 
 
+exports.getAllTripsByTravelId = (req, res, next) => {
+  if(!req.params.id) {
+    return res.status(400).json({
+      success:false,
+      message:"bad request"
+    })
+  }
+
+  tripsModel.getTripsByUserId(req.params.id)
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: "ok",
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        success: false,
+        message: 'error',
+        error:err
+      })
+    })
+}
+
+
 //helpers 
 function addTripHelperFunction(tripGeneralInformation, TravelAgencyId) {
   return new Promise((resolve, reject) => {
