@@ -69,5 +69,15 @@ app.use('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-server.listen(process.env.PORT || 3000);
+
+const sr = server.listen(process.env.PORT || 3000);
+
+const io = require('./utilites/socket').init(sr);
+
+io.on('connection', socket => {
+
+    console.log('Connected.');
+
+})
+
 

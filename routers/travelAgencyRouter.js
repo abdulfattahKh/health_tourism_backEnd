@@ -6,7 +6,7 @@ const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
 /// work yes
-// router.post("/:userId", travelAgencyController.addTravel);
+router.post("/:userId", travelAgencyController.addTravel);
 
 // //work yes
 // router.put("/:id", travelAgencyController.updateTravel);

@@ -1,3 +1,4 @@
+const io = require('../utilites/socket');
 const fs = require('fs')
 const multer = require('multer');
 const travelModel = require('../models/travelAgencyModel')
@@ -35,7 +36,22 @@ module.exports.addTravel = (req, res, next) => {
   }
 
   travelModel.transactionInsert(res, travel);
-
+  let travelAgencyId;
+  travelModel.getLastTravelAgencyAdded()
+    .then(result => {
+      travelAgencyId = result[0][0].id;
+      return travelModel.getTravelAgencyInfo(travelAgencyId);
+    })
+    .then(result => {
+      // emit event for queryAddTravel .
+      io.getIO().emit('queryAddTravel', {
+        action: 'adding travelAgency',
+        data: result[0][0]
+      })
+    })
+    .catch(err => {
+      console.log(err);
+    })
 }
 // work
 module.exports.updateTravel1 = (req, res, next) => {
@@ -227,6 +243,9 @@ module.exports.changeStatus = (req, res, next) => {
   travelModel.changeStatus(id)
     .then(save_res => {
       if (save_res[0].affectedRows) {
+        io.getIO().emit('adding travel accepted', {
+          message: 'Congratulations, your request for adding travelAgency in our site accepted.'
+        })        
         return res.json({
           success: true,
           message: "travel agency was changed correctly"

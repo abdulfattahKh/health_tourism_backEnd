@@ -27,7 +27,7 @@ module.exports = class Clinic {
 
   // just make the id autoincrement
   save() {
-    
+
     let clinicId;
     let locationId;
 
@@ -63,6 +63,7 @@ module.exports = class Clinic {
         })
         .then(result => {
           clinicId = result[0].insertId;
+
           return new Promise((rs, rj) => {
 
             this.clinicTypes.forEach(type => {
@@ -128,9 +129,9 @@ module.exports = class Clinic {
 
   static getClinicTypesById(clinicId) {
     return db.execute(`
-    select specialization_id , name from specializations_clinics S inner join specializations fuck on S.specialization_id = fuck.spec_id
-    where S.clinic_id = 25
-    `)
+    select specializations_clinics_id as id, specialization_id , name from specializations_clinics S inner join specializations fuck on S.specialization_id = fuck.spec_id
+    where S.clinic_id = ?
+    `, [clinicId])
   }
 
   static deleteClinciById(clinicId) {
@@ -151,8 +152,10 @@ module.exports = class Clinic {
     c.id,
     l.latitude,
     l.longitude,
-    c.phone_number as 'phoneNumber',
-    c.mobile_number as 'mobileNumber',
+    c.descreption,
+    c.address,
+    c.phone_number as 'clinicPhoneNumber',
+    c.mobile_number as 'clinicMobileNumber',
     c.name as 'clinicName',
     co.country_name as 'country',
     ci.city_name as 'city',
@@ -160,7 +163,7 @@ module.exports = class Clinic {
     us.first_name as 'fOwnerName',
     us.last_name as 'lOwnerName',
     us.email,
-    us.mobile_number as 'mobileNumber',
+    us.mobile_number as 'userMobileNumber',
     c.status
     from clinics c 
     inner join locations l on c.location_id = l.location_id
@@ -286,7 +289,46 @@ module.exports = class Clinic {
         })
 
     });
+  }
 
+  static getClinicTypesById (clinicId) {
+
+    return db.execute(
+      `select specializations.name from clinics inner join specializations_clinics
+       on clinics.id=specializations_clinics.clinic_id inner join specializations
+       on specializations_clinics.specialization_id=specializations.spec_id where clinics.id=?`,
+       [clinicId]
+    );
+
+  }
+
+
+  static addRequestOfTreatment (values) {
+    return db.execute(
+      `insert into applications (first_name, last_name, email, mobile_number, specialization_id, info, clinic_id, users_id) values (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [values.firstName, values.lastName, values.email, values.mobileNumber, values.specializationId, values.info, values.clinicId, values.userId]
+    );
+  }
+
+  static getOwnerOfClinic (clinicId) {
+    return db.execute(
+      `select userId from clinics where id=?`,
+      [clinicId]
+    );
+  }
+
+  static getRequestTreatment (requestId) {
+    return db.execute(
+      `select * from applications where id=?`,
+      [requestId]
+    );
+  }
+
+  static getImagesOfRequestTreatment (requestId) {
+    return db.execute(
+      `select image_id, image_name from images where application_id=?`,
+      [requestId]
+    );
   }
 
 }

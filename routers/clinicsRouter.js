@@ -75,8 +75,8 @@ router.delete(
 
 router.post(
   "/addClinic",
-  check_auth,
-  check_author([1, 2]),
+  // check_auth,
+  // check_author([1, 2]),
   clinicsController.postAddClinic
 );
 
@@ -248,6 +248,11 @@ router.put(
   check_auth,
   check_author([1, 2]),
   clinicsController.putUpdateClinic
+);
+
+router.post(
+  '/addRequest/:userId',
+  clinicsController.addRequestOfTreatment
 );
 
 module.exports = router;
