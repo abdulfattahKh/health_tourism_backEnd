@@ -37,6 +37,7 @@ exports.getAllClinics = (req, res, next) => {
             });
         })
         .catch(err => {
+            console.log(err);
             return res.status(500).json({
                 success: false,
                 message: err
@@ -331,11 +332,11 @@ exports.putAddDescreption = (req, res, next) => {
 
     console.log(req.body);
 
-    descreptionModel.addDescreption('clinics', req.body.descreption, req.body.clinicId, -1)
+    descreptionModel.addDescreption('clinics', req.body.description, req.params.clinicId, -1)
         .then(result => {
             res.status(200).json({
                 success: true,
-                message: 'Adding descreption successfully.'
+                message: 'Adding description successfully.'
             });
         })
         .catch(err => {

@@ -152,7 +152,7 @@ module.exports = class Clinic {
     c.id,
     l.latitude,
     l.longitude,
-    c.descreption,
+    c.description,
     c.address,
     c.phone_number as 'clinicPhoneNumber',
     c.mobile_number as 'clinicMobileNumber',
@@ -219,7 +219,7 @@ module.exports = class Clinic {
   static putUpdateClinic(clinicId, clinic) {
 
     clinic.name = clinic.name ? clinic.name : null;
-    clinic.descreption = clinic.descreption ? clinic.descreption : null;
+    clinic.description = clinic.description ? clinic.description : null;
     clinic.phoneNumber = clinic.phoneNumber ? clinic.phoneNumber : null;
     clinic.mobileNumber = clinic.mobileNumber ? clinic.mobileNumber : null;
     clinic.address = clinic.address ? clinic.address : null;
@@ -250,8 +250,8 @@ module.exports = class Clinic {
         .then(result => {
           locationId = result[0][0].location_id;
           return db.execute(
-            `update clinics set name=?, descreption=?, mobile_number=?, phone_number=?, location_id=?, address=? where id=?`,
-            [clinic.name, clinic.descreption, clinic.mobileNumber, clinic.phoneNumber, locationId, clinic.address, clinicId]
+            `update clinics set name=?, description=?, mobile_number=?, phone_number=?, location_id=?, address=? where id=?`,
+            [clinic.name, clinic.description, clinic.mobileNumber, clinic.phoneNumber, locationId, clinic.address, clinicId]
           );
         })
         .then(result => {

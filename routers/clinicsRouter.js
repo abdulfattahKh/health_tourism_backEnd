@@ -95,7 +95,7 @@ router.get(
 );
 
 router.put(
-  '/addDescreption',
+  '/addDescreption/:clinicId',
   check_auth,
   check_author([1, 2]),
   clinicsController.putAddDescreption
@@ -134,7 +134,7 @@ router.post(
   '/addCurrency/:clinicId',
   check_auth,
   check_author([1,2]),
-  clinicsController.postAddCurrency
+  clinicsController.updateCurrency
 );
 
 router.delete(
