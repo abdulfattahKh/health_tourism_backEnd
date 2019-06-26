@@ -34,9 +34,9 @@ createFolders.createFolders();
 
 //middleware
 app.use(cors());
-app.use(express.static(path.join(__dirname,"dist")));
+app.use(express.static(path.join(__dirname, "dist1")));
+app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join("dist")));
 app.use("/images", express.static(path.join("upload/images")));
 app.use(bodyParser.urlencoded({
     extended: false
@@ -55,13 +55,17 @@ app.use("/location", locationRouter);
 app.use("/clinics", clinicsRouter);
 app.use("/travelAgencies", travelAgent);
 app.use("/trips", tripsRouter);
-app.use('/images',images);
+app.use('/images', images);
 
 app.use("/procedure", procedureRouter);
 
 
-// app.get('*',(req,res)=>{
+// app.get('/main', (req, res) => {
 //     res.sendfile(path.join('dist/index.html'));
+// })
+
+// app.get('*', (req, res) => {
+//     res.sendfile(path.join('dist1/index.html'));
 // });
 
 
@@ -70,4 +74,3 @@ app.use("/procedure", procedureRouter);
 // });
 
 server.listen(process.env.PORT || 3000);
-
