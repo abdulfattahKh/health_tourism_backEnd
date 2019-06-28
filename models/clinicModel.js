@@ -27,7 +27,7 @@ module.exports = class Clinic {
 
   // just make the id autoincrement
   save() {
-    
+
     let clinicId;
     let locationId;
 
@@ -63,18 +63,21 @@ module.exports = class Clinic {
         })
         .then(result => {
           clinicId = result[0].insertId;
+
           return new Promise((rs, rj) => {
 
             this.clinicTypes.forEach(type => {
               db.execute(
-                `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
-                [type, clinicId]
-              )
+                  `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
+                  [type, clinicId]
+                )
                 .then(result => {
                   rs();
                 })
                 .catch(err => {
-                  rj({ err: err });
+                  rj({
+                    err: err
+                  });
                 })
             })
           })
@@ -84,12 +87,22 @@ module.exports = class Clinic {
         })
         .then(result => {
           console.log('Transaction Completed!!');
-          resolve({ success: true, message: 'Adding clinic sucessfully.', status: 200, id: clinicId })
+          resolve({
+            success: true,
+            message: 'Adding clinic sucessfully.',
+            status: 200,
+            id: clinicId
+          })
         })
         .catch(err => {
           console.log('Failed!');
           db.rollback();
-          reject({ success: false, status: 500, message: 'Adding clinic failed!', err: err.err ? err.err : err });
+          reject({
+            success: false,
+            status: 500,
+            message: 'Adding clinic failed!',
+            err: err.err ? err.err : err
+          });
         });
     });
   }
@@ -128,9 +141,9 @@ module.exports = class Clinic {
 
   static getClinicTypesById(clinicId) {
     return db.execute(`
-    select specialization_id , name from specializations_clinics S inner join specializations fuck on S.specialization_id = fuck.spec_id
-    where S.clinic_id = 25
-    `)
+    select specializations_clinics_id as id, specialization_id , name from specializations_clinics S inner join specializations fuck on S.specialization_id = fuck.spec_id
+    where S.clinic_id = ?
+    `, [clinicId])
   }
 
   static deleteClinciById(clinicId) {
@@ -151,8 +164,10 @@ module.exports = class Clinic {
     c.id,
     l.latitude,
     l.longitude,
-    c.phone_number as 'phoneNumber',
-    c.mobile_number as 'mobileNumber',
+    c.description,
+    c.address,
+    c.phone_number as 'clinicPhoneNumber',
+    c.mobile_number as 'clinicMobileNumber',
     c.name as 'clinicName',
     co.country_name as 'country',
     ci.city_name as 'city',
@@ -160,7 +175,7 @@ module.exports = class Clinic {
     us.first_name as 'fOwnerName',
     us.last_name as 'lOwnerName',
     us.email,
-    us.mobile_number as 'mobileNumber',
+    us.mobile_number as 'userMobileNumber',
     c.status
     from clinics c 
     inner join locations l on c.location_id = l.location_id
@@ -252,36 +267,26 @@ module.exports = class Clinic {
           );
         })
         .then(result => {
-          // return new Promise((rs, rj) => {
-          //   clinic.clinicTypes.forEach(type => {
-          //     db.execute(
-          //       `delete from specializations_clinics where specialization_id=? and clinic_id=?`,
-          //       [type, clinicId]
-          //     )
-          //       .then(result => {
-          //         rs();
-          //       })
-          //       .catch(err => {
-          //         db.rollback();
-          //         rj({ err: err })
-          //       })
-          //   })
-          // })
-          return db.execute(`delete from specializations_clinics where clinic_id=?`, [clinicId])
+          return db.execute(
+            `delete from specializations_clinics where clinic_id=?`,
+            [clinicId]
+          );
         })
         .then(result => {
           return new Promise((rs, rj) => {
             clinic.clinicTypes.forEach(type => {
               db.execute(
-                `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
-                [type, clinicId]
-              )
+                  `insert into specializations_clinics (specialization_id, clinic_id) values (?, ?)`,
+                  [type, clinicId]
+                )
                 .then(result => {
                   rs();
                 })
                 .catch(err => {
                   db.rollback();
-                  rj({ err: err });
+                  rj({
+                    err: err
+                  });
                 })
             });
 
@@ -291,14 +296,149 @@ module.exports = class Clinic {
           db.commit();
         })
         .then(result => {
-          resolve({ success: true, status: 200, message: 'Updating clinic successfully.' });
+          resolve({
+            success: true,
+            status: 200,
+            message: 'Updating clinic successfully.'
+          });
         })
         .catch(err => {
-          reject({ success: false, status: 500, message: 'Updating clinic failed!', err: err.err != undefined ? err.err : err });
+          reject({
+            success: false,
+            status: 500,
+            message: 'Updating clinic failed!',
+            err: err.err != undefined ? err.err : err
+          });
         })
 
     });
+  }
+
+  static getClinicTypesById(clinicId) {
+
+    return db.execute(
+      `select specializations.name from clinics inner join specializations_clinics
+       on clinics.id=specializations_clinics.clinic_id inner join specializations
+       on specializations_clinics.specialization_id=specializations.spec_id where clinics.id=?`,
+      [clinicId]
+    );
 
   }
 
+
+  static addRequestOfTreatment(values) {
+    return db.execute(
+      `insert into applications (first_name, last_name, email, mobile_number, specialization_id, info, clinic_id, users_id) values (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [values.firstName, values.lastName, values.email, values.mobileNumber, values.specializationId, values.info, values.clinicId, values.userId]
+    );
+  }
+
+  static getOwnerOfClinic(clinicId) {
+    return db.execute(
+      `select userId from clinics where id=?`,
+      [clinicId]
+    );
+  }
+
+  static getRequestTreatment(requestId) {
+    return db.execute(
+      `select * from applications where id=?`,
+      [requestId]
+    );
+  }
+
+  static getImagesOfRequestTreatment(requestId) {
+    return db.execute(
+      `select image_id, image_name from images where application_id=?`,
+      [requestId]
+    );
+  }
+
+  static search(procedureId, countryId, cityId, stateId) {
+    return db.execute(`select 
+    clinics.name as clinicName,
+    clinics.description as clinicDescription,
+    clinics.address as clinicAddress,
+    clinics.mobile_number as clinicMobileNumber,
+
+    countries.country_name as country,
+    cities.city_name as city,
+    states.state_name as state,
+
+    CONCAT(users.first_name ,' ', users.last_name) as 'userName',
+    images.image_name 
+    from clinics
+    inner join locations on clinics.location_id  = locations.location_id
+    inner join countries on countries.country_id = locations.country_id
+    inner join cities on cities.city_id = locations.city_id
+    inner join states on states.state_id = locations.state_id
+    inner join users on users.id = clinics.user_id 
+    left join images on images.clinics_id = clinics.id
+    group by clinics.id`);
+    let query = "";
+    if (procedureId && procedureId != "" &&
+      countryId && countryId != "" &&
+      cityId && cityId != "" &&
+      stateId && stateId != ""
+    ) {
+      query = this.getSearchQuery() +
+        ` where procedures.id = ? 
+        and cities.city_id = ? 
+        and countries.country_id = ? 
+        and states.state_id = ?
+        group by clinics.id`
+
+      return db.execute(query, [procedureId, countryId, cityId, stateId]);
+    } else if (procedureId && procedureId != "" &&
+      countryId && countryId != ""
+    ) {
+      query = this.getSearchQuery() +
+        ` where procedures.id = ? 
+         and cities.city_id = ?
+         group by clinics.id`
+      return db.execute(query, [procedureId, countryId]);
+    } else if (procedureId && procedureId != "") {
+      query = this.getSearchQuery() +
+        ` where procedures.id = ? 
+        group by clinics.id`
+      return db.execute(query, [procedureId]);
+    }
+  }
+
+
+
+  static getSearchQuery() {
+    let sql = `select 
+
+              clinics.name as clinicName,
+              clinics.description as clinicDescription,
+              clinics.address as clinicAddress,
+              clinics.mobile_number as clinicMobileNumber,
+              
+              countries.country_name,
+              cities.city_name,
+              states.state_name,
+              
+              CONCAT(users.first_name ,' ', users.last_name) as 'userName'
+              
+              from clinics
+              inner join locations on clinics.location_id  = locations.location_id
+              inner join countries on countries.country_id = locations.country_id
+              inner join cities on cities.city_id = locations.city_id
+              inner join states on states.state_id = locations.state_id
+              inner join users on users.id = clinics.user_id
+              inner join specializations_clinics on specializations_clinics.clinic_id = clinics.id
+              inner join specializations on specializations.spec_id = specializations_clinics.specialization_id
+              inner join proc_spec_clinic on proc_spec_clinic.spec_clinic_id = specializations_clinics.specializations_clinics_id
+              inner join procedures on procedures.id = proc_spec_clinic.proc_id
+              left join images on images.clinics_id = clinics.id`
+    return sql;
+  }
+  // where procedures.id = ? and cities.city_id = ? and countries_id = ? and states.state_id = ?
+  // group by clinics.clinic_id`
 }
+
+
+
+
+/* TO GET ALL CLINICS THAT HAVE THE REQUIRED QRETIRIA*/

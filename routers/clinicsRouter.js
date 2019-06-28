@@ -68,15 +68,15 @@ router.get(
 // done
 router.delete(
   '/deleteClinic/:clinicId',
-  // check_auth,
-  // check_author([1, 2]),
+  check_auth,
+  check_author([1, 2]),
   clinicsController.deleteClinicById
 );
 
 router.post(
   "/addClinic",
-  check_auth,
-  check_author([1, 2]),
+  // check_auth,
+  // check_author([1, 2]),
   clinicsController.postAddClinic
 );
 
@@ -134,7 +134,7 @@ router.post(
   '/addCurrency/:clinicId',
   check_auth,
   check_author([1,2]),
-  clinicsController.postAddCurrency
+  clinicsController.updateCurrency
 );
 
 router.delete(
@@ -231,11 +231,15 @@ router.get(
 
 router.post(
   '/doctor/addImage/:doctorId',
+  check_auth,
+  check_author([1, 2]),
   doctorController.postAddImage
 );
 
 router.delete(
   '/doctor/deleteImage/:doctorId',
+  check_auth,
+  check_author([1, 2]),
   doctorController.deleteImage
 );
 
@@ -246,11 +250,13 @@ router.put(
   clinicsController.putUpdateClinic
 );
 
+router.post(
+  '/addRequest/:userId',
+  check_auth,
+  check_author([1, 2]),
+  clinicsController.addRequestOfTreatment
+);
 
-
-
-
-//main website queries
-
+router.post('/search',clinicsController.search);
 
 module.exports = router;

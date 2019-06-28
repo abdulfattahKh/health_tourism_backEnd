@@ -5,6 +5,8 @@ const roleController = require("../controllers/RolesController");
 const travelAgencyController = require("../controllers/travelAgencyController");
 const router = express.Router();
 
+/// work yes
+// router.post("/:userId", travelAgencyController.addTravel);
 
 
 // //work yes

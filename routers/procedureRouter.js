@@ -63,6 +63,8 @@ router.post('/putSpecializationsPrimary/', procController.putSpecializationsPrim
 router.get('/deleteClinicSpecialization/', procController.deleteClinicSpecialization);
 
 router.get('/getPopularProcedures', procController.getPopularProcedures);
+
+// router.get('/Procedures' , proc)
 module.exports = router;
 
 /****

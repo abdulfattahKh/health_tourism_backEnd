@@ -36,7 +36,7 @@ module.exports = class Procedure {
 
     static viewAccordAutoComplate(sub_word){
         sub_word = sub_word + "%";
-        var query = `SELECT * FROM last.procedures 
+        var query = `SELECT * FROM procedures 
                 WHERE lower(name) LIKE lower("${sub_word}") limit 10;`
         return db.execute(query)
                     .then(result=>{
