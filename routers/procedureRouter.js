@@ -20,14 +20,14 @@ router.post(
 );
 
 router.post(
-    "/updateProcedure",
+    "/updateProcedure/:procedureId",
     // check_auth,
     // check_author([1,5]), /// admin & clinic owner ....
     procController.updateProcedure
 );
 
 router.post(
-    "/deleteProcedure",
+    "/deleteProcedure/:procedureId",
     // check_auth,
     // check_author([1,5]), /// admin & clinic owner ....
     procController.deleteProcedure

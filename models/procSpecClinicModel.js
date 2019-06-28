@@ -5,6 +5,8 @@
  * @start
  * 
  */
+var id = undefined;
+
 const db = require("../utilites/db");
 const SpecClinicModel = require("./specializationsClinicsModel")
 const bluePromise = require('bluebird');
@@ -67,7 +69,7 @@ module.exports = class procSpecClinic {
     } /// end fKeysSelect()
 
     save() {
-
+        console.log('ahmad');
         var newRecorde = `INSERT INTO ${this.table} (proc_id,spec_clinic_id,min_price,max_price,duration,num_visits,bookable,description,img1,img2) VALUES (?,?,?,?,?,?,?,?,?,?);`
         var values = [this.proc_id, this.spec_clinic_id, this.min_price, this.max_price, this.duration, this.num_visits, this.bookable, this.description, this.img1, this.img2]
         this.initValues(values);
@@ -77,30 +79,31 @@ module.exports = class procSpecClinic {
                 return procSpecClinic.fKeysSelect(this.proc_id, this.spec_id, this.clinic_id);
             })
             .then(result => {
+                console.log(result);
                 /// clinic does not have spec belong to proc yet !!
                 if (result.status == -2) {
                     obj = new SpecClinicModel({
                         "spec_id": this.spec_id,
                         "clinic_id": this.clinic_id
                     });
-                    obj.save()
+                    return obj.save()
                         .then(res => {
                             console.log("<2> procSpecClinicModel.save() \'new\' ");
                             values[1] = res
-                            db.execute(newRecorde, values)
-                                .then(result => {
-                                    return true;
-                                })
+                            return db.execute(newRecorde, values)                            
+                        })
+                        .then(result => {
+                            console.log(result);
+                            return result[0].insertId;
                         });
-
-
                 } else if (result.status == -1) {
                     console.log("procSpecClinicModel.save() \'new\' ");
                     values[1] = result.data
 
                     db.execute(newRecorde, values)
                         .then(result => {
-                            return true;
+                            id = result[0].insertId;
+                            return id;
                         })
                 } else if (result.status == 1) {
                     /// update stored recorde 
@@ -128,7 +131,7 @@ module.exports = class procSpecClinic {
                 return result;
             })
             .then(result => {
-                return result;
+                return result ;
             })
             .catch(err => {
                 console.log(err);
@@ -139,18 +142,19 @@ module.exports = class procSpecClinic {
     } /// end save()
 
     delete() {
-
-        console.log(this.proc_id, this.spec_id, this.clinic_id);
+        // console.log(this.proc_id, this.spec_id, this.clinic_id);
         return db.beginTransaction()
             .then(result => {
                 return procSpecClinic.fKeysSelect(this.proc_id, this.spec_id, this.clinic_id);
             })
             .then(result => {
+                console.log(result);
                 if (result.status != 1) {
                     throw result.data;
                 }
                 /// delete stored recorde 
                 console.log("Delete Process ...");
+                console.log(this.proc_id, this.spec_clinic_id);
                 let spec_clinic_id = result.data.spec_clinic_id;
                 var deleteRecorde = `DELETE FROM ${this.table} 
                                             WHERE proc_id=${this.proc_id} AND spec_clinic_id=${spec_clinic_id} `;
@@ -259,7 +263,7 @@ module.exports = class procSpecClinic {
     static getClinicSpecializations(clinic_id) {
         return new Promise((resolve, reject) => {
             return db.execute(
-                    `select 
+                `select 
                     * from specializations_clinics sc 
                     INNER JOIN specializations s on sc.specialization_id =s.spec_id  
                     where sc.clinic_id = ?;`, [clinic_id])
@@ -305,16 +309,16 @@ module.exports = class procSpecClinic {
     static getProceduresBelongsToSpecialization(specialization_id) {
         return new Promise((resolve, reject) => {
             db.execute(
-                    `select 
+                `select 
             * from proc_spec_clinic psc 
             inner join procedures p on psc.proc_id = p.id
             where psc.spec_clinic_id = ?;`, [specialization_id]
-                ).then(result => {
-                    resolve({
-                        success: true,
-                        data: result[0]
-                    })
+            ).then(result => {
+                resolve({
+                    success: true,
+                    data: result[0]
                 })
+            })
                 .catch(err => {
                     return ({
                         success: false,
@@ -324,14 +328,14 @@ module.exports = class procSpecClinic {
         })
     }
 
-    static putSpecializationsPrimary(value,clinic_id,specializations_clinics_id) {
+    static putSpecializationsPrimary(value, clinic_id, specializations_clinics_id) {
         console.log(value);
         return db.execute(`update specializations_clinics
         set is_primary = ? 
-        where specializations_clinics_id = ? and clinic_id = ?`, [value,specializations_clinics_id, clinic_id])
+        where specializations_clinics_id = ? and clinic_id = ?`, [value, specializations_clinics_id, clinic_id])
     }
 
-    deleteClinicSpecialization(clinic_id ,specializations_clinics_id) {
+    deleteClinicSpecialization(clinic_id, specializations_clinics_id) {
         // return db.execute(`delete form`)
     }
 
@@ -389,13 +393,26 @@ module.exports = class procSpecClinic {
         }
     } /// end initValues()
 
+    static deleteProcedure (procedureId) {
+        return db.execute(
+            `delete from proc_spec_clinic where id=?`,
+            [procedureId]
+        );
+    }
+
+    static updateProcedure (procedureId, values) {
+        return db.execute(
+            `update proc_spec_clinic set min_price=?, max_price=?, duration=?, num_visits=?, bookable=?, description=?, img1=?, img2=?`,
+            [values.min_price, values.max_price, values.duration, values.num_visits, values.bookable, values.description, values.img1, values.img2]
+        );
+    }
 
 };
 
 /****
- * 
- * 
- * @author Abdulrahman Al hussein 
+ *
+ *
+ * @author Abdulrahman Al hussein
  * @end
- * 
+ *
  */

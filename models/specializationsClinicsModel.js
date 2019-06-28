@@ -37,10 +37,10 @@ module.exports = class specializationsClinics {
 
     save(){
         
-        var isAlreadyExist = `SELECT * FROM health_tourism.${this.table} WHERE
+        var isAlreadyExist = `SELECT * FROM ${this.table} WHERE
                     specialization_id = ${this.spec_id} AND clinic_id = ${this.clinic_id} ;`
                     
-        var newRecorde = `INSERT INTO health_tourism.${this.table} (specialization_id, clinic_id) VALUES (?,?);`
+        var newRecorde = `INSERT INTO ${this.table} (specialization_id, clinic_id) VALUES (?,?);`
         
         var values = [ this.spec_id , this.clinic_id ]
 

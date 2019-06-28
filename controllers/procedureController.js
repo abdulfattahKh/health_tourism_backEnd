@@ -7,9 +7,11 @@ exports.addProcedure = (req, res, next) => {
     obj = new procSpecClinicModel(req.body)
     obj.save()
         .then(result => {
+            console.log(result);
             return res.status(200).json({
                 success: true,
-                message: "adding process done successfully!!"
+                message: "adding process done successfully!!",
+                id: result
             })
         })
         .catch(err => {
@@ -21,40 +23,70 @@ exports.addProcedure = (req, res, next) => {
 };
 
 exports.updateProcedure = (req, res, next) => {
-    /// need at least (proc_id , spec_id ,clinic_id)
-    obj = new procSpecClinicModel(req.body)
-    obj.save()
+
+    procSpecClinicModel.updateProcedure(req.params.procedureId, req.body)
         .then(result => {
-            return res.status(200).json({
+            res.status(200).json({
                 success: true,
-                message: "updating process done successfully!!"
+                message: 'updating procedure successfully.'
             })
         })
         .catch(err => {
-            return res.status(500).json({
+            res.status(500).json({
                 success: false,
-                message: err
+                message: 'updating procedure failed!!',
+                err: err
             });
-        });
+        })
+
+    /// need at least (proc_id , spec_id ,clinic_id)
+    // obj = new procSpecClinicModel(req.body)
+    // obj.save()
+    //     .then(result => {
+    //         return res.status(200).json({
+    //             success: true,
+    //             message: "updating process done successfully!!"
+    //         })
+    //     })
+    //     .catch(err => {
+    //         return res.status(500).json({
+    //             success: false,
+    //             message: err
+    //         });
+    //     });
 };
 
 
 exports.deleteProcedure = (req, res, next) => {
     /// need at least (proc_id , spec_id ,clinic_id)
     obj = new procSpecClinicModel(req.body)
-    obj.delete()
-        .then(result => {
-            return res.status(200).json({
-                success: true,
-                message: "deleting process done successfully!!"
-            })
+    procSpecClinicModel.deleteProcedure(req.params.procedureId)
+    .then(result => {
+        return res.status(200).json({
+            success: true,
+            message: "deleting process done successfully!!"
         })
-        .catch(err => {
-            return res.status(500).json({
-                success: false,
-                message: err
-            });
+    })
+    .catch(err => {
+        return res.status(500).json({
+            success: false,
+            message: err
         });
+    });
+
+    // obj.delete()
+    //     .then(result => {
+    //         return res.status(200).json({
+    //             success: true,
+    //             message: "deleting process done successfully!!"
+    //         })
+    //     })
+    //     .catch(err => {
+    //         return res.status(500).json({
+    //             success: false,
+    //             message: err
+    //         });
+    //     });
 };
 
 /// view list of procedures according to some clinic ....
