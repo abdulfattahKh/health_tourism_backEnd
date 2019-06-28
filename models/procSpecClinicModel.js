@@ -302,6 +302,18 @@ module.exports = class procSpecClinic {
         }))
     }
 
+
+    static getPopularProcedures() {
+        return db.execute(`
+        select count(*) as 'count' , s.name , s.image_name as imageName , description from specializations_clinics sc inner join specializations s 
+        on sc.specialization_id = s.spec_id
+        group by spec_id
+        order by count 
+        desc 
+        limit 4
+        `)
+    }
+
     static getProceduresBelongsToSpecialization(specialization_id) {
         return new Promise((resolve, reject) => {
             db.execute(
@@ -324,14 +336,14 @@ module.exports = class procSpecClinic {
         })
     }
 
-    static putSpecializationsPrimary(value,clinic_id,specializations_clinics_id) {
+    static putSpecializationsPrimary(value, clinic_id, specializations_clinics_id) {
         console.log(value);
         return db.execute(`update specializations_clinics
         set is_primary = ? 
-        where specializations_clinics_id = ? and clinic_id = ?`, [value,specializations_clinics_id, clinic_id])
+        where specializations_clinics_id = ? and clinic_id = ?`, [value, specializations_clinics_id, clinic_id])
     }
 
-    deleteClinicSpecialization(clinic_id ,specializations_clinics_id) {
+    deleteClinicSpecialization(clinic_id, specializations_clinics_id) {
         // return db.execute(`delete form`)
     }
 
@@ -399,3 +411,4 @@ module.exports = class procSpecClinic {
  * @end
  * 
  */
+

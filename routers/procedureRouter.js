@@ -36,31 +36,33 @@ router.post(
 router.get(
     "/getProcAccordClinic/:clinicId",
     check_auth,
-    check_author([1,5]), /// admin & clinic owner   ....
+    check_author([1, 5]), /// admin & clinic owner   ....
     procController.getProcAccordToClinic
 );
 
 router.get(
     "/getProcAccordToSpec/:specId",
     check_auth,
-    check_author([1,5]), /// admin & clinic owner   ....
+    check_author([1, 5]), /// admin & clinic owner   ....
     procController.getProcAccordToSpec
 );
 
 router.get(
     "/getProcAccordToAutoComplate/:subWord",
     check_auth,
-    check_author([1,5]), /// admin & clinic owner   ....
+    check_author([1, 5]), /// admin & clinic owner   ....
     procController.getProcAccordToAutoComplate
 );
 
-router.get('/insertProceduresIntoDB',procController.insertProceduresIntoDB);
+router.get('/insertProceduresIntoDB', procController.insertProceduresIntoDB);
 
-router.get("/getClinicSpecializations/:id",procController.getClinicSpecializations);
+router.get("/getClinicSpecializations/:id", procController.getClinicSpecializations);
 
-router.post('/putSpecializationsPrimary/',procController.putSpecializationsPrimary);
+router.post('/putSpecializationsPrimary/', procController.putSpecializationsPrimary);
 
-router.get('/deleteClinicSpecialization/',procController.deleteClinicSpecialization);
+router.get('/deleteClinicSpecialization/', procController.deleteClinicSpecialization);
+
+router.get('/getPopularProcedures', procController.getPopularProcedures);
 module.exports = router;
 
 /****

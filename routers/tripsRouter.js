@@ -19,4 +19,6 @@ router.get('/myTrips/:id',tripsController.getAllTripsByTravelId)
 
 router.put('/updateTrip/:id', tripsController.updateTrip)
 
+router.get('/getPopularDestinations',tripsController.getPopularDestinations);
+
 module.exports = router;

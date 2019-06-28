@@ -28,6 +28,7 @@ module.exports.addCompleteTrip = (req, res, next) => {
   let tripImages = req.body.tripImages;
   let hotelInfo = req.body.hotelInfo;
   let hotelImages = req.body.hotelImages;
+  let location = req.body.locationInfo;
   // console.log(tripGeneralInformation,tripImages,hotelInfo);
   if (!tripGeneralInformation || !tripImages || !hotelInfo) {
     return res.status(400).json({
@@ -45,7 +46,7 @@ module.exports.addCompleteTrip = (req, res, next) => {
           })
         });
       }
-      return addTripHelperFunction(tripGeneralInformation, TravelAgencyId);
+      return addTripHelperFunction(tripGeneralInformation, TravelAgencyId, location);
     })
     .then(tripResult => {
       tripId = tripResult['insertId'];
@@ -150,10 +151,10 @@ module.exports.updateTrip = (req, res, next) => {
 
 
 exports.getAllTripsByTravelId = (req, res, next) => {
-  if(!req.params.id) {
+  if (!req.params.id) {
     return res.status(400).json({
-      success:false,
-      message:"bad request"
+      success: false,
+      message: "bad request"
     })
   }
 
@@ -166,31 +167,106 @@ exports.getAllTripsByTravelId = (req, res, next) => {
       })
     })
     .catch(err => {
-      console.log(err);
       return res.status(500).json({
         success: false,
         message: 'error',
-        error:err
+        error: err
+      })
+    })
+}
+
+exports.getPopularDestinations = (req, res, next) => {
+  tripsModel.getPopularDestinations()
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'got popular destinations',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        success: false,
+        message: err
       })
     })
 }
 
 
 //helpers 
-function addTripHelperFunction(tripGeneralInformation, TravelAgencyId) {
+function addTripHelperFunction(tripGeneralInformation, TravelAgencyId, location) {
   return new Promise((resolve, reject) => {
     tripGeneralInformation['TravelAgencyId'] = TravelAgencyId;
-    const trip = new tripsModel(tripGeneralInformation);
-    trip.save()
+    getLocationId(location)
       .then(result => {
+        tripGeneralInformation['locationId'] = result['data'];
+        const trip = new tripsModel(tripGeneralInformation);
+        trip.save()
+          .then(result => {
+            resolve({
+              success: true,
+              insertId: result[0].insertId
+            })
+          })
+          .catch(err => {
+            reject({
+              success: false,
+              err
+            })
+          })
+      }).catch(err => {
+        reject({
+          success: false,
+          err
+        })
+      })
+
+  })
+}
+
+//add location
+
+function getLocationId(location) {
+
+  // location = {
+  //   city: 1,
+  //   country: 201,
+  //   state: 1,
+  //   address: 'werwe',
+  //   latitude: '3453',
+  //   longitude: '34534'
+  // }
+  return new Promise((resolve, reject) => {
+    db.beginTransaction()
+      .then(result => {
+        return db.execute(
+          `select * from locations where longitude=${location.longitude} and latitude=${location.latitude} and country_id=${location.country} and city_id=${location.city} and state_id=${location.state}`
+        )
+      })
+      .then(result => {
+        if (!result[0][0]) {
+          return db.execute(
+            `insert into locations (longitude, latitude, country_id, city_id, state_id) values (?, ?, ?, ?, ?)`,
+            [location.longitude, location.latitude, location.country, location.city, location.state]
+          );
+        }
+      })
+      .then(result => {
+        return db.execute(
+          `select * from locations where longitude=${location.longitude} and latitude=${location.latitude} and country_id=${location.country} and city_id=${location.city} and state_id=${location.state}`
+        )
+      })
+      .then(locationInfo => {
         resolve({
           success: true,
-          insertId: result[0].insertId
+          message: "got location id",
+          data: locationInfo[0][0].location_id
         })
       })
       .catch(err => {
         reject({
           success: false,
+          message: 'there was a problem',
           err
         })
       })

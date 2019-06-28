@@ -245,4 +245,12 @@ router.put(
   check_author([1, 2]),
   clinicsController.putUpdateClinic
 );
+
+
+
+
+
+//main website queries
+
+
 module.exports = router;

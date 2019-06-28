@@ -1,4 +1,3 @@
-
 const procSpecClinicModel = require("../models/procSpecClinicModel");
 const procedureModel = require("../models/procedureModel")
 
@@ -189,6 +188,23 @@ exports.putSpecializationsPrimary = (req, res, next) => {
 
 }
 
+exports.getPopularProcedures = (req, res, next) => {
+    procSpecClinicModel.getPopularProcedures()
+        .then(result => {
+            return res.status(200).json({
+                success: true,
+                message: 'success',
+                data: result[0]
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({
+                success: false,
+                message: 'error'
+            })
+        })
+}
+
 exports.deleteClinicSpecialization = (req, res, next) => {
     if (!req.body.clinic_id || !req.body.specializations_clinics_id) {
         return res.status(400).json({
@@ -199,6 +215,7 @@ exports.deleteClinicSpecialization = (req, res, next) => {
     procSpecClinicModel.deleteClinicSpecialization(req.body.clinicId, req.body.specializations_clinics_id)
 
 }
+
 
 exports.insertProceduresIntoDB = (req, res, next) => {
     procedureModel.insertProceduresIntoDB();

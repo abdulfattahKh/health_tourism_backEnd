@@ -4,7 +4,6 @@ const db = require("../utilites/db");
 
 module.exports = class Trips {
     constructor(trip) {
-
         this.startFrom = trip.startFrom;
         this.finishTo = trip.finishTo;
         this.name = trip.name;
@@ -13,6 +12,7 @@ module.exports = class Trips {
         this.price = trip.price;
         this.evaluation = trip.evaluation;
         this.TravelAgencyId = trip.TravelAgencyId;
+        this.locationId = trip.locationId;
     }
 
     save() {
@@ -24,8 +24,9 @@ module.exports = class Trips {
         description,
         price,
         evaluation,
-        travel_agency_id
-        ) values (?,?,?,?,?,?,?,?)`,
+        travel_agency_id,
+        location_id
+        ) values (?,?,?,?,?,?,?,?,?)`,
             [
                 this.startFrom,
                 this.finishTo,
@@ -34,7 +35,8 @@ module.exports = class Trips {
                 this.description,
                 this.price,
                 this.evaluation,
-                this.TravelAgencyId
+                this.TravelAgencyId,
+                this.locationId
             ]
         );
     }
@@ -94,6 +96,24 @@ module.exports = class Trips {
                 id
             ]
         );
+    }
+
+    static getPopularDestinations() {
+        return db.execute(
+            `select count(*) as 'number' , 
+                        locations.location_id ,
+                        countries.country_name , 
+                        cities.city_name , 
+                        states.state_name from trips 
+                        inner join locations on trips.location_id = locations.location_id
+                        inner join cities on locations.city_id = cities.city_id
+                        inner join countries on countries.country_id  = locations.country_id
+                        inner join states on states.state_id = locations.state_id
+                        group by locations.location_id
+                        order by 'number'
+                        limit 4
+                        `
+        )
     }
     //'1995-12-17T03:24:00'
 

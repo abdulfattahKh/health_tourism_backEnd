@@ -268,4 +268,5 @@ module.exports = class TravelAgency {
                         where t.users_id = ?`,
             [userId]);
     }
+
 }

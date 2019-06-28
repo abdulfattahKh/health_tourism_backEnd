@@ -25,7 +25,7 @@ const travelAgent = require("./routers/travelAgencyRouter");
 const tripsRouter = require("./routers/tripsRouter");
 const images = require("./routers/imagesRouter");
 const generalRouter = require("./routers/crudRouter");
-
+const reviewsRouter = require("./routers/reviewsRouter");
 const procedureRouter = require("./routers/procedureRouter");
 
 const server = http.createServer(app);
@@ -34,7 +34,6 @@ createFolders.createFolders();
 
 //middleware
 app.use(cors());
-app.use(express.static(path.join(__dirname, "dist1")));
 app.use(express.static(path.join(__dirname, "dist")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join("upload/images")));
@@ -59,13 +58,14 @@ app.use('/images', images);
 
 app.use("/procedure", procedureRouter);
 
+app.use("/reviews", reviewsRouter);
 
 // app.get('/main', (req, res) => {
 //     res.sendfile(path.join('dist/index.html'));
 // })
 
 // app.get('*', (req, res) => {
-//     res.sendfile(path.join('dist1/index.html'));
+//     res.sendfile(path.join('dist/index.html'));
 // });
 
 
