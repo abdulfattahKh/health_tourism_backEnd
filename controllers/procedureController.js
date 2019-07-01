@@ -8,7 +8,7 @@ exports.addProcedure = (req, res, next) => {
         .then(result => {
             return res.status(200).json({
                 success: true,
-                message: "adding process done successfully!!"
+                deleteClinicSpecialization: "adding process done successfully!!"
             })
         })
         .catch(err => {
@@ -20,28 +20,25 @@ exports.addProcedure = (req, res, next) => {
 };
 
 exports.updateProcedure = (req, res, next) => {
-    /// need at least (proc_id , spec_id ,clinic_id)
-    obj = new procSpecClinicModel(req.body)
-    obj.save()
+    procSpecClinicModel.updateProcedure(req.params.procedureId, req.body)
         .then(result => {
-            return res.status(200).json({
+            res.status(200).json({
                 success: true,
-                message: "updating process done successfully!!"
+                message: 'updating procedure successfully.'
             })
         })
         .catch(err => {
-            return res.status(500).json({
+            res.status(500).json({
                 success: false,
-                message: err
+                message: 'updating procedure failed!!',
+                err: err
             });
-        });
+        })
 };
 
 
 exports.deleteProcedure = (req, res, next) => {
-    /// need at least (proc_id , spec_id ,clinic_id)
-    obj = new procSpecClinicModel(req.body)
-    obj.delete()
+    procSpecClinicModel.deleteProcedure(req.params.procedureId)
         .then(result => {
             return res.status(200).json({
                 success: true,
@@ -54,6 +51,8 @@ exports.deleteProcedure = (req, res, next) => {
                 message: err
             });
         });
+
+
 };
 
 /// view list of procedures according to some clinic ....
@@ -206,13 +205,26 @@ exports.getPopularProcedures = (req, res, next) => {
 }
 
 exports.deleteClinicSpecialization = (req, res, next) => {
-    if (!req.body.clinic_id || !req.body.specializations_clinics_id) {
+    if (!req.body.clinic_id || !req.body.spec_id) {
         return res.status(400).json({
             success: false,
             message: 'bad requrest'
         })
     }
-    procSpecClinicModel.deleteClinicSpecialization(req.body.clinicId, req.body.specializations_clinics_id)
+    procSpecClinicModel.deleteClinicSpecialization(req.body.clinic_id, req.body.spec_id)
+    .then(result=>{
+        return res.status(200).json({
+            success:true,
+            message:"ok"
+        })
+    })
+    .catch(err=>{
+        console.log(err);
+        return res.status(500).json({
+            success:false,
+            message:"OK",
+        })
+    })
 
 }
 

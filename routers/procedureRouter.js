@@ -20,18 +20,19 @@ router.post(
 );
 
 router.post(
-    "/updateProcedure",
-    // check_auth,
-    // check_author([1,5]), /// admin & clinic owner ....
+    "/updateProcedure/:procedureId",
+    check_auth,
+    check_author([1,5]), /// admin & clinic owner ....
     procController.updateProcedure
 );
 
 router.post(
-    "/deleteProcedure",
-    // check_auth,
-    // check_author([1,5]), /// admin & clinic owner ....
+    "/deleteProcedure/:procedureId",
+    check_auth,
+    check_author([1,5]), /// admin & clinic owner ....
     procController.deleteProcedure
 );
+
 
 router.get(
     "/getProcAccordClinic/:clinicId",
@@ -60,7 +61,7 @@ router.get("/getClinicSpecializations/:id", procController.getClinicSpecializati
 
 router.post('/putSpecializationsPrimary/', procController.putSpecializationsPrimary);
 
-router.get('/deleteClinicSpecialization/', procController.deleteClinicSpecialization);
+router.post('/deleteClinicSpecialization/', procController.deleteClinicSpecialization);
 
 router.get('/getPopularProcedures', procController.getPopularProcedures);
 

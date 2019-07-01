@@ -355,7 +355,9 @@ module.exports = class Clinic {
   }
 
   static search(procedureId, countryId, cityId, stateId) {
-    return db.execute(`select 
+    return db.execute(`
+    select 
+    clinics.id as clinicId,
     clinics.name as clinicName,
     clinics.description as clinicDescription,
     clinics.address as clinicAddress,

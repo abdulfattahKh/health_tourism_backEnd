@@ -59,7 +59,6 @@ app.use('/images', images);
 app.use("/procedure", procedureRouter);
 app.use('/reviews',reviewsRouter)
 
-app.use("/reviews", reviewsRouter);
 
 // app.get('/main', (req, res) => {
 //     res.sendfile(path.join('dist/index.html'));
@@ -67,9 +66,9 @@ app.use("/reviews", reviewsRouter);
 
 
 
-app.use('/', (req, res, next) => {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
+// app.use('/', (req, res, next) => {
+//     res.sendFile(path.join(__dirname, 'dist/index.html'));
+// });
 
 app.use('', (req, res, next) => {
     res.status(404).json({

@@ -343,9 +343,32 @@ module.exports = class procSpecClinic {
         where specializations_clinics_id = ? and clinic_id = ?`, [value, specializations_clinics_id, clinic_id])
     }
 
-    deleteClinicSpecialization(clinic_id, specializations_clinics_id) {
-        // return db.execute(`delete form`)
+    static deleteProcedure(procedureId) {
+        return db.execute(
+            `delete from proc_spec_clinic where id=?`,
+            [procedureId]
+        );
     }
+
+    static updateProcedure(procedureId, values) {
+        return db.execute(
+            `update proc_spec_clinic set min_price=?, max_price=?, duration=?, num_visits=?, bookable=?, description=?, img1=?, img2=?
+            where proc_id = ${procedureId}
+            `,
+            [values.min_price, values.max_price, values.duration, values.num_visits, values.bookable, values.description, values.img1, values.img2]
+        );
+    }
+
+
+    static deleteClinicSpecialization(clinic_id, specializations_clinics_id) {
+        return db.execute(
+            `delete 
+            from specializations_clinics 
+            where specializations_clinics_id = ? and clinic_id = ? `, 
+            [+specializations_clinics_id, +clinic_id])
+    }
+
+
 
     checkForUpdatedColumns(prev_values, values) {
 
@@ -411,4 +434,3 @@ module.exports = class procSpecClinic {
  * @end
  * 
  */
-
