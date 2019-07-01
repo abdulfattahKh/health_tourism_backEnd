@@ -6,6 +6,7 @@ exports.addProcedure = (req, res, next) => {
     obj = new procSpecClinicModel(req.body)
     obj.save()
         .then(result => {
+            console.log(result);
             return res.status(200).json({
                 success: true,
                 deleteClinicSpecialization: "adding process done successfully!!"
@@ -20,6 +21,10 @@ exports.addProcedure = (req, res, next) => {
 };
 
 exports.updateProcedure = (req, res, next) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
     procSpecClinicModel.updateProcedure(req.params.procedureId, req.body)
         .then(result => {
             res.status(200).json({
@@ -34,25 +39,72 @@ exports.updateProcedure = (req, res, next) => {
                 err: err
             });
         })
+<<<<<<< HEAD
+=======
+
+    /// need at least (proc_id , spec_id ,clinic_id)
+    // obj = new procSpecClinicModel(req.body)
+    // obj.save()
+    //     .then(result => {
+    //         return res.status(200).json({
+    //             success: true,
+    //             message: "updating process done successfully!!"
+    //         })
+    //     })
+    //     .catch(err => {
+    //         return res.status(500).json({
+    //             success: false,
+    //             message: err
+    //         });
+    //     });
+>>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
 };
 
 
 exports.deleteProcedure = (req, res, next) => {
+<<<<<<< HEAD
     procSpecClinicModel.deleteProcedure(req.params.procedureId)
         .then(result => {
             return res.status(200).json({
                 success: true,
                 message: "deleting process done successfully!!"
             })
+=======
+    /// need at least (proc_id , spec_id ,clinic_id)
+    obj = new procSpecClinicModel(req.body)
+    procSpecClinicModel.deleteProcedure(req.params.procedureId)
+    .then(result => {
+        return res.status(200).json({
+            success: true,
+            message: "deleting process done successfully!!"
+>>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
         })
-        .catch(err => {
-            return res.status(500).json({
-                success: false,
-                message: err
-            });
+    })
+    .catch(err => {
+        return res.status(500).json({
+            success: false,
+            message: err
         });
+<<<<<<< HEAD
 
 
+=======
+    });
+
+    // obj.delete()
+    //     .then(result => {
+    //         return res.status(200).json({
+    //             success: true,
+    //             message: "deleting process done successfully!!"
+    //         })
+    //     })
+    //     .catch(err => {
+    //         return res.status(500).json({
+    //             success: false,
+    //             message: err
+    //         });
+    //     });
+>>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
 };
 
 /// view list of procedures according to some clinic ....
