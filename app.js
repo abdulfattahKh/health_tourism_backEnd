@@ -65,9 +65,6 @@ app.use("/reviews", reviewsRouter);
 //     res.sendfile(path.join('dist/index.html'));
 // })
 
-// app.get('*', (req, res) => {
-//     res.sendfile(path.join('dist/index.html'));
-// });
 
 
 app.use('/', (req, res, next) => {
