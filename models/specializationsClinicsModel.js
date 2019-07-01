@@ -20,7 +20,7 @@ module.exports = class specializationsClinics {
     /// select by foreign keys ....
     static fKeysSelect(spec_id , clinic_id){
         this.table = "specializations_clinics";
-        var isAlreadyExist = `SELECT * FROM health_tourism.${this.table} WHERE
+        var isAlreadyExist = `SELECT * FROM ${this.table} WHERE
                     specialization_id = ${spec_id} AND clinic_id = ${clinic_id} ;`
         
         return db.execute(isAlreadyExist)
@@ -37,10 +37,10 @@ module.exports = class specializationsClinics {
 
     save(){
         
-        var isAlreadyExist = `SELECT * FROM health_tourism.${this.table} WHERE
+        var isAlreadyExist = `SELECT * FROM ${this.table} WHERE
                     specialization_id = ${this.spec_id} AND clinic_id = ${this.clinic_id} ;`
                     
-        var newRecorde = `INSERT INTO health_tourism.${this.table} (specialization_id, clinic_id) VALUES (?,?);`
+        var newRecorde = `INSERT INTO ${this.table} (specialization_id, clinic_id) VALUES (?,?);`
         
         var values = [ this.spec_id , this.clinic_id ]
 
@@ -81,7 +81,7 @@ module.exports = class specializationsClinics {
                     if (!result) {
                         return false;
                     }
-                    var deleteRecord = `DELETE FROM health_tourism.${this.table}
+                    var deleteRecord = `DELETE FROM ${this.table}
                                         WHERE specialization_id = ${this.spec_id} AND clinic_id = ${this.clinic_id} ;`
 
                     db.execute(deleteRecord)
@@ -110,7 +110,7 @@ module.exports = class specializationsClinics {
 
     static viewAccordClinic(clinic_id){
         this.table = "specializations_clinics";
-        var query = `SELECT * FROM  health_tourism.${this.table} WHERE clinic_id=${clinic_id}`;
+        var query = `SELECT * FROM  ${this.table} WHERE clinic_id=${clinic_id}`;
 
         return db.execute(query)
             .then(result => {   
