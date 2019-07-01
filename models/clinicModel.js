@@ -400,9 +400,11 @@ module.exports = class Clinic {
               countries.country_name as country,
               cities.city_name as city,
               states.state_name as state,
-              
+
+              (select count(*) from reviews where reviews.clinics_id = clinics.id) as numberOfReviews,
+              (select avg(stars) from reviews where reviews.clinics_id = clinics.id) as numberOfReviews,
               CONCAT(users.first_name ,' ', users.last_name) as 'userName'
-              
+
               from clinics
               inner join locations on clinics.location_id  = locations.location_id
               inner join countries on countries.country_id = locations.country_id
