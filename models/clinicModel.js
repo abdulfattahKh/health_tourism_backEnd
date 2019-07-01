@@ -355,28 +355,7 @@ module.exports = class Clinic {
   }
 
   static search(procedureId, countryId, cityId, stateId) {
-    return db.execute(`
-    select 
-    clinics.id as clinicId,
-    clinics.name as clinicName,
-    clinics.description as clinicDescription,
-    clinics.address as clinicAddress,
-    clinics.mobile_number as clinicMobileNumber,
-
-    countries.country_name as country,
-    cities.city_name as city,
-    states.state_name as state,
-
-    CONCAT(users.first_name ,' ', users.last_name) as 'userName',
-    images.image_name 
-    from clinics
-    inner join locations on clinics.location_id  = locations.location_id
-    inner join countries on countries.country_id = locations.country_id
-    inner join cities on cities.city_id = locations.city_id
-    inner join states on states.state_id = locations.state_id
-    inner join users on users.id = clinics.user_id 
-    left join images on images.clinics_id = clinics.id
-    group by clinics.id`);
+    console.log(procedureId, countryId, cityId, stateId)
     let query = "";
     if (procedureId && procedureId != "" &&
       countryId && countryId != "" &&
@@ -390,7 +369,7 @@ module.exports = class Clinic {
         and states.state_id = ?
         group by clinics.id`
 
-      return db.execute(query, [procedureId, countryId, cityId, stateId]);
+      return db.execute(query, [procedureId,cityId,countryId, stateId]);
     } else if (procedureId && procedureId != "" &&
       countryId && countryId != ""
     ) {
@@ -412,14 +391,15 @@ module.exports = class Clinic {
   static getSearchQuery() {
     let sql = `select 
 
+              clinics.id as clinicId,
               clinics.name as clinicName,
               clinics.description as clinicDescription,
               clinics.address as clinicAddress,
               clinics.mobile_number as clinicMobileNumber,
               
-              countries.country_name,
-              cities.city_name,
-              states.state_name,
+              countries.country_name as country,
+              cities.city_name as city,
+              states.state_name as state,
               
               CONCAT(users.first_name ,' ', users.last_name) as 'userName'
               
