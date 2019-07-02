@@ -396,13 +396,13 @@ module.exports = class Clinic {
               clinics.description as clinicDescription,
               clinics.address as clinicAddress,
               clinics.mobile_number as clinicMobileNumber,
-              
+              images.image_name,
               countries.country_name as country,
               cities.city_name as city,
               states.state_name as state,
 
               (select count(*) from reviews where reviews.clinics_id = clinics.id) as numberOfReviews,
-              (select avg(stars) from reviews where reviews.clinics_id = clinics.id) as numberOfReviews,
+              (select avg(stars) from reviews where reviews.clinics_id = clinics.id) as reviewsAverage,
               CONCAT(users.first_name ,' ', users.last_name) as 'userName'
 
               from clinics

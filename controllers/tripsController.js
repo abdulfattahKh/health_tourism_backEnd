@@ -224,6 +224,24 @@ function addTripHelperFunction(tripGeneralInformation, TravelAgencyId, location)
   })
 }
 
+module.exports.search = (req, res, next) => {
+  tripsModel.search(req.body['country'], req.body['city'], req.body['state'])
+    .then(result => {
+      return res.status(200).json({
+        success: true,
+        message: 'ok',
+        data: result[0]
+      })
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        success: false,
+        message: "error"
+      })
+    })
+}
+
 //add location
 
 function getLocationId(location) {

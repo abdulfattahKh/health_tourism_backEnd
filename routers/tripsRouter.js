@@ -21,4 +21,5 @@ router.put('/updateTrip/:id', tripsController.updateTrip)
 
 router.get('/getPopularDestinations',tripsController.getPopularDestinations);
 
+router.post('/search',tripsController.search);
 module.exports = router;

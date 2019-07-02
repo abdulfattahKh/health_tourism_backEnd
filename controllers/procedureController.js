@@ -21,10 +21,6 @@ exports.addProcedure = (req, res, next) => {
 };
 
 exports.updateProcedure = (req, res, next) => {
-<<<<<<< HEAD
-=======
-
->>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
     procSpecClinicModel.updateProcedure(req.params.procedureId, req.body)
         .then(result => {
             res.status(200).json({
@@ -39,8 +35,6 @@ exports.updateProcedure = (req, res, next) => {
                 err: err
             });
         })
-<<<<<<< HEAD
-=======
 
     /// need at least (proc_id , spec_id ,clinic_id)
     // obj = new procSpecClinicModel(req.body)
@@ -57,19 +51,10 @@ exports.updateProcedure = (req, res, next) => {
     //             message: err
     //         });
     //     });
->>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
 };
 
 
 exports.deleteProcedure = (req, res, next) => {
-<<<<<<< HEAD
-    procSpecClinicModel.deleteProcedure(req.params.procedureId)
-        .then(result => {
-            return res.status(200).json({
-                success: true,
-                message: "deleting process done successfully!!"
-            })
-=======
     /// need at least (proc_id , spec_id ,clinic_id)
     obj = new procSpecClinicModel(req.body)
     procSpecClinicModel.deleteProcedure(req.params.procedureId)
@@ -77,7 +62,6 @@ exports.deleteProcedure = (req, res, next) => {
         return res.status(200).json({
             success: true,
             message: "deleting process done successfully!!"
->>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
         })
     })
     .catch(err => {
@@ -85,10 +69,6 @@ exports.deleteProcedure = (req, res, next) => {
             success: false,
             message: err
         });
-<<<<<<< HEAD
-
-
-=======
     });
 
     // obj.delete()
@@ -104,7 +84,6 @@ exports.deleteProcedure = (req, res, next) => {
     //             message: err
     //         });
     //     });
->>>>>>> 8bbe6e18bd0904e5453defaba91e27407876c331
 };
 
 /// view list of procedures according to some clinic ....
