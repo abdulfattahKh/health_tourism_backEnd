@@ -666,40 +666,43 @@ exports.putUpdateClinic = (req, res, next) => {
 
 exports.addRequestOfTreatment = (req, res, next) => {
 
-    let data, requestId;
+    if (!req.body.general) {
+        req.body.general = 0;
+    }
+
+
+    if (!req.body.dateTravel) {
+        req.body.dateTravel = 0;
+    }
+
 
     req.body.userId = req.params.userId;
+    req.body.procedures = req.body.clinicTypes;
+
+    let data;
 
     clinicModel.addRequestOfTreatment(req.body)
         .then(result => {
-            requestId = result[0].insertId;
-            return clinicModel.getRequestTreatment(requestId);
+            console.log(result);
+            data = result;
+            return imagesModel.addImages({ applicationId: data.id, array: req.body.images });
         })
         .then(result => {
-            data = result[0][0];
-            return clinicModel.getImagesOfRequestTreatment(requestId);
-        })
-        .then(result => {
-            data.images = result[0];
+            console.log(result);
+            data.images = result.data;
             res.status(200).json({
                 success: true,
-                message: 'adding request of treatment successfully.',
-                id: requestId
-            })
-            io.getIO().emit('requestTreatment', {
-                action: 'adding request of treatment',
+                message: 'sending application successfully.',
                 data: data
-            });
+            })
         })
         .catch(err => {
-            console.log(err);
             res.status(500).json({
                 success: false,
-                message: 'adding request of treatment failed!!',
+                message: 'sending appliation failed!!',
                 err: err
             })
         })
-
 };
 
 exports.search = (req, res, next) => {
