@@ -21,6 +21,32 @@ const upload = multer({
   storage: storage
 });
 
+router.post(
+  '/addApplication/:userId',
+  check_auth,
+  check_author([1, 4]),
+  clinicsController.addRequestOfTreatment
+);
+
+router.post(
+  '/getApplications',
+  check_auth,
+  check_author([1, 2]),
+  clinicsController.getAllRequestOfClinic
+);
+
+router.delete(
+  `/deleteApplication/:applicationId`,
+  check_auth,
+  check_author([1, 2]),
+  clinicsController.deleteApplication
+);
+
+
+
+
+
+
 router.get(
   "/clinicTypes",
   check_auth,
@@ -38,7 +64,7 @@ router.get(
 // );
 
 // done
-router.put(
+router.get(
   '/changeClnincStatus/:clinicId',
   check_auth,
   check_author([1, 2]),
@@ -119,28 +145,28 @@ router.delete(
 router.get(
   '/getCurrencies/:clinicId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   clinicsController.getAllCurrenciesById
 );
 
 router.get(
   '/getAllCurrencies',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   clinicsController.getAllCurrencies
 );
 
 router.post(
   '/addCurrency/:clinicId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   clinicsController.updateCurrency
 );
 
 router.delete(
   '/deleteCurrency/:currencyId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   clinicsController.deleteCurrency
 );
 
@@ -183,28 +209,28 @@ router.get(
 router.get(
   '/getDoctor/:doctorId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   doctorController.getDoctorById
 );
 
 router.post(
   '/addDoctor/:clinicId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   doctorController.addDoctor
 );
 
 router.delete(
   '/deleteDoctor/:doctorId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   doctorController.deleteDoctor
 );
 
 router.put(
   '/editDoctor/:doctorId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   doctorController.updateDoctor
 );
 
@@ -218,14 +244,14 @@ router.get(
 router.post(
   '/addExperinces/:doctorId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   doctorController.postAddExperincesToDoctor
 );
 
 router.get(
   '/doctors/:clinicId',
   check_auth,
-  check_author([1,2]),
+  check_author([1, 2]),
   doctorController.getAllDoctorsByClinicId
 );
 
@@ -257,6 +283,20 @@ router.post(
   clinicsController.addRequestOfTreatment
 );
 
-router.post('/search',clinicsController.search);
+router.get(
+  '/myTreatmentRequests/:clinic_id',
+  check_auth,
+  check_author([1, 2]),
+  clinicsController.getAllRequest
+);
+
+router.get(
+  '/getTreatmentRequests',
+  check_auth,
+  check_author([1, 2]),
+  clinicsController.getAllRequest
+);
+
+router.post('/search', clinicsController.search);
 
 module.exports = router;

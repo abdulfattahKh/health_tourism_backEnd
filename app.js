@@ -60,9 +60,9 @@ app.use("/procedure", procedureRouter);
 app.use('/reviews',reviewsRouter)
 
 
-// app.get('/main', (req, res) => {
-//     res.sendfile(path.join('dist/index.html'));
-// })
+app.get('/main', (req, res) => {
+    res.sendfile(path.join('dist/index.html'));
+})
 
 
 

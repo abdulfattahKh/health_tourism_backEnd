@@ -663,7 +663,6 @@ exports.putUpdateClinic = (req, res, next) => {
 
 };
 
-
 exports.addRequestOfTreatment = (req, res, next) => {
 
     if (!req.body.general) {
@@ -683,9 +682,13 @@ exports.addRequestOfTreatment = (req, res, next) => {
 
     clinicModel.addRequestOfTreatment(req.body)
         .then(result => {
+            console.log('1')
             console.log(result);
             data = result;
-            return imagesModel.addImages({ applicationId: data.id, array: req.body.images });
+            return imagesModel.addImages({
+                applicationId: data.id,
+                array: req.body.images
+            });
         })
         .then(result => {
             console.log(result);
@@ -697,6 +700,7 @@ exports.addRequestOfTreatment = (req, res, next) => {
             })
         })
         .catch(err => {
+            console.log(err);
             res.status(500).json({
                 success: false,
                 message: 'sending appliation failed!!',
@@ -704,6 +708,111 @@ exports.addRequestOfTreatment = (req, res, next) => {
             })
         })
 };
+
+
+
+
+exports.getAllRequestOfClinic = (req, res, next) => {
+
+    let data;
+    console.log(req.body);
+    if (!req.body.general) {
+
+        clinicModel.getAllRequestTreatmentOfClinic(req.body.clinicId)
+            .then(result => {
+                data = result[0];
+                return new Promise((resolve, reject) => {
+                    for (let i = 0; i < data.length; i++) {
+                        clinicModel.getAllProcedures(data[i].id)
+                            .then(result => {
+                                data[i].procedures = result[0];
+                                if (i === data.length - 1) {
+                                    resolve();
+                                }
+                            })
+                            .catch(err => {
+                                reject({
+                                    err: err
+                                });
+                            })
+                    }
+                });
+            })
+            .then(result => {
+                console.log('ssss');
+                res.status(200).json({
+                    success: true,
+                    message: 'Getting all requestTreatment successfully.',
+                    data: data
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    success: false,
+                    message: 'Getting all requestTreatment failed!!',
+                    err: err
+                })
+            })
+    } else {
+        clinicModel.getAllRequestTreatmentOfAdmin(req.params.general)
+            .then(result => {
+                data = result[0];
+                return new Promise((resolve, reject) => {
+                    for (let i = 0; i < data.length; i++) {
+                        clinicModel.getAllProcedures(data[i].id)
+                            .then(result => {
+                                data[i].procedures = result[0];
+                                if (i === data.length - 1) {
+                                    resolve();
+                                }
+                            })
+                            .catch(err => {
+                                reject({
+                                    err: err
+                                });
+                            })
+                    }
+                });
+            })
+            .then(result => {
+                console.log('ssss');
+                res.status(200).json({
+                    success: true,
+                    message: 'Getting all requestTreatment successfully.',
+                    data: data
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    success: false,
+                    message: 'Getting all requestTreatment failed!!',
+                    err: err
+                })
+            })
+
+    }
+
+}
+
+exports.deleteApplication = (req, res, next) => {
+
+    clinicModel.deleteApplication(req.params.applicationId)
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: 'Deleting application successfully.'
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: 'Deleting application failed!!',
+                err: err
+            })
+        })
+
+};
+
 
 exports.search = (req, res, next) => {
     const procedure = req.body['procedure'];
@@ -726,6 +835,90 @@ exports.search = (req, res, next) => {
         })
 
 }
+
+
+exports.getAllRequest = (req, res, next) => {
+
+    let data;
+
+    if (req.body.general) {
+
+        clinicModel.getAllRequestTreatmentOfClinic(req.params.clinicId)
+            .then(result => {
+                data = result[0];
+                return new Promise((resolve, reject) => {
+                    for (let i = 0; i < data.length; i++) {
+                        clinicModel.getAllProcedures(data[i].id)
+                            .then(result => {
+                                data[i].procedures = result[0];
+                                if (i === data.length - 1) {
+                                    resolve();
+                                }
+                            })
+                            .catch(err => {
+                                reject({
+                                    err: err
+                                });
+                            })
+                    }
+                });
+            })
+            .then(result => {
+                console.log('ssss');
+                res.status(200).json({
+                    success: true,
+                    message: 'Getting all requestTreatment successfully.',
+                    data: data
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    success: false,
+                    message: 'Getting all requestTreatment failed!!',
+                    err: err
+                })
+            })
+    } else {
+        clinicModel.getAllRequestTreatmentOfAdmin()
+            .then(result => {
+                data = result[0];
+                return new Promise((resolve, reject) => {
+                    for (let i = 0; i < data.length; i++) {
+                        clinicModel.getAllProcedures(data[i].id)
+                            .then(result => {
+                                data[i].procedures = result[0];
+                                if (i === data.length - 1) {
+                                    resolve();
+                                }
+                            })
+                            .catch(err => {
+                                reject({
+                                    err: err
+                                });
+                            })
+                    }
+                });
+            })
+            .then(result => {
+                console.log('ssss');
+                res.status(200).json({
+                    success: true,
+                    message: 'Getting all requestTreatment successfully.',
+                    data: data
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    success: false,
+                    message: 'Getting all requestTreatment failed!!',
+                    err: err
+                })
+            })
+
+    }
+
+}
+
 
 deleteClinicById = clinicId => {
     return new Promise(async (resolve, reject) => {

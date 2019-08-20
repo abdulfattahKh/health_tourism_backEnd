@@ -20,6 +20,23 @@ exports.addProcedure = (req, res, next) => {
         });
 };
 
+
+exports.getAllProcedures = (req, res, next) => {
+    procedureModel.getAllProcedures()
+        .then(result => {
+            return res.json({
+                success: true,
+                message: "oo",
+                data: result[0]
+            })
+            .catch(err=>{
+                return res.json({
+                    success:false,
+                    message:"false"
+                })
+            })
+        })
+}
 exports.updateProcedure = (req, res, next) => {
     procSpecClinicModel.updateProcedure(req.params.procedureId, req.body)
         .then(result => {
@@ -58,18 +75,18 @@ exports.deleteProcedure = (req, res, next) => {
     /// need at least (proc_id , spec_id ,clinic_id)
     obj = new procSpecClinicModel(req.body)
     procSpecClinicModel.deleteProcedure(req.params.procedureId)
-    .then(result => {
-        return res.status(200).json({
-            success: true,
-            message: "deleting process done successfully!!"
+        .then(result => {
+            return res.status(200).json({
+                success: true,
+                message: "deleting process done successfully!!"
+            })
         })
-    })
-    .catch(err => {
-        return res.status(500).json({
-            success: false,
-            message: err
+        .catch(err => {
+            return res.status(500).json({
+                success: false,
+                message: err
+            });
         });
-    });
 
     // obj.delete()
     //     .then(result => {
@@ -243,19 +260,19 @@ exports.deleteClinicSpecialization = (req, res, next) => {
         })
     }
     procSpecClinicModel.deleteClinicSpecialization(req.body.clinic_id, req.body.spec_id)
-    .then(result=>{
-        return res.status(200).json({
-            success:true,
-            message:"ok"
+        .then(result => {
+            return res.status(200).json({
+                success: true,
+                message: "ok"
+            })
         })
-    })
-    .catch(err=>{
-        console.log(err);
-        return res.status(500).json({
-            success:false,
-            message:"OK",
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({
+                success: false,
+                message: "OK",
+            })
         })
-    })
 
 }
 

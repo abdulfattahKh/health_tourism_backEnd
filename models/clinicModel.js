@@ -455,7 +455,7 @@ module.exports = class Clinic {
     ) {
       query = this.getSearchQuery() +
         ` where procedures.id = ? 
-         and cities.city_id = ?
+         and countries.country_id = ?
          group by clinics.id`
       return db.execute(query, [procedureId, countryId]);
     } else if (procedureId && procedureId != "") {
@@ -463,8 +463,183 @@ module.exports = class Clinic {
         ` where procedures.id = ? 
         group by clinics.id`
       return db.execute(query, [procedureId]);
+    } else {
+      return db.execute(this.getSearchQuery());
     }
   }
+
+  static addRequestOfTreatment(values) {
+    let applicationId;
+    let applicationProcedureId;
+
+    let procedures = [];
+
+    return new Promise((resolve, reject) => {
+      db.beginTransaction()
+        .then(result => {
+          return db.execute(
+            `insert into applications (date_travel, description_you, message, general, clinic_id, user_id) values (?, ?, ?, ?, ?, ?)`,
+            [values.dateTravel, values.descriptionYou, values.message, values.general, values.clinicId, values.userId]
+          );
+        })
+        .then(result => {
+          applicationId = result[0].insertId;
+          return new Promise((rs, rj) => {
+            values.procedures.forEach(procedure => {
+              db.execute(
+                `insert into applications_procedures (application_id, procedure_id) values (?, ?)`,
+                [applicationId, procedure]
+              )
+                .then(result => {
+                  procedures.push(result[0].insertId);
+                  if (procedures.length === values.procedures.length) {
+                    rs();
+                  }
+                })
+                .catch(err => {
+                  rj({err: err});
+                })
+            })  
+          })
+        })
+        .then(result => {
+          return db.commit();
+        })
+        .then(result => {
+          resolve({ id: applicationId, procedures: procedures, dateTravel: values.dateTravel, descriptionYou: values.descriptionYou, message: values.message });
+        })
+        .catch(err => {
+          reject({ err: err });
+        })
+    });
+  }
+
+
+
+
+  static getAllRequestTreatmentOfAdmin () {
+    return db.execute(
+      `select id, date_travel, description_you, message from applications where general=1`
+    );
+  }
+
+  static getAllRequestTreatmentOfClinic (clinicId) {
+    return db.execute(
+      `select id, date_travel, description_you, message from applications where clinic_id=?`,
+      [clinicId]
+    );
+  }
+
+  static getAllProcedures (applicationId) {
+    return db.execute(
+      `select procedure_id, name from applications inner join applications_procedures
+       on applications.id=applications_procedures.application_id 
+       inner join procedures on procedures.id=applications_procedures.procedure_id where applications.id=?`,
+       [applicationId]
+    );
+  }
+
+  static deleteApplication (applicationId) {
+    return db.execute(
+      `delete from applications where id=?`,
+      [applicationId]
+    );
+  }
+
+  
+
+
+  static addRequestOfTreatment(values) {
+    let applicationId;
+    let applicationProcedureId;
+
+    let procedures = [];
+
+    return new Promise((resolve, reject) => {
+      db.beginTransaction()
+        .then(result => {
+          return db.execute(
+            `insert into applications (date_travel, description_you, message, general, clinic_id, user_id) values (?, ?, ?, ?, ?, ?)`,
+            [values.dateTravel, values.describeYou, values.message, values.general, values.clinicId, values.userId]
+          );
+        })
+        .then(result => {
+
+          applicationId = result[0].insertId;
+          return new Promise((rs, rj) => {
+            values.procedures.forEach(procedure => {
+              db.execute(
+                  `insert into applications_procedures (application_id, procedure_id) values (?, ?)`,
+                  [applicationId, procedure]
+                )
+                .then(result => {
+                  procedures.push(result[0].insertId);
+                  if (procedures.length === values.procedures.length) {
+                    rs();
+                  }
+                })
+                .catch(err => {
+                  rj({
+                    err: err
+                  });
+                })
+            })
+          })
+        })
+        .then(result => {
+          return db.commit();
+        })
+        .then(result => {
+          resolve({
+            id: applicationId,
+            procedures: procedures,
+            dateTravel: values.dateTravel,
+            descriptionYou: values.descriptionYou,
+            message: values.message
+          });
+        })
+        .catch(err => {
+          reject({
+            err: err
+          });
+        })
+    });
+  }
+
+
+
+
+  static getAllRequestTreatmentOfAdmin() {
+    return db.execute(
+      `select applications.id, concat(first_name, ' ' ,last_name) as name, email, mobile_number, date_travel, description_you, message from applications 
+       inner join users on applications.user_id=users.id where general=1`
+    );
+  }
+
+  static getAllRequestTreatmentOfClinic(clinicId) {
+    return db.execute(
+      `select applications.id, concat(first_name, ' ', last_name) as name, email, mobile_number, date_travel, description_you, message from applications
+       inner join users on applications.user_id=users.id where clinic_id=?`,
+      [clinicId]
+    );
+  }
+
+  static getAllProcedures(applicationId) {
+    return db.execute(
+      `select procedure_id, name from applications inner join applications_procedures
+       on applications.id=applications_procedures.application_id 
+       inner join procedures on procedures.id=applications_procedures.procedure_id where applications.id=?`,
+      [applicationId]
+    );
+  }
+
+  static deleteApplication(applicationId) {
+    return db.execute(
+      `delete from applications where id=?`,
+      [applicationId]
+    );
+  }
+
 
 
 

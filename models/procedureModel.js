@@ -34,13 +34,17 @@ module.exports = class Procedure {
     } ///end viewAccordSpecId()
 
 
+    static getAllProcedures() {
+        return db.execute(`select * from procedures`);
+    }
+
+
     static viewAccordAutoComplate(sub_word) {
         sub_word = sub_word + "%";
         var query = `SELECT * FROM procedures 
                 WHERE lower(name) LIKE lower("${sub_word}") limit 10;`
         return db.execute(query)
             .then(result => {
-                console.log(result);
                 if (!result[0].length) {
                     return false
                 }
