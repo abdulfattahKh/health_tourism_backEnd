@@ -23,7 +23,7 @@
     "mysql2": "^1.6.4",
     "nodemailer": "^6.2.1",
     "path": "^0.12.7",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.4.0",
     "web-push": "^3.3.5"
   },
   "devDependencies": {
